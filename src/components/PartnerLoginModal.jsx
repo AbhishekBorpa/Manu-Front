@@ -1,0 +1,231 @@
+import React, { useState, useEffect } from 'react';
+import { FaEnvelope, FaLock, FaArrowRight, FaHandshake, FaTimes, FaUser, FaPhone } from 'react-icons/fa';
+
+const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
+  const [isLogin, setIsLogin] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLogin(initialMode === 'login');
+  }, [initialMode, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      const url = isLogin 
+        ? import.meta.env.VITE_API_URL + '/auth/login' 
+        : import.meta.env.VITE_API_URL + '/auth/register';
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.msg || 'Action failed');
+        setLoading(false);
+        return;
+      }
+
+      alert(`${isLogin ? 'Login' : 'Sign Up'} Successful! ✅`);
+      if (data.token) localStorage.setItem('token', data.token);
+      if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
+      
+      setLoading(false);
+      onClose();
+      window.location.href = '/partner/dashboard';
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong ❌');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+      ></div>
+
+      {/* Modal Content */}
+      <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-in fade-in zoom-in duration-300">
+        
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-white md:text-slate-400 md:hover:text-slate-600 rounded-full transition-colors"
+        >
+          <FaTimes className="text-xl" />
+        </button>
+
+        {/* Left Side: Information */}
+        <div className="md:w-1/2 bg-[#14532D] p-8 md:p-12 text-white flex flex-col justify-center relative overflow-hidden">
+          {/* Decorative Circles */}
+          <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-48 h-48 bg-white/10 rounded-full translate-x-1/2 translate-y-1/2"></div>
+
+          <div className="relative z-10">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm">
+              <FaHandshake className="text-2xl text-green-300" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
+              {isLogin ? 'Grow Your Business with' : 'Become an Elite'} <span className="text-green-300">Ultra Clap</span> Partner
+            </h2>
+            <p className="text-green-50/70 text-sm md:text-base mb-6">
+              Access exclusive wholesale pricing and manage your industrial partnerships.
+            </p>
+            
+            <ul className="space-y-3 mb-4 text-sm">
+              {[
+                'Exclusive Partner Discounts',
+                'Bulk Ordering System',
+                'Priority Support & Tracking'
+              ].map((item, index) => (
+                <li key={index} className="flex items-center text-green-100">
+                  <div className="w-4 h-4 bg-green-400/20 rounded-full flex items-center justify-center mr-3">
+                    <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                  </div>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Right Side: Form */}
+        <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white max-h-[90vh] overflow-y-auto">
+          <div className="mb-8">
+            <h3 className="text-xl font-bold text-slate-800 mb-1">Partner {isLogin ? 'Login' : 'Sign Up'}</h3>
+            <p className="text-slate-500 text-sm">{isLogin ? 'Please enter your credentials.' : 'Join our network of manufacturers.'}</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && (
+              <>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider ml-1">Company / Full Name</label>
+                  <div className="relative group">
+                    <FaUser className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 transition-colors group-focus-within:text-[#14532D]" />
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      placeholder="Manufacturing Ltd."
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider ml-1">Phone Number</label>
+                  <div className="relative group">
+                    <FaPhone className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 transition-colors group-focus-within:text-[#14532D]" />
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      placeholder="+91 XXXXX XXXXX"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider ml-1">Email Address</label>
+              <div className="relative group">
+                <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 transition-colors group-focus-within:text-[#14532D]" />
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="partner@company.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center px-1">
+                <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Password</label>
+                {isLogin && <a href="#" className="text-[10px] font-bold text-[#14532D] hover:underline uppercase tracking-tighter">Forgot?</a>}
+              </div>
+              <div className="relative group">
+                <FaLock className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 transition-colors group-focus-within:text-[#14532D]" />
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#14532D] hover:bg-[#166534] text-white py-4 rounded-2xl font-bold shadow-lg shadow-green-900/10 flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  {isLogin ? 'Access Partner Portal' : 'Create Partner Account'}
+                  <FaArrowRight className="text-xs" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 pt-6 border-t border-slate-100 text-center">
+            <p className="text-slate-500 text-xs">
+              {isLogin ? "New to the platform?" : "Already have a partner account?"}{' '}
+              <button 
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-[#14532D] font-bold hover:underline"
+              >
+                {isLogin ? 'Sign Up' : 'Login'}
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PartnerLoginModal;
