@@ -123,33 +123,54 @@ const Hero = () => {
       {/* 🔥 ARROWS (Hidden on very small screens) */}
       <button
         onClick={prevSlide}
-        className="hidden sm:flex absolute left-6 top-1/2 -translate-y-1/2 z-50 bg-white/20 p-3 rounded-full text-white hover:bg-white/40 transition-colors"
+        className="hidden lg:flex absolute left-6 top-1/2 -translate-y-1/2 z-50 bg-white/10 hover:bg-white/20 p-4 rounded-full text-white backdrop-blur-sm transition-all active:scale-90"
       >
-        <FaChevronLeft />
+        <FaChevronLeft size={20} />
       </button>
 
       <button
         onClick={nextSlide}
-        className="hidden sm:flex absolute right-6 top-1/2 -translate-y-1/2 z-50 bg-white/20 p-3 rounded-full text-white hover:bg-white/40 transition-colors"
+        className="hidden lg:flex absolute right-6 top-1/2 -translate-y-1/2 z-50 bg-white/10 hover:bg-white/20 p-4 rounded-full text-white backdrop-blur-sm transition-all active:scale-90"
       >
-        <FaChevronRight />
+        <FaChevronRight size={20} />
       </button>
 
-      {/* 🔥 LEFT FLOAT ICONS - Hidden on small mobile */}
-      <div className="hidden md:flex fixed left-5 bottom-10 z-50 flex flex-col gap-4">
+      {/* 🔥 MOBILE NAVIGATION DOTS */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 flex gap-2 lg:hidden">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            className={`w-2.5 h-2.5 rounded-full transition-all ${
+              i === current ? "bg-green-500 w-8" : "bg-white/30"
+            }`}
+          />
+        ))}
+      </div>
 
-        <div className="relative">
-          <div className={`absolute inset-0 bg-blue-500 opacity-30 rounded-full ${pulse ? "scale-150" : "scale-100"} transition`} />
-          <div className="bg-blue-600 w-14 h-14 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg">
-            <FaPhoneAlt />
-          </div>
+      {/* 🔥 FLOATING ACTION BUTTONS - Repositioned to bottom-right for accessibility */}
+      <div className="fixed right-6 bottom-24 sm:bottom-10 z-[1000] flex flex-col gap-4 animate-in slide-in-from-right-10 duration-700">
+
+        <div className="relative group">
+          <div className={`absolute inset-0 bg-blue-500 opacity-20 rounded-full ${pulse ? "scale-[1.8]" : "scale-100"} transition-all duration-1000`} />
+          <a 
+            href="tel:+910000000000"
+            className="relative bg-blue-600 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-white cursor-pointer shadow-2xl hover:scale-110 transition-all active:scale-90"
+          >
+            <FaPhoneAlt size={18} />
+          </a>
         </div>
 
-        <div className="relative">
-          <div className={`absolute inset-0 bg-green-500 opacity-30 rounded-full ${pulse ? "scale-150" : "scale-100"} transition`} />
-          <div className="bg-green-500 w-14 h-14 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg">
-            <FaWhatsapp />
-          </div>
+        <div className="relative group">
+          <div className={`absolute inset-0 bg-green-500 opacity-20 rounded-full ${pulse ? "scale-[1.8]" : "scale-100"} transition-all duration-1000`} />
+          <a 
+            href="https://wa.me/910000000000"
+            target="_blank"
+            rel="noreferrer"
+            className="relative bg-green-500 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-white cursor-pointer shadow-2xl hover:scale-110 transition-all active:scale-90"
+          >
+            <FaWhatsapp size={22} />
+          </a>
         </div>
 
       </div>

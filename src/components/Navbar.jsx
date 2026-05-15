@@ -323,7 +323,7 @@ const Navbar = ({
               className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-full shadow-sm text-xs text-gray-700"
             >
               <FaMapMarkerAlt className="text-[#14532D]" />
-              <span className="max-w-[60px] truncate">{city || navbar.defaultCity}</span>
+              <span className="max-w-[80px] sm:max-w-[120px] truncate">{city || navbar.defaultCity}</span>
             </div>
             
             <button 
