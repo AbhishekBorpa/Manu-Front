@@ -25,7 +25,7 @@ const AppBanner = () => {
 
           const res =
             await fetch(
-              import.meta.env.VITE_API_URL + "/app-banner"
+               (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/app-banner"
             );
 
           const resData =

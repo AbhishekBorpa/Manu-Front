@@ -35,7 +35,7 @@ const LocationModal = ({
 
           const res =
             await fetch(
-              import.meta.env.VITE_API_URL + "/location-cities"
+               (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/location-cities"
             );
 
           const data =

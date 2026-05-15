@@ -30,8 +30,8 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
     
     try {
       const url = isLogin 
-        ? import.meta.env.VITE_API_URL + '/auth/login' 
-        : import.meta.env.VITE_API_URL + '/auth/register';
+        ?  (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + '/auth/login' 
+        :  (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + '/auth/register';
 
       const response = await fetch(url, {
         method: 'POST',

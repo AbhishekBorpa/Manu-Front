@@ -26,7 +26,7 @@ const Testimonials = () => {
 
           const res =
             await fetch(
-              import.meta.env.VITE_API_URL + "/testimonials"
+               (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/testimonials"
             );
 
           const data =

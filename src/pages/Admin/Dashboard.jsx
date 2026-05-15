@@ -67,7 +67,7 @@ const Dashboard = () => {
     if (window.confirm(`Are you sure you want to mark this seller as ${status}?`)) {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/partner-profiles/${id}/verify`, {
+        const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/admin/partner-profiles/${id}/verify`, {
           method: "PUT",
           headers: { 
             "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const Dashboard = () => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/${endpoint}/${id}`, {
+        const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/${endpoint}/${id}`, {
           method: "DELETE",
           headers: { "Authorization": `Bearer ${token}` }
         });
@@ -142,52 +142,52 @@ const Dashboard = () => {
         }
 
         // Stats
-        const statsRes = await fetch(import.meta.env.VITE_API_URL + "/admin/stats", { headers });
+        const statsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/stats", { headers });
         const statsData = await statsRes.json();
         if (statsData.success) setRealStats(statsData.stats);
 
         // Users
-        const usersRes = await fetch(import.meta.env.VITE_API_URL + "/admin/users", { headers });
+        const usersRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/users", { headers });
         const usersData = await usersRes.json();
         if (usersData.success) setUsers(usersData.users);
 
         // Services
-        const servicesRes = await fetch(import.meta.env.VITE_API_URL + "/admin/services", { headers });
+        const servicesRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/services", { headers });
         const servicesData = await servicesRes.json();
         if (servicesData.success) setServices(servicesData.services);
 
         // Orders
-        const ordersRes = await fetch(import.meta.env.VITE_API_URL + "/admin/orders", { headers });
+        const ordersRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/orders", { headers });
         const ordersData = await ordersRes.json();
         if (ordersData.success) setOrders(ordersData.orders);
 
         // Testimonials
-        const testimonialsRes = await fetch(import.meta.env.VITE_API_URL + "/admin/testimonials", { headers });
+        const testimonialsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/testimonials", { headers });
         const testimonialsData = await testimonialsRes.json();
         if (testimonialsData.success) setTestimonials(testimonialsData.testimonials);
 
         // Subscribers
-        const subsRes = await fetch(import.meta.env.VITE_API_URL + "/admin/subscribers", { headers });
+        const subsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/subscribers", { headers });
         const subsData = await subsRes.json();
         if (subsData.success) setSubscribers(subsData.subscribers);
 
         // Leads
-        const leadsRes = await fetch(import.meta.env.VITE_API_URL + "/leads", { headers });
+        const leadsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/leads", { headers });
         const leadsData = await leadsRes.json();
         if (leadsData.success) setLeads(leadsData.leads);
 
         // Products
-        const productsRes = await fetch(import.meta.env.VITE_API_URL + "/products");
+        const productsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/products");
         const productsData = await productsRes.json();
         if (productsData.success) setProducts(productsData.products);
 
         // Categories
-        const catRes = await fetch(import.meta.env.VITE_API_URL + "/categories");
+        const catRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/categories");
         const catData = await catRes.json();
         if (catData.success) setCategories(catData.categories);
 
         // Partner Profiles (Sellers Verifications)
-        const partnersRes = await fetch(import.meta.env.VITE_API_URL + "/admin/partner-profiles", { headers });
+        const partnersRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/partner-profiles", { headers });
         const partnersData = await partnersRes.json();
         if (partnersData.success) setPartnerProfiles(partnersData.profiles);
 
@@ -1001,7 +1001,7 @@ const Dashboard = () => {
                         try {
                           const token = localStorage.getItem("token");
                           if (!adminProfile.id) return alert("No User ID found.");
-                          const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/users/${adminProfile.id}`, {
+                          const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/admin/users/${adminProfile.id}`, {
                             method: "PUT",
                             headers: {
                               "Content-Type": "application/json",
@@ -1079,7 +1079,7 @@ const Dashboard = () => {
                     fetchOptions.body = JSON.stringify(formData);
                   }
 
-                  const res = await fetch(`${import.meta.env.VITE_API_URL}/${endpoint}`, fetchOptions);
+                  const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/${endpoint}`, fetchOptions);
 
                   const data = await res.json();
                   if (data.success) {
@@ -1227,7 +1227,7 @@ const Dashboard = () => {
                     fetchOptions.body = JSON.stringify(formData);
                   }
 
-                  const res = await fetch(`${import.meta.env.VITE_API_URL}/${endpoint}/${editingItem._id}`, fetchOptions);
+                  const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/${endpoint}/${editingItem._id}`, fetchOptions);
 
                   const data = await res.json();
                   if (data.success) {

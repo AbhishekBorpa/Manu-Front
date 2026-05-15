@@ -70,7 +70,7 @@ const Navbar = ({
 
           const res =
             await fetch(
-              import.meta.env.VITE_API_URL + "/navbar"
+               (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/navbar"
             );
 
           const data =

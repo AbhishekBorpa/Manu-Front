@@ -54,8 +54,8 @@ const SignInModal = ({ onClose }) => {
 
         const url =
           isLogin
-            ? import.meta.env.VITE_API_URL + "/auth/login"
-            : import.meta.env.VITE_API_URL + "/auth/register";
+            ?  (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/auth/login"
+            :  (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/auth/register";
 
 
 

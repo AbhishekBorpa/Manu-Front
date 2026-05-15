@@ -36,7 +36,7 @@ const Footer = () => {
 
           const res =
             await fetch(
-              import.meta.env.VITE_API_URL + "/footer"
+               (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/footer"
             );
 
           const data =

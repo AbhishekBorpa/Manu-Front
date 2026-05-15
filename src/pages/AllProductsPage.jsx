@@ -27,7 +27,7 @@ const AllProductsPage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(import.meta.env.VITE_API_URL + "/categories");
+        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/categories");
         const data = await res.json();
         if (data.success) {
           const catNames = data.categories.map(c => c.name);
@@ -44,7 +44,7 @@ const AllProductsPage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch(import.meta.env.VITE_API_URL + "/products");
+        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/products");
         const data = await res.json();
         
         if (data.success) {
