@@ -7,7 +7,8 @@ import {
   FaHourglassHalf, 
   FaTimesCircle,
   FaFileAlt,
-  FaIdCard
+  FaIdCard,
+  FaArrowRight
 } from 'react-icons/fa';
 
 const KYCVerification = () => {
