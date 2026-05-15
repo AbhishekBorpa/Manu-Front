@@ -234,7 +234,6 @@ const FeaturedProducts = () => {
 
       </div>
 
-      </div>
 
       <LeadModal 
         isOpen={isModalOpen} 
