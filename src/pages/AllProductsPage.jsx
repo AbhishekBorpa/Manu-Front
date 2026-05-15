@@ -11,6 +11,8 @@ import {
   FaCheckCircle,
   FaTimes
 } from "react-icons/fa";
+import Categories from "../components/Categories";
+
 
 const AllProductsPage = () => {
   const navigate = useNavigate();
@@ -104,7 +106,11 @@ const AllProductsPage = () => {
         </div>
       </div>
 
+      {/* 🔥 CATEGORIES SECTION */}
+      <Categories />
+
       {/* 🔥 FILTER & SEARCH STRIP */}
+
       <div className="sticky top-[80px] z-[100] bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
           
