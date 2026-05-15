@@ -14,6 +14,8 @@ import Footer from "./components/Footer";
 
 import Dashboard from "./pages/Admin/Dashboard";
 import Profile from "./pages/Profile";
+import MyQueries from "./pages/MyQueries";
+
 
 // 🔥 PARTNER
 import PartnerLayout from "./pages/Partner/PartnerLayout";
@@ -96,6 +98,8 @@ const App = () => {
             />
 
             <Route path="/profile" element={<Profile />} />
+            <Route path="/my-queries" element={<MyQueries />} />
+
 
             {/* ADMIN */}
             <Route

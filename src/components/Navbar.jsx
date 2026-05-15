@@ -359,6 +359,16 @@ const Navbar = ({
                   )}
 
                   <button
+                    onClick={() => navigate('/my-queries')}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-all font-medium"
+                  >
+                    <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
+                      <FaSearch className="text-xs" />
+                    </div>
+                    My Queries
+                  </button>
+
+                  <button
                     onClick={() => navigate('/profile')}
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-all font-medium"
                   >
@@ -367,6 +377,7 @@ const Navbar = ({
                     </div>
                     My Profile
                   </button>
+
 
                   <div className="border-t border-gray-50 mt-1 pt-1">
                     <button

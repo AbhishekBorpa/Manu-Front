@@ -1,5 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import LeadModal from "../components/LeadModal";
+
 
 /* ✅ SAME DATA AS AllProductsPage */
 import cupImg from "../assets/papercup-product.jpg";
@@ -28,6 +31,7 @@ const allProductsData = [
 const ProductDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const product = state;
 
   if (!product) {
@@ -73,11 +77,22 @@ const ProductDetails = () => {
             ₹ {product.price.toLocaleString()}
           </p>
 
-          <button className="mt-6 w-full bg-[#14532D] hover:bg-[#166534] text-white py-3 rounded-lg">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="mt-6 w-full bg-[#14532D] hover:bg-[#166534] text-white py-3 rounded-lg"
+          >
             Contact Supplier
           </button>
         </div>
       </div>
+
+      <LeadModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        product={product}
+        partnerId={product.partnerId}
+      />
+
 
       {/* RELATED PRODUCTS */}
       <div className="max-w-6xl mx-auto mt-12">
