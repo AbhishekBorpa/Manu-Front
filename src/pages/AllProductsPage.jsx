@@ -25,6 +25,9 @@ const AllProductsPage = () => {
   const [categories, setCategories] = useState(["All Categories"]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -294,9 +297,17 @@ const AllProductsPage = () => {
                       </div>
                     </div>
 
-                    <button className="mt-6 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm shadow-xl shadow-slate-900/10 hover:bg-[#14532D] hover:shadow-green-900/20 transition-all active:scale-95">
-                      Check Live Quotation
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsModalOpen(true);
+                        setSelectedProduct(item);
+                      }}
+                      className="mt-6 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm shadow-xl shadow-slate-900/10 hover:bg-[#14532D] hover:shadow-green-900/20 transition-all active:scale-95"
+                    >
+                      Contact Supplier
                     </button>
+
                   </div>
                 </div>
               ))}
@@ -321,10 +332,17 @@ const AllProductsPage = () => {
             </div>
           )}
         </main>
-
       </div>
+
+      <LeadModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        product={selectedProduct}
+        partnerId={selectedProduct?.partnerId}
+      />
     </div>
   );
 };
+
 
 export default AllProductsPage;

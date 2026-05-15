@@ -13,6 +13,8 @@ import {
   FaIndustry,
   FaTools,
 } from "react-icons/fa";
+import LeadModal from "./LeadModal";
+
 
 
 
@@ -37,6 +39,10 @@ const FeaturedProducts = () => {
 
   const [loading, setLoading] =
     useState(true);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
 
 
 
@@ -191,7 +197,18 @@ const FeaturedProducts = () => {
                 {/* 🔥 HOVER LINE */}
                 <div className="mt-5 w-12 group-hover:w-24 h-[5px] bg-[#14532D] rounded-full transition-all duration-300"></div>
 
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsModalOpen(true);
+                    setSelectedProduct(item);
+                  }}
+                  className="mt-6 w-full py-3 bg-[#14532D] text-white rounded-xl font-bold text-sm shadow-md hover:bg-slate-900 transition-all active:scale-95"
+                >
+                  Contact Supplier
+                </button>
               </div>
+
 
             </div>
           )
@@ -217,8 +234,17 @@ const FeaturedProducts = () => {
 
       </div>
 
+      </div>
+
+      <LeadModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        product={selectedProduct}
+        partnerId={selectedProduct?.partnerId}
+      />
     </section>
   );
 };
+
 
 export default FeaturedProducts;
