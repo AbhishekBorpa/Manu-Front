@@ -64,7 +64,7 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-3 md:p-4">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -72,34 +72,34 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
       ></div>
 
       {/* Modal Content */}
-      <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-in fade-in zoom-in duration-300">
+      <div className="relative w-full max-w-4xl bg-white rounded-2xl md:rounded-[32px] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-slate-100 animate-in fade-in zoom-in duration-300 max-h-[95vh] md:max-h-none">
         
         {/* Close Button */}
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center bg-white/20 hover:bg-white/40 text-white md:text-slate-400 md:hover:text-slate-600 rounded-full transition-colors"
+          className="absolute top-3 right-3 md:top-4 md:right-4 z-50 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-black/20 md:bg-white/20 hover:bg-black/40 md:hover:bg-white/40 text-white md:text-slate-400 md:hover:text-slate-600 rounded-full transition-colors"
         >
-          <FaTimes className="text-xl" />
+          <FaTimes className="text-sm md:text-xl" />
         </button>
 
         {/* Left Side: Information */}
-        <div className="md:w-1/2 bg-[#14532D] p-8 md:p-12 text-white flex flex-col justify-center relative overflow-hidden">
+        <div className="md:w-1/2 bg-[#14532D] p-6 md:p-12 text-white flex flex-col justify-center relative overflow-hidden shrink-0">
           {/* Decorative Circles */}
-          <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-48 h-48 bg-white/10 rounded-full translate-x-1/2 translate-y-1/2"></div>
+          <div className="absolute top-0 left-0 w-24 md:w-32 h-24 md:h-32 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-32 md:w-48 h-32 md:h-48 bg-white/10 rounded-full translate-x-1/2 translate-y-1/2"></div>
 
           <div className="relative z-10">
-            <div className="inline-flex items-center justify-center w-14 h-14 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm">
+            <div className="hidden md:inline-flex items-center justify-center w-14 h-14 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm">
               <FaHandshake className="text-2xl text-green-300" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
+            <h2 className="text-xl md:text-3xl font-black mb-2 md:mb-4 leading-tight">
               {isLogin ? 'Grow Your Business with' : 'Become an Elite'} <span className="text-green-300">Ultra Clap</span> Partner
             </h2>
-            <p className="text-green-50/70 text-sm md:text-base mb-6">
+            <p className="text-green-50/70 text-xs md:text-base mb-4 md:mb-6 max-w-sm">
               Access exclusive wholesale pricing and manage your industrial partnerships.
             </p>
             
-            <ul className="space-y-3 mb-4 text-sm">
+            <ul className="hidden md:block space-y-3 mb-4 text-sm">
               {[
                 'Exclusive Partner Discounts',
                 'Bulk Ordering System',
@@ -117,17 +117,17 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
         </div>
 
         {/* Right Side: Form */}
-        <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white max-h-[90vh] overflow-y-auto">
-          <div className="mb-8">
-            <h3 className="text-xl font-bold text-slate-800 mb-1">Partner {isLogin ? 'Login' : 'Sign Up'}</h3>
-            <p className="text-slate-500 text-sm">{isLogin ? 'Please enter your credentials.' : 'Join our network of manufacturers.'}</p>
+        <div className="md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white overflow-y-auto">
+          <div className="mb-6 md:mb-8 text-center md:text-left">
+            <h3 className="text-lg md:text-xl font-black text-slate-800 mb-1">Partner {isLogin ? 'Login' : 'Sign Up'}</h3>
+            <p className="text-slate-500 text-[10px] md:text-sm font-medium uppercase tracking-widest">{isLogin ? 'Please enter your credentials.' : 'Join our network of manufacturers.'}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
-              <>
+              <div className="grid grid-cols-1 gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider ml-1">Company / Full Name</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Company / Full Name</label>
                   <div className="relative group">
                     <FaUser className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 transition-colors group-focus-within:text-[#14532D]" />
                     <input
@@ -137,13 +137,13 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
                       placeholder="Manufacturing Ltd."
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
+                      className="w-full pl-11 pr-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider ml-1">Phone Number</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
                   <div className="relative group">
                     <FaPhone className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 transition-colors group-focus-within:text-[#14532D]" />
                     <input
@@ -153,15 +153,15 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
                       placeholder="+91 XXXXX XXXXX"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
+                      className="w-full pl-11 pr-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
                     />
                   </div>
                 </div>
-              </>
+              </div>
             )}
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider ml-1">Email Address</label>
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
               <div className="relative group">
                 <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 transition-colors group-focus-within:text-[#14532D]" />
                 <input
@@ -171,15 +171,15 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
                   placeholder="partner@company.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
+                  className="w-full pl-11 pr-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <div className="flex justify-between items-center px-1">
-                <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Password</label>
-                {isLogin && <a href="#" className="text-[10px] font-bold text-[#14532D] hover:underline uppercase tracking-tighter">Forgot?</a>}
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                {isLogin && <a href="#" className="text-[10px] font-black text-[#14532D] hover:underline uppercase tracking-widest">Forgot?</a>}
               </div>
               <div className="relative group">
                 <FaLock className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 transition-colors group-focus-within:text-[#14532D]" />
@@ -190,7 +190,7 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
+                  className="w-full pl-11 pr-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all text-sm text-slate-900"
                 />
               </div>
             </div>
@@ -198,25 +198,25 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#14532D] hover:bg-[#166534] text-white py-4 rounded-2xl font-bold shadow-lg shadow-green-900/10 flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+              className="w-full bg-[#14532D] hover:bg-[#166534] text-white py-3.5 md:py-4 rounded-xl md:rounded-2xl font-bold shadow-lg shadow-green-900/10 flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed mt-2 text-xs md:text-sm"
             >
               {loading ? (
-                <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
                 <>
                   {isLogin ? 'Access Partner Portal' : 'Create Partner Account'}
-                  <FaArrowRight className="text-xs" />
+                  <FaArrowRight className="text-[10px] md:text-xs" />
                 </>
               )}
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-slate-100 text-center">
-            <p className="text-slate-500 text-xs">
+            <p className="text-slate-500 text-[10px] md:text-xs font-medium">
               {isLogin ? "New to the platform?" : "Already have a partner account?"}{' '}
               <button 
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-[#14532D] font-bold hover:underline"
+                className="text-[#14532D] font-bold hover:underline ml-1"
               >
                 {isLogin ? 'Sign Up' : 'Login'}
               </button>
