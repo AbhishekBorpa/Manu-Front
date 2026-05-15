@@ -225,14 +225,11 @@ const BannerSlider = () => {
 
                   {/* 🔥 IMAGE */}
                   <img
-                    src={
-                      imageMap[
-                        slide.image
-                      ]
-                    }
+                    src={imageMap[slide.image] || slide.image}
                     className="w-full h-[300px] object-cover"
                     alt={slide.title}
                   />
+
 
                 </div>
               )
