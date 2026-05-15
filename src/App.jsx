@@ -87,7 +87,8 @@ const App = () => {
               }
             />
 
-            <Route path="/products" element={<AllProductsPage />} />
+            <Route path="/all-products" element={<AllProductsPage />} />
+
 
             <Route
               path="/product-details"
