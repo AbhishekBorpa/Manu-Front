@@ -9,7 +9,8 @@ import {
   FaChartBar, 
   FaHandshake,
   FaBars,
-  FaTimes
+  FaTimes,
+  FaShieldAlt
 } from 'react-icons/fa';
 
 const PartnerLayout = () => {
@@ -22,6 +23,7 @@ const PartnerLayout = () => {
     { name: 'My Leads', path: '/partner/leads', icon: FaUsers },
     { name: 'Inventory', path: '/partner/inventory', icon: FaBox },
     { name: 'Analytics', path: '/partner/analytics', icon: FaChartBar },
+    { name: 'KYC Verification', path: '/partner/kyc', icon: FaShieldAlt },
   ];
 
   const handleLogout = () => {

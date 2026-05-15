@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import {
   LayoutDashboard,
   Users,
@@ -24,6 +23,8 @@ import {
   ShieldCheck,
   CheckCircle,
   XCircle,
+  ExternalLink,
+  FileText
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -868,33 +869,49 @@ const Dashboard = () => {
             <div className="flex flex-col gap-3 flex-1 overflow-hidden">
               <div className="bg-[#081120] border border-white/10 rounded-xl p-4 flex items-start justify-between flex-shrink-0">
                 <div>
-                  <h2 className="text-[24px] font-bold leading-none">Seller Verifications</h2>
-                  <p className="text-gray-400 mt-2 text-[11px]">Review and approve partner registration requests.</p>
+                  <h2 className="text-[24px] font-bold leading-none">KYC & Verifications</h2>
+                  <p className="text-gray-400 mt-2 text-[11px]">Review legal documents and approve partner requests.</p>
                 </div>
               </div>
 
               <div className="bg-[#081120] border border-white/10 rounded-xl overflow-hidden flex flex-col flex-1">
-                <div className="grid grid-cols-5 px-4 h-[45px] items-center text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-white/10">
-                  <span>Company</span>
-                  <span>Seller Name</span>
-                  <span>Email</span>
+                <div className="grid grid-cols-6 px-4 h-[45px] items-center text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-white/10">
+                  <span>Company / ID</span>
+                  <span>GST Number</span>
+                  <span>Documents</span>
                   <span>Status</span>
+                  <span>Submitted</span>
                   <span className="text-right">Actions</span>
                 </div>
 
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto custom-scrollbar">
                   {partnerProfiles.length > 0 ? partnerProfiles.map((profile) => (
-                    <div key={profile._id} className="grid grid-cols-5 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-green-500/10 flex items-center justify-center text-green-500 font-bold">
-                          {profile.companyName.charAt(0)}
-                        </div>
-                        <span className="font-medium text-white">{profile.companyName}</span>
+                    <div key={profile._id} className="grid grid-cols-6 items-center px-4 py-4 border-t border-white/5 text-[10px]">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-bold text-white truncate pr-2">{profile.companyName}</span>
+                        <span className="text-gray-500 font-mono">#{profile._id.slice(-6).toUpperCase()}</span>
                       </div>
-                      <span className="text-gray-300">{profile.userId?.name || 'N/A'}</span>
-                      <span className="text-gray-400 truncate pr-4">{profile.userId?.email || 'N/A'}</span>
+
+                      <div className="flex flex-col gap-1">
+                        <span className="text-gray-300 font-bold">{profile.gstNumber || 'N/A'}</span>
+                        <span className="text-gray-500 text-[8px] truncate pr-2">Reg: {profile.businessRegistrationNumber || 'N/A'}</span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {profile.gstDoc ? (
+                          <a href={profile.gstDoc} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 p-1.5 bg-blue-500/10 text-blue-400 rounded-md hover:bg-blue-500 hover:text-white transition-all">
+                             <FileText size={12} /> GST
+                          </a>
+                        ) : <span className="text-gray-600">-</span>}
+                        {profile.businessRegDoc ? (
+                          <a href={profile.businessRegDoc} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 p-1.5 bg-purple-500/10 text-purple-400 rounded-md hover:bg-purple-500 hover:text-white transition-all">
+                             <FileText size={12} /> Reg
+                          </a>
+                        ) : <span className="text-gray-600">-</span>}
+                      </div>
+
                       <span>
-                        <span className={`px-3 py-1 rounded-md text-[9px] ${
+                        <span className={`px-3 py-1 rounded-md text-[9px] font-bold ${
                           profile.verificationStatus === "Verified" ? "bg-green-500/10 text-green-400" : 
                           profile.verificationStatus === "Rejected" ? "bg-red-500/10 text-red-400" : 
                           "bg-orange-500/10 text-orange-400"
@@ -902,27 +919,29 @@ const Dashboard = () => {
                           {profile.verificationStatus}
                         </span>
                       </span>
-                      <div className="flex items-center justify-end gap-3">
-                        {profile.verificationStatus === "Pending" && (
+
+                      <span className="text-gray-400">
+                        {profile.kycSubmittedAt ? new Date(profile.kycSubmittedAt).toLocaleDateString() : 'N/A'}
+                      </span>
+
+                      <div className="flex items-center justify-end gap-2">
+                        {profile.verificationStatus === "Pending" ? (
                           <>
                             <button 
                               onClick={() => handleVerification(profile._id, 'Verified')}
-                              className="p-2 rounded-lg bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white transition-all duration-300"
-                              title="Approve"
+                              className="px-3 py-1.5 rounded-lg bg-green-600 text-white hover:bg-green-500 transition-all text-[9px] font-bold flex items-center gap-1"
                             >
-                              <CheckCircle size={14} />
+                              <CheckCircle size={12} /> Approve
                             </button>
                             <button 
                               onClick={() => handleVerification(profile._id, 'Rejected')}
-                              className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300"
-                              title="Reject"
+                              className="px-3 py-1.5 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-all text-[9px] font-bold flex items-center gap-1"
                             >
-                              <XCircle size={14} />
+                              <XCircle size={12} /> Reject
                             </button>
                           </>
-                        )}
-                        {profile.verificationStatus !== "Pending" && (
-                           <span className="text-gray-500 italic">Actioned</span>
+                        ) : (
+                          <span className="text-gray-600 italic">No actions</span>
                         )}
                       </div>
                     </div>
@@ -1098,246 +1117,37 @@ const Dashboard = () => {
             >
               {(activeMenu === "Products" || activeMenu === "Services") && (
                 <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Title</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    placeholder="Enter title"
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-white focus:border-green-500 outline-none transition-all"
-                  />
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Title</label>
+                  <input type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
                 </div>
               )}
-
-              {(activeMenu === "Users" || activeMenu === "Categories") && (
-                <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Name</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    placeholder="Enter name"
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-white focus:border-green-500 outline-none transition-all"
-                  />
-                </div>
-              )}
-
               {activeMenu === "Users" && (
-                <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Email</label>
-                  <input 
-                    type="email" 
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    placeholder="Enter email"
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-white focus:border-green-500 outline-none transition-all"
-                  />
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Full Name</label>
+                    <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Email</label>
+                    <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                  </div>
                 </div>
               )}
-
-              {(activeMenu === "Products" || activeMenu === "Services") && (
-                <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Category</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    placeholder="Enter category"
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-white focus:border-green-500 outline-none transition-all"
-                  />
-                </div>
-              )}
-
+              {/* Image Upload */}
               {["Products", "Categories", "Services"].includes(activeMenu) && (
                 <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Image</label>
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => setImageFile(e.target.files[0])}
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[11px] file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-500 transition-all outline-none"
-                  />
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Image</label>
+                  <input type="file" onChange={(e) => setImageFile(e.target.files[0])} className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" />
                 </div>
               )}
-
-              <div className="pt-4">
-                <button 
-                  type="submit"
-                  className="w-full bg-green-600 hover:bg-green-500 text-white font-bold h-[45px] rounded-xl transition-all duration-300 shadow-lg shadow-green-600/20"
-                >
-                  Confirm & Add
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-      {/* EDIT MODAL */}
-      {isEditModalOpen && editingItem && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-[#081120] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
-            <div className="p-6 border-b border-white/10 flex items-center justify-between">
-              <h2 className="text-[18px] font-bold text-white">Edit {activeMenu.slice(0, -1)}</h2>
-              <button 
-                onClick={() => setIsEditModalOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <X size={20} />
+              <button type="submit" className="w-full h-[45px] mt-4 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-sm transition-all shadow-lg shadow-green-600/20">
+                Save {activeMenu.slice(0, -1)}
               </button>
-            </div>
-
-            <form 
-              onSubmit={async (e) => {
-                e.preventDefault();
-                try {
-                  const token = localStorage.getItem("token");
-                  const endpoint = activeMenu === "Products" ? "products" : 
-                                  activeMenu === "Categories" ? "categories" :
-                                  activeMenu === "Services" ? "manufacturing" :
-                                  activeMenu === "Users" ? "admin/users" : 
-                                  activeMenu === "Orders" ? "orders" :
-                                  activeMenu === "Testimonials" ? "testimonials" :
-                                  activeMenu === "Subscribers" ? "subscribers" :
-                                  activeMenu === "Leads" ? "leads" : "";
-                  
-                  if (!endpoint) return;
-
-                  let fetchOptions = {
-                    method: "PUT",
-                    headers: {
-                      "Authorization": `Bearer ${token}`
-                    }
-                  };
-
-                  if (["Products", "Categories", "Services"].includes(activeMenu)) {
-                    const formDataObj = new FormData();
-                    Object.keys(formData).forEach(key => {
-                      if (formData[key]) formDataObj.append(key, formData[key]);
-                    });
-                    if (imageFile) {
-                      formDataObj.append("image", imageFile);
-                    }
-                    fetchOptions.body = formDataObj;
-                  } else {
-                    fetchOptions.headers["Content-Type"] = "application/json";
-                    fetchOptions.body = JSON.stringify(formData);
-                  }
-
-                  const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/${endpoint}/${editingItem._id}`, fetchOptions);
-
-                  const data = await res.json();
-                  if (data.success) {
-                    setIsEditModalOpen(false);
-                    setFormData({ title: "", name: "", email: "", category: "", price: "", description: "", status: "Active", role: "user" });
-                    setImageFile(null);
-                    setEditingItem(null);
-                    window.location.reload();
-                  } else {
-                    alert(data.msg || "Error updating item");
-                  }
-                } catch (err) {
-                  console.error("Edit Error:", err);
-                }
-              }}
-              className="p-6 space-y-4"
-            >
-              {(activeMenu === "Products" || activeMenu === "Services") && (
-                <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Title</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    placeholder="Enter title"
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-white focus:border-green-500 outline-none transition-all"
-                  />
-                </div>
-              )}
-
-              {(activeMenu === "Users" || activeMenu === "Categories" || activeMenu === "Testimonials" || activeMenu === "Leads") && (
-                <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Name</label>
-                  <input 
-                    type="text" 
-                    required={activeMenu !== "Testimonials"}
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    placeholder="Enter name"
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-white focus:border-green-500 outline-none transition-all"
-                  />
-                </div>
-              )}
-
-              {(activeMenu === "Users" || activeMenu === "Leads" || activeMenu === "Subscribers") && (
-                <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Email</label>
-                  <input 
-                    type="email" 
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    placeholder="Enter email"
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-white focus:border-green-500 outline-none transition-all"
-                  />
-                </div>
-              )}
-
-              {(activeMenu === "Products" || activeMenu === "Services") && (
-                <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Category</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    placeholder="Enter category"
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-white focus:border-green-500 outline-none transition-all"
-                  />
-                </div>
-              )}
-
-              {["Orders", "Leads", "Users"].includes(activeMenu) && (
-                <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Status/Role</label>
-                  <input 
-                    type="text" 
-                    value={activeMenu === "Users" ? formData.role : formData.status}
-                    onChange={(e) => activeMenu === "Users" ? setFormData({...formData, role: e.target.value}) : setFormData({...formData, status: e.target.value})}
-                    placeholder="Enter status"
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-white focus:border-green-500 outline-none transition-all"
-                  />
-                </div>
-              )}
-
-              {["Products", "Categories", "Services"].includes(activeMenu) && (
-                <div className="space-y-2">
-                  <label className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Image (Leave empty to keep current)</label>
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => setImageFile(e.target.files[0])}
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-lg h-[42px] px-4 text-[13px] text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[11px] file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-500 transition-all outline-none"
-                  />
-                </div>
-              )}
-
-              <div className="pt-4">
-                <button 
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold h-[45px] rounded-xl transition-all duration-300 shadow-lg shadow-blue-600/20"
-                >
-                  Save Changes
-                </button>
-              </div>
             </form>
           </div>
         </div>
       )}
+
     </div>
   );
 };

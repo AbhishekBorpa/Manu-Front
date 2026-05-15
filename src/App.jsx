@@ -23,6 +23,7 @@ import PartnerDashboard from "./pages/Partner/PartnerDashboard";
 import MyLeads from "./pages/Partner/MyLeads";
 import Inventory from "./pages/Partner/Inventory";
 import Analytics from "./pages/Partner/Analytics";
+import KYCVerification from "./pages/Partner/KYCVerification";
 
 const App = () => {
   const location = useLocation();
@@ -113,6 +114,7 @@ const App = () => {
               <Route path="leads" element={<MyLeads />} />
               <Route path="inventory" element={<Inventory />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="kyc" element={<KYCVerification />} />
             </Route>
           </Routes>
         </div>
