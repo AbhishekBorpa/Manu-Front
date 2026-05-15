@@ -99,10 +99,10 @@ const Footer = () => {
 
 
 
-      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 text-center md:text-left">
 
         {/* 🔥 LEFT */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 flex flex-col items-center md:items-start">
 
           <h2 className="text-3xl font-bold mb-5">
 
@@ -250,7 +250,7 @@ const Footer = () => {
 
 
         {/* 🔥 CONTACT */}
-        <div>
+        <div className="flex flex-col items-center md:items-start">
 
           <h3 className="font-bold text-xl mb-5 text-gray-900">
 
@@ -262,7 +262,7 @@ const Footer = () => {
 
           <div className="space-y-4 text-gray-600 text-sm">
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center md:justify-start gap-3">
 
               <FaClock className="text-[#14532D]" />
 
@@ -274,7 +274,7 @@ const Footer = () => {
 
 
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center md:justify-start gap-3">
 
               <FaPhoneAlt className="text-[#14532D]" />
 
@@ -286,7 +286,7 @@ const Footer = () => {
 
 
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center md:justify-start gap-3">
 
               <FaEnvelope className="text-[#14532D]" />
 

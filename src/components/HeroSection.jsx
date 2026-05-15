@@ -104,7 +104,7 @@ const Hero = () => {
   ];
 
   return (
-    <section className="relative h-[90vh] w-full overflow-hidden">
+    <section className="relative h-[80vh] md:h-[90vh] w-full overflow-hidden">
 
       {/* 🔥 SLIDES */}
       {slides.map((slide, i) => (
@@ -120,42 +120,42 @@ const Hero = () => {
       {/* 🔥 OVERLAY */}
       <div className="absolute inset-0 bg-black/60"></div>
 
-      {/* 🔥 ARROWS */}
+      {/* 🔥 ARROWS (Hidden on very small screens) */}
       <button
         onClick={prevSlide}
-        className="absolute left-6 top-1/2 -translate-y-1/2 z-50 bg-white/20 p-3 rounded-full text-white"
+        className="hidden sm:flex absolute left-6 top-1/2 -translate-y-1/2 z-50 bg-white/20 p-3 rounded-full text-white hover:bg-white/40 transition-colors"
       >
         <FaChevronLeft />
       </button>
 
       <button
         onClick={nextSlide}
-        className="absolute right-6 top-1/2 -translate-y-1/2 z-50 bg-white/20 p-3 rounded-full text-white"
+        className="hidden sm:flex absolute right-6 top-1/2 -translate-y-1/2 z-50 bg-white/20 p-3 rounded-full text-white hover:bg-white/40 transition-colors"
       >
         <FaChevronRight />
       </button>
 
-      {/* 🔥 LEFT FLOAT ICONS */}
-      <div className="fixed left-5 bottom-10 z-50 flex flex-col gap-4">
+      {/* 🔥 LEFT FLOAT ICONS - Hidden on small mobile */}
+      <div className="hidden md:flex fixed left-5 bottom-10 z-50 flex flex-col gap-4">
 
         <div className="relative">
           <div className={`absolute inset-0 bg-blue-500 opacity-30 rounded-full ${pulse ? "scale-150" : "scale-100"} transition`} />
-          <div className="bg-blue-600 w-14 h-14 rounded-full flex items-center justify-center text-white">
+          <div className="bg-blue-600 w-14 h-14 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg">
             <FaPhoneAlt />
           </div>
         </div>
 
         <div className="relative">
           <div className={`absolute inset-0 bg-green-500 opacity-30 rounded-full ${pulse ? "scale-150" : "scale-100"} transition`} />
-          <div className="bg-green-500 w-14 h-14 rounded-full flex items-center justify-center text-white">
+          <div className="bg-green-500 w-14 h-14 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg">
             <FaWhatsapp />
           </div>
         </div>
 
       </div>
 
-      {/* 🔥 RIGHT ICONS */}
-      <div className="fixed right-5 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
+      {/* 🔥 RIGHT ICONS - Hidden on mobile */}
+      <div className="hidden lg:flex fixed right-5 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
 
         {socials.map((s, i) => (
           <div
@@ -170,7 +170,7 @@ const Hero = () => {
               </span>
             )}
 
-            <div className="bg-white p-3 rounded-full shadow cursor-pointer hover:scale-110 transition">
+            <div className="bg-white p-3 rounded-full shadow-lg cursor-pointer hover:scale-110 transition">
               <span className={`text-xl ${s.color}`}>{s.icon}</span>
             </div>
           </div>
@@ -181,17 +181,17 @@ const Hero = () => {
       {/* 🔥 CONTENT */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center justify-center">
 
-        <div className="max-w-3xl text-white text-center space-y-6">
+        <div className="max-w-3xl text-white text-center space-y-4 md:space-y-6">
 
           {/* STEP 1 */}
-          <p className={`text-green-400 transition-all duration-700 ${
+          <p className={`text-green-400 text-sm md:text-base font-semibold transition-all duration-700 ${
             step >= 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}>
             {slides[current].subtitle}
           </p>
 
           {/* STEP 2 */}
-          <h1 className={`text-5xl font-bold transition-all duration-700 ${
+          <h1 className={`text-3xl md:text-5xl lg:text-6xl font-bold transition-all duration-700 leading-tight ${
             step >= 2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}>
             Your Trusted Partner in <br />
@@ -199,16 +199,16 @@ const Hero = () => {
           </h1>
 
           {/* STEP 3 */}
-          <p className={`text-gray-200 transition-all duration-700 ${
+          <p className={`text-gray-200 text-xs md:text-base lg:text-lg transition-all duration-700 max-w-2xl mx-auto ${
             step >= 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}>
             {slides[current].desc}
           </p>
 
-          {/* 🔥 SEARCH */}
-          <div className="flex bg-white rounded-lg overflow-hidden shadow-lg max-w-xl mx-auto">
+          {/* 🔥 SEARCH - Responsive stack */}
+          <div className="flex flex-col sm:flex-row bg-white rounded-xl overflow-hidden shadow-2xl max-w-xl mx-auto w-full border border-gray-100">
 
-            <select className="px-4 py-3 bg-gray-100 text-black border-r">
+            <select className="px-4 py-3 bg-gray-50 text-black border-b sm:border-b-0 sm:border-r text-sm focus:outline-none">
               <option>All Categories</option>
               <option>Manufacturing</option>
               <option>Services</option>
@@ -216,50 +216,44 @@ const Hero = () => {
 
             <input
               type="text"
-              placeholder="Search..."
-              className="flex-1 px-4 py-3 text-black outline-none"
+              placeholder="Search products or services..."
+              className="flex-1 px-4 py-3 text-black outline-none text-sm"
             />
 
-            <button className="bg-[#14532D] px-6 text-white">
+            <button className="bg-[#14532D] hover:bg-[#166534] transition-colors px-8 py-3 text-white font-bold text-sm">
               Search
             </button>
 
           </div>
 
-          {/* 🔥 BADGES */}
-          <div className="flex gap-6 justify-center pt-4">
+          {/* 🔥 BADGES - Hidden or scaled on small screens */}
+          <div className="hidden sm:flex flex-wrap gap-4 md:gap-8 justify-center pt-2 md:pt-4 text-xs md:text-sm font-medium">
 
             <div className="flex items-center gap-2">
-              <FaShieldAlt className="text-green-500" />
-              Verified
+              <FaShieldAlt className="text-green-500 text-lg" />
+              <span>Verified Manufacturers</span>
             </div>
 
             <div className="flex items-center gap-2">
-              <FaBoxOpen className="text-green-500" />
-              Best Price
+              <FaBoxOpen className="text-green-500 text-lg" />
+              <span>Best Industry Prices</span>
             </div>
 
             <div className="flex items-center gap-2">
-              <FaBolt className="text-green-500" />
-              Fast Response
+              <FaBolt className="text-green-500 text-lg" />
+              <span>Fast Lead Response</span>
             </div>
 
           </div>
-          {/* 🔥 SUPPORTED BY (INSIDE HERO) */}
-<div className="flex items-center justify-center gap-4 mt-6">
 
-  {/* LEFT LINE */}
-  <div className="h-[2px] w-20 bg-orange-400"></div>
-
-  {/* TEXT */}
-  <div className="bg-[#14532D] text-white px-6 py-2 rounded-full tracking-[5px] text-xs font-semibold whitespace-nowrap">
-    SUPPORTED BY
-  </div>
-
-  {/* RIGHT LINE */}
-  <div className="h-[2px] w-20 bg-orange-400"></div>
-
-</div>
+          {/* 🔥 SUPPORTED BY */}
+          <div className="flex items-center justify-center gap-3 mt-4 md:mt-8 scale-75 md:scale-100">
+            <div className="h-[1px] w-12 md:w-20 bg-orange-400"></div>
+            <div className="bg-[#14532D] text-white px-5 py-1.5 rounded-full tracking-[3px] md:tracking-[5px] text-[10px] font-bold whitespace-nowrap">
+              SUPPORTED BY
+            </div>
+            <div className="h-[1px] w-12 md:w-20 bg-orange-400"></div>
+          </div>
 
         </div>
       </div>

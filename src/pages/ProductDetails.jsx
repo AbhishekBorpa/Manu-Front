@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaArrowLeft, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 import LeadModal from "../components/LeadModal";
 
 
@@ -35,7 +35,17 @@ const ProductDetails = () => {
   const product = state;
 
   if (!product) {
-    return <h2 className="text-center mt-10">No product data</h2>;
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">No product data found</h2>
+        <button 
+          onClick={() => navigate("/all-products")}
+          className="bg-[#14532D] text-white px-6 py-2 rounded-lg font-bold"
+        >
+          Back to Marketplace
+        </button>
+      </div>
+    );
   }
 
   /* 🔥 RELATED PRODUCTS (FINAL FIX) */
@@ -53,36 +63,72 @@ const ProductDetails = () => {
   }
 
   return (
-    <section className="bg-[#f5f7f6] min-h-screen py-10 px-6">
+    <section className="bg-[#f5f7f6] min-h-screen py-6 md:py-10 px-4 md:px-6">
+      
+      {/* Back Button */}
+      <div className="max-w-6xl mx-auto mb-6">
+        <button 
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-500 hover:text-[#14532D] font-bold text-sm transition-colors"
+        >
+          <FaArrowLeft size={12} /> Back
+        </button>
+      </div>
 
       {/* MAIN PRODUCT */}
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6 grid md:grid-cols-2 gap-8">
+      <div className="max-w-6xl mx-auto bg-white rounded-2xl md:rounded-[32px] shadow-sm overflow-hidden border border-gray-100">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          
+          <div className="relative h-[300px] md:h-[500px]">
+             <img
+              src={product.image || product.img}
+              alt={product.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-[#14532D] uppercase tracking-widest shadow-lg">
+              {product.category || 'Industrial'}
+            </div>
+          </div>
 
-        <img
-          src={product.img}
-          alt={product.title}
-          className="w-full h-[350px] object-cover rounded-lg"
-        />
+          <div className="p-6 md:p-10 flex flex-col justify-center">
+            <h2 className="text-2xl md:text-4xl font-black text-[#14532D] leading-tight mb-4">
+              {product.title}
+            </h2>
 
-        <div>
-          <h2 className="text-3xl font-bold text-[#14532D]">
-            {product.title}
-          </h2>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-1.5 text-gray-500 font-bold text-sm">
+                <FaMapMarkerAlt className="text-red-500" /> New Delhi, India
+              </div>
+              <div className="h-4 w-[1px] bg-gray-200"></div>
+              <div className="text-green-600 font-bold text-sm">In Stock</div>
+            </div>
 
-          <p className="text-gray-600 mt-2 flex items-center gap-2">
-            <FaMapMarkerAlt /> {product.location}
-          </p>
+            <p className="text-gray-600 leading-relaxed mb-8 text-sm md:text-base">
+              {product.desc || "Experience top-tier industrial performance with this advanced machinery. Engineered for precision, high output, and long-term durability in demanding manufacturing environments."}
+            </p>
 
-          <p className="text-3xl font-bold mt-4">
-            ₹ {product.price.toLocaleString()}
-          </p>
+            <div className="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Wholesale Price</p>
+              <div className="flex items-end gap-2">
+                <span className="text-3xl md:text-4xl font-black text-slate-900 leading-none">₹{product.price?.toLocaleString() || '8,40,000'}</span>
+                <span className="text-sm font-bold text-slate-400 pb-1">* Excl. GST</span>
+              </div>
+            </div>
 
-          <button 
-            onClick={() => setIsModalOpen(true)}
-            className="mt-6 w-full bg-[#14532D] hover:bg-[#166534] text-white py-3 rounded-lg"
-          >
-            Contact Supplier
-          </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button 
+                onClick={() => setIsModalOpen(true)}
+                className="flex-1 bg-[#14532D] hover:bg-[#166534] text-white py-4 rounded-xl font-bold shadow-lg shadow-green-900/10 transition-all active:scale-95 flex items-center justify-center gap-2"
+              >
+                <FaEnvelope /> Contact Supplier
+              </button>
+              <button 
+                className="flex-1 bg-white border-2 border-slate-200 text-slate-800 py-4 rounded-xl font-bold hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-2"
+              >
+                <FaPhoneAlt size={14} /> Call Now
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -95,13 +141,18 @@ const ProductDetails = () => {
 
 
       {/* RELATED PRODUCTS */}
-      <div className="max-w-6xl mx-auto mt-12">
+      <div className="max-w-6xl mx-auto mt-12 md:mt-20">
 
-        <h3 className="text-2xl font-bold text-[#14532D] mb-6">
-          Related Products
-        </h3>
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-xl md:text-2xl font-black text-slate-900">
+            Similar <span className="text-[#14532D]">Machinery</span>
+          </h3>
+          <button onClick={() => navigate("/all-products")} className="text-xs font-black text-[#14532D] hover:underline uppercase tracking-widest">
+            View All
+          </button>
+        </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {relatedProducts.map((item) => (
             <div
@@ -109,25 +160,29 @@ const ProductDetails = () => {
               onClick={() =>
                 navigate("/product-details", { state: item })
               }
-              className="bg-white rounded-xl shadow-md hover:shadow-xl transition p-3 cursor-pointer"
+              className="group bg-white rounded-2xl md:rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-3 md:p-4 border border-gray-100 cursor-pointer"
             >
-              <img
-                src={item.img}
-                className="w-full h-40 object-cover rounded-lg"
-              />
+              <div className="relative overflow-hidden rounded-xl h-40 md:h-44 mb-4">
+                <img
+                  src={item.image || item.img}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  alt={item.title}
+                />
+              </div>
 
-              <div className="mt-3">
-                <h4 className="text-[#14532D] font-semibold text-sm">
+              <div className="px-1">
+                <h4 className="text-[#14532D] font-extrabold text-sm md:text-base mb-1 group-hover:text-green-600">
                   {item.title}
                 </h4>
 
-                <p className="text-lg font-bold mt-1">
-                  ₹ {item.price.toLocaleString()}
-                </p>
-
-                <p className="text-sm text-gray-600 flex items-center gap-1">
-                  <FaMapMarkerAlt /> {item.location}
-                </p>
+                <div className="flex items-center justify-between mt-3">
+                  <p className="text-lg font-black text-slate-900 leading-none">
+                    ₹ {item.price.toLocaleString()}
+                  </p>
+                  <p className="text-[10px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
+                    <FaMapMarkerAlt className="text-red-500" /> {item.location}
+                  </p>
+                </div>
               </div>
             </div>
           ))}

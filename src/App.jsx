@@ -72,7 +72,7 @@ const App = () => {
         className={
           isSpecialRoute
             ? ""
-            : "flex flex-col min-h-screen pt-[110px]"
+            : "flex flex-col min-h-screen pt-[135px] lg:pt-[110px]"
         }
       >
         <div className="flex-grow">

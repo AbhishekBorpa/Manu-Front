@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import {
   FaEnvelope,
   FaLock,
@@ -151,61 +150,44 @@ const SignInModal = ({ onClose }) => {
 
 
   return (
-    <div className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-[9999]">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/60 flex items-center justify-center z-[9999] p-4">
 
       {/* 🔥 MODAL */}
-      <div className="bg-white w-full max-w-3xl h-[520px] rounded-2xl overflow-hidden shadow-2xl flex">
+      <div className="bg-white w-full max-w-3xl md:h-[520px] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row relative">
 
-        {/* 🔥 LEFT IMAGE */}
-        <div className="w-2/3 hidden md:flex items-center justify-center bg-gradient-to-br from-green-50 to-white p-6">
+        {/* 🔥 CLOSE BUTTON (Global for mobile) */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 text-xl z-50 md:text-gray-400"
+        >
+          ✕
+        </button>
 
+        {/* 🔥 LEFT IMAGE (Hidden on mobile) */}
+        <div className="w-1/2 hidden md:flex items-center justify-center bg-gradient-to-br from-green-50 to-white p-10">
           <img
             src={loginImg}
             alt="login"
-            className="max-h-full max-w-full object-contain"
+            className="max-h-full max-w-full object-contain drop-shadow-2xl"
           />
-
         </div>
 
 
 
-        {/* 🔥 RIGHT */}
-        <div className="w-full md:w-1/3 p-6 flex flex-col justify-center relative">
-
-          {/* 🔥 CLOSE */}
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-4 text-gray-500 text-xl"
-          >
-
-            ✕
-
-          </button>
-
-
+        {/* 🔥 RIGHT (Form Area) */}
+        <div className="w-full md:w-1/2 p-8 md:p-10 flex flex-col justify-center">
 
           {/* 🔥 LOGO */}
-          <h2 className="text-lg font-bold text-center mb-1">
-
-            <span className="text-[#14532D]">
-
-              ULTRA
-
-            </span>
-
-            CLAP
-
-          </h2>
-
-
-
-          <p className="text-center text-gray-500 mb-4 text-xs">
-
-            {isLogin
-              ? "Sign in to your account"
-              : "Create your account"}
-
-          </p>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-black tracking-tight">
+              <span className="text-[#14532D]">ULTRA</span>CLAP
+            </h2>
+            <p className="text-gray-500 text-xs mt-1 font-medium uppercase tracking-widest">
+              {isLogin
+                ? "Sign in to your account"
+                : "Create your account"}
+            </p>
+          </div>
 
 
 
@@ -214,116 +196,85 @@ const SignInModal = ({ onClose }) => {
             onSubmit={
               handleSubmit
             }
-            className="space-y-3"
+            className="space-y-4"
           >
 
-            {/* 🔥 NAME */}
+            {/* 🔥 NAME & PHONE (Registration Only) */}
             {!isLogin && (
-              <>
-
+              <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
                 <div className="relative">
-
-                  <FaUser className="absolute top-3 left-3 text-gray-400 text-sm" />
-
+                  <FaUser className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
                   <input
                     type="text"
                     name="name"
+                    required
                     placeholder="Full Name"
-                    value={
-                      formData.name
-                    }
-                    onChange={
-                      handleChange
-                    }
-                    className="w-full pl-9 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-[#14532D]"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
                   />
-
                 </div>
 
-
-
-                {/* 🔥 PHONE */}
                 <div className="relative">
-
-                  <FaPhone className="absolute top-3 left-3 text-gray-400 text-sm" />
-
+                  <FaPhone className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
                   <input
                     type="tel"
                     name="phone"
+                    required
                     placeholder="Phone Number"
-                    value={
-                      formData.phone
-                    }
-                    onChange={
-                      handleChange
-                    }
-                    className="w-full pl-9 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-[#14532D]"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
                   />
-
                 </div>
-
-              </>
+              </div>
             )}
 
 
 
             {/* 🔥 EMAIL */}
             <div className="relative">
-
-              <FaEnvelope className="absolute top-3 left-3 text-gray-400 text-sm" />
-
+              <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
               <input
                 type="email"
                 name="email"
-                placeholder="Email"
-                value={
-                  formData.email
-                }
-                onChange={
-                  handleChange
-                }
-                className="w-full pl-9 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-[#14532D]"
+                required
+                placeholder="Email Address"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
               />
-
             </div>
 
 
 
             {/* 🔥 PASSWORD */}
             <div className="relative">
-
-              <FaLock className="absolute top-3 left-3 text-gray-400 text-sm" />
-
+              <FaLock className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
               <input
                 type="password"
                 name="password"
+                required
                 placeholder="Password"
-                value={
-                  formData.password
-                }
-                onChange={
-                  handleChange
-                }
-                className="w-full pl-9 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-[#14532D]"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
               />
-
             </div>
 
 
 
-            {/* 🔥 BUTTON */}
+            {/* 🔥 SUBMIT BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#14532D] hover:bg-[#166534] text-white py-2 rounded-lg text-sm font-medium transition"
+              className="w-full bg-[#14532D] hover:bg-[#166534] text-white py-3.5 rounded-xl text-sm font-bold shadow-lg shadow-green-900/10 transition-all active:scale-95 disabled:opacity-50 mt-4"
             >
-
               {loading
-                ? "Please wait..."
+                ? "Authenticating..."
                 : isLogin
                 ? "Sign In"
-                : "Sign Up"}
-
+                : "Create Account"}
             </button>
 
           </form>
@@ -331,30 +282,19 @@ const SignInModal = ({ onClose }) => {
 
 
           {/* 🔥 TOGGLE */}
-          <p className="text-center text-xs text-gray-600 mt-4">
-
-            {isLogin
-              ? "Don't have account?"
-              : "Already have account?"}
-
-
-
-            <span
-              onClick={() =>
-                setIsLogin(
-                  !isLogin
-                )
-              }
-              className="text-[#14532D] cursor-pointer ml-1 font-medium"
-            >
-
+          <div className="text-center mt-8">
+            <p className="text-xs text-gray-500 font-medium">
               {isLogin
-                ? "Sign Up"
-                : "Login"}
-
-            </span>
-
-          </p>
+                ? "Don't have an account?"
+                : "Already have an account?"}
+              <button
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-[#14532D] hover:underline ml-1.5 font-bold"
+              >
+                {isLogin ? "Sign Up" : "Login"}
+              </button>
+            </p>
+          </div>
 
         </div>
 

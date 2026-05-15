@@ -5,6 +5,8 @@ import {
   FaThLarge,
   FaUser,
   FaSignOutAlt,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 
 import {
@@ -31,6 +33,8 @@ const Navbar = ({
 
   const [navbar, setNavbar] =
     useState(null);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [category, setCategory] =
     useState("All Categories");
@@ -165,190 +169,100 @@ const Navbar = ({
 
   return (
     <>
-
-      <div className="w-full bg-[#F3F4F6] fixed top-[40px] z-[999] border-b border-gray-200">
-
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-6">
-
+      <div className="w-full bg-[#F3F4F6] fixed top-[40px] md:top-[44px] z-[999] border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-3 flex items-center justify-between gap-4 md:gap-6">
+          
           {/* 🔥 LOGO */}
-          <div className="flex items-center h-[46px]">
-
+          <div className="flex items-center h-[40px] md:h-[46px] flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
             <img
               src={logo}
               alt="UltraClap Logo"
-              className="h-[60px] w-auto object-contain -mt-2"
+              className="h-[50px] md:h-[60px] w-auto object-contain"
             />
-
           </div>
 
-
-
-          {/* 🔥 SEARCH */}
-          <div className="flex flex-1 items-stretch bg-white border border-gray-300 rounded-full shadow-sm h-[46px]">
-
-            {/* 🔥 DROPDOWN */}
-            <div
-              ref={dropdownRef}
-              className="relative h-full z-[2000]"
-            >
-
+          {/* 🔥 SEARCH (Desktop) */}
+          <div className="hidden lg:flex flex-1 items-stretch bg-white border border-gray-300 rounded-full shadow-sm h-[46px]">
+            <div ref={dropdownRef} className="relative h-full z-[2000]">
               <div
-                onClick={() =>
-                  setOpenDropdown(
-                    (prev) => !prev
-                  )
-                }
+                onClick={() => setOpenDropdown((prev) => !prev)}
                 className="flex items-center gap-2 px-4 bg-gray-100 border-r border-gray-300 cursor-pointer h-full"
               >
-
-                <span className="text-sm text-gray-700 whitespace-nowrap">
-
-                  {category}
-
-                </span>
-
+                <span className="text-sm text-gray-700 whitespace-nowrap">{category}</span>
                 <FaChevronDown className="text-xs text-gray-500" />
-
               </div>
 
-
-
               {openDropdown && (
-
                 <div className="absolute top-[50px] left-0 bg-white border border-gray-200 rounded-xl shadow-lg w-52 z-[3000]">
-
-                  {navbar.categories?.map(
-                    (item) => (
-
-                      <div
-                        key={item}
-                        onClick={() => {
-
-                          setCategory(
-                            item
-                          );
-
-                          setOpenDropdown(
-                            false
-                          );
-                        }}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-[#14532D] hover:text-white cursor-pointer transition"
-                      >
-
-                        {item}
-
-                      </div>
-                    )
-                  )}
-
+                  {navbar.categories?.map((item) => (
+                    <div
+                      key={item}
+                      onClick={() => {
+                        setCategory(item);
+                        setOpenDropdown(false);
+                      }}
+                      className="px-4 py-2 text-sm text-gray-700 hover:bg-[#14532D] hover:text-white cursor-pointer transition"
+                    >
+                      {item}
+                    </div>
+                  ))}
                 </div>
               )}
-
             </div>
 
-
-
-            {/* 🔥 INPUT */}
             <input
               type="text"
               value={search}
-              onChange={(e) =>
-                setSearch(
-                  e.target.value
-                )
-              }
+              onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => {
-
-                if (
-                  e.key === "Enter" &&
-                  search.trim() !== ""
-                ) {
-
-                  navigate(
-                    `/search?q=${search}`
-                  );
+                if (e.key === "Enter" && search.trim() !== "") {
+                  navigate(`/search?q=${search}`);
                 }
               }}
-              placeholder={
-                navbar.placeholder
-              }
+              placeholder={navbar.placeholder}
               className="flex-1 px-4 text-sm outline-none text-gray-700 h-full"
             />
 
-
-
-            {/* 🔥 BUTTON */}
             <button
               onClick={() => {
-
-                if (
-                  search.trim() !== ""
-                ) {
-
-                  navigate(
-                    `/search?q=${search}`
-                  );
+                if (search.trim() !== "") {
+                  navigate(`/search?q=${search}`);
                 }
               }}
               className="bg-[#14532D] hover:bg-[#166534] w-[60px] h-full flex items-center justify-center text-white rounded-r-full"
             >
-
               <FaSearch />
-
             </button>
-
           </div>
 
-
-
-          {/* 🔥 RIGHT */}
-          <div className="flex items-center gap-4">
-
-            {/* 🔥 LOCATION */}
+          {/* 🔥 RIGHT (Desktop) */}
+          <div className="hidden lg:flex items-center gap-4">
             <div
-              onClick={
-                onOpenLocation
-              }
+              onClick={onOpenLocation}
               className="flex items-center gap-2 px-4 h-[46px] bg-white border border-gray-300 rounded-full shadow-sm cursor-pointer hover:bg-gray-50"
             >
-
               <FaMapMarkerAlt className="text-[#14532D]" />
-
-              <span className="text-sm text-gray-700 whitespace-nowrap">
-
-                {city ||
-                  navbar.defaultCity}
-
-              </span>
-
+              <span className="text-sm text-gray-700 whitespace-nowrap">{city || navbar.defaultCity}</span>
             </div>
 
-
-
-            {/* 🔥 PROFILE / SIGN IN */}
             {user ? (
               <div className="relative group">
-                <button
-                  className="flex items-center gap-3 bg-white border border-gray-300 px-4 h-[46px] rounded-full font-medium shadow-sm hover:bg-gray-50 transition-all"
-                >
+                <button className="flex items-center gap-3 bg-white border border-gray-300 px-4 h-[46px] rounded-full font-medium shadow-sm hover:bg-gray-50 transition-all">
                   <div className="w-8 h-8 bg-[#14532D] text-white rounded-full flex items-center justify-center text-xs font-bold">
-                    {user.name?.[0]?.toUpperCase() || 'U'}
+                    {user.name?.[0]?.toUpperCase() || "U"}
                   </div>
                   <span className="text-sm text-gray-700 max-w-[100px] truncate">{user.name}</span>
                   <FaChevronDown className="text-[10px] text-gray-400" />
                 </button>
 
-                {/* 🔥 DROPDOWN */}
                 <div className="absolute top-[52px] right-0 w-56 bg-white border border-gray-100 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[5000] p-2">
                   <div className="px-4 py-3 border-b border-gray-50 mb-1">
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Account</p>
                     <p className="text-sm font-bold text-gray-800 truncate">{user.email}</p>
                   </div>
-
-                  {/* Seller Dashboard Link */}
-                  {(user.role === 'partner' || user.role === 'admin') && (
+                  {(user.role === "partner" || user.role === "admin") && (
                     <button
-                      onClick={() => navigate(user.role === 'admin' ? '/admin/dashboard' : '/partner/dashboard')}
+                      onClick={() => navigate(user.role === "admin" ? "/admin/dashboard" : "/partner/dashboard")}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-[#14532D] rounded-xl transition-all font-bold"
                     >
                       <div className="w-8 h-8 bg-green-100 text-[#14532D] rounded-lg flex items-center justify-center">
@@ -357,9 +271,8 @@ const Navbar = ({
                       Dashboard
                     </button>
                   )}
-
                   <button
-                    onClick={() => navigate('/my-queries')}
+                    onClick={() => navigate("/my-queries")}
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-all font-medium"
                   >
                     <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
@@ -367,9 +280,8 @@ const Navbar = ({
                     </div>
                     My Queries
                   </button>
-
                   <button
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate("/profile")}
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-all font-medium"
                   >
                     <div className="w-8 h-8 bg-gray-100 text-gray-500 rounded-lg flex items-center justify-center">
@@ -377,16 +289,14 @@ const Navbar = ({
                     </div>
                     My Profile
                   </button>
-
-
                   <div className="border-t border-gray-50 mt-1 pt-1">
                     <button
                       onClick={() => {
-                        localStorage.removeItem('user');
-                        localStorage.removeItem('token');
-                        window.location.href = '/';
+                        localStorage.removeItem("user");
+                        localStorage.removeItem("token");
+                        window.location.href = "/";
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-all font-bold"
+                      className="w-full flex items-center gap-4 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-all font-bold"
                     >
                       <div className="w-8 h-8 bg-red-100 text-red-600 rounded-lg flex items-center justify-center">
                         <FaSignOutAlt className="text-xs" />
@@ -404,27 +314,130 @@ const Navbar = ({
                 {navbar.signInButton}
               </button>
             )}
-
           </div>
 
+          {/* 🔥 MOBILE ACTIONS (Location & Hamburger) */}
+          <div className="flex lg:hidden items-center gap-3">
+            <div
+              onClick={onOpenLocation}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-full shadow-sm text-xs text-gray-700"
+            >
+              <FaMapMarkerAlt className="text-[#14532D]" />
+              <span className="max-w-[60px] truncate">{city || navbar.defaultCity}</span>
+            </div>
+            
+            <button 
+              onClick={() => setIsMenuOpen(true)}
+              className="text-[#14532D] p-2 bg-white rounded-full shadow-sm border border-gray-200"
+            >
+              <FaBars size={20} />
+            </button>
+          </div>
         </div>
 
+        {/* 🔥 MOBILE SEARCH BAR (Sticky below Navbar) */}
+        <div className="lg:hidden px-4 pb-2">
+          <div className="flex items-center bg-white border border-gray-300 rounded-full shadow-sm h-[40px] overflow-hidden">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={navbar.placeholder}
+              className="flex-1 px-4 text-xs outline-none text-gray-700 h-full"
+            />
+            <button
+              onClick={() => {
+                if (search.trim() !== "") navigate(`/search?q=${search}`);
+              }}
+              className="bg-[#14532D] px-4 h-full text-white"
+            >
+              <FaSearch size={14} />
+            </button>
+          </div>
+        </div>
       </div>
 
+      {/* 🔥 MOBILE SIDEBAR MENU */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-[2000] flex">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)}></div>
+          
+          <div className="relative ml-auto w-[80%] max-w-[320px] h-full bg-white shadow-2xl flex flex-col p-6 animate-slide-in-right">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-xl font-bold text-[#14532D]">Menu</h2>
+              <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500">
+                <FaTimes size={24} />
+              </button>
+            </div>
 
+            <div className="flex-1 overflow-y-auto space-y-2">
+              {user ? (
+                <>
+                  <div className="p-4 bg-gray-50 rounded-2xl mb-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-10 h-10 bg-[#14532D] text-white rounded-full flex items-center justify-center font-bold">
+                        {user.name?.[0]?.toUpperCase() || "U"}
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-800">{user.name}</p>
+                        <p className="text-xs text-gray-500 truncate max-w-[180px]">{user.email}</p>
+                      </div>
+                    </div>
+                  </div>
 
-      {/* 🔥 LOGIN MODAL */}
-      {showLogin && (
+                  {(user.role === "partner" || user.role === "admin") && (
+                    <button
+                      onClick={() => { navigate(user.role === "admin" ? "/admin/dashboard" : "/partner/dashboard"); setIsMenuOpen(false); }}
+                      className="w-full flex items-center gap-4 p-4 text-gray-700 hover:bg-green-50 rounded-xl font-bold"
+                    >
+                      <FaThLarge className="text-[#14532D]" /> Dashboard
+                    </button>
+                  )}
+                  <button
+                    onClick={() => { navigate("/my-queries"); setIsMenuOpen(false); }}
+                    className="w-full flex items-center gap-4 p-4 text-gray-700 hover:bg-gray-50 rounded-xl"
+                  >
+                    <FaSearch className="text-blue-500" /> My Queries
+                  </button>
+                  <button
+                    onClick={() => { navigate("/profile"); setIsMenuOpen(false); }}
+                    className="w-full flex items-center gap-4 p-4 text-gray-700 hover:bg-gray-50 rounded-xl"
+                  >
+                    <FaUser className="text-gray-500" /> My Profile
+                  </button>
+                  
+                  <div className="pt-4 border-t border-gray-100 mt-4">
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("user");
+                        localStorage.removeItem("token");
+                        window.location.href = "/";
+                      }}
+                      className="w-full flex items-center gap-4 p-4 text-red-600 hover:bg-red-50 rounded-xl font-bold"
+                    >
+                      <FaSignOutAlt /> Logout
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <button
+                  onClick={() => { setShowLogin(true); setIsMenuOpen(false); }}
+                  className="w-full bg-[#14532D] text-white p-4 rounded-xl font-bold shadow-lg shadow-green-900/20"
+                >
+                  {navbar.signInButton}
+                </button>
+              )}
+            </div>
 
-        <SignInModal
-          onClose={() =>
-            setShowLogin(
-              false
-            )
-          }
-        />
+            <div className="pt-6 border-t border-gray-100 text-center">
+              <p className="text-xs text-gray-400">© {new Date().getFullYear()} Ultraclap</p>
+            </div>
+          </div>
+        </div>
       )}
 
+      {/* 🔥 LOGIN MODAL */}
+      {showLogin && <SignInModal onClose={() => setShowLogin(false)} />}
     </>
   );
 };
