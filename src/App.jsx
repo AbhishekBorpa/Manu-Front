@@ -13,6 +13,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
 
 import Dashboard from "./pages/Admin/Dashboard";
+import PartnerDetails from "./pages/Admin/PartnerDetails";
 import Profile from "./pages/Profile";
 import MyQueries from "./pages/MyQueries";
 
@@ -106,6 +107,10 @@ const App = () => {
             <Route
               path="/admin/dashboard"
               element={<Dashboard />}
+            />
+            <Route
+              path="/admin/partner/:id"
+              element={<PartnerDetails />}
             />
 
             {/* PARTNER */}

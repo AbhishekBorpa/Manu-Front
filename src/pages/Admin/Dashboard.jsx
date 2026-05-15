@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -24,10 +25,12 @@ import {
   CheckCircle,
   XCircle,
   ExternalLink,
-  FileText
+  FileText,
+  Eye
 } from "lucide-react";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState("Dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [search, setSearch] = useState("");
@@ -875,18 +878,19 @@ const Dashboard = () => {
               </div>
 
               <div className="bg-[#081120] border border-white/10 rounded-xl overflow-hidden flex flex-col flex-1">
-                <div className="grid grid-cols-6 px-4 h-[45px] items-center text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-white/10">
+                <div className="grid grid-cols-7 px-4 h-[45px] items-center text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-white/10">
                   <span>Company / ID</span>
                   <span>GST Number</span>
                   <span>Documents</span>
                   <span>Status</span>
                   <span>Submitted</span>
+                  <span className="text-center">Details</span>
                   <span className="text-right">Actions</span>
                 </div>
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
                   {partnerProfiles.length > 0 ? partnerProfiles.map((profile) => (
-                    <div key={profile._id} className="grid grid-cols-6 items-center px-4 py-4 border-t border-white/5 text-[10px]">
+                    <div key={profile._id} className="grid grid-cols-7 items-center px-4 py-4 border-t border-white/5 text-[10px]">
                       <div className="flex flex-col gap-1">
                         <span className="font-bold text-white truncate pr-2">{profile.companyName}</span>
                         <span className="text-gray-500 font-mono">#{profile._id.slice(-6).toUpperCase()}</span>
@@ -923,6 +927,15 @@ const Dashboard = () => {
                       <span className="text-gray-400">
                         {profile.kycSubmittedAt ? new Date(profile.kycSubmittedAt).toLocaleDateString() : 'N/A'}
                       </span>
+
+                      <div className="flex justify-center">
+                        <button 
+                          onClick={() => navigate(`/admin/partner/${profile._id}`)}
+                          className="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+                        >
+                          <Eye size={16} />
+                        </button>
+                      </div>
 
                       <div className="flex items-center justify-end gap-2">
                         {profile.verificationStatus === "Pending" ? (
