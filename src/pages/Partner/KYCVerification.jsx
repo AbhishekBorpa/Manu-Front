@@ -61,10 +61,10 @@ const KYCVerification = () => {
     if (!file) return null;
     const data = new FormData();
     data.append("file", file);
-    data.append("upload_preset", "manureal"); // Ensure this preset exists in Cloudinary
-    data.append("cloud_name", "dcl998vmo");
+    data.append("upload_preset", "manu_uploads"); // Match backend folder
+    data.append("cloud_name", "djsxaigna"); // Match backend cloud_name
 
-    const res = await fetch("https://api.cloudinary.com/v1_1/dcl998vmo/image/upload", {
+    const res = await fetch("https://api.cloudinary.com/v1_1/djsxaigna/image/upload", {
       method: "POST",
       body: data,
     });

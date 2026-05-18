@@ -149,11 +149,11 @@ const FeaturedProducts = () => {
 
                 {/* 🔥 IMAGE */}
                 <img
-                  src={getServerUrl(item.image || item.img) || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"}
+                  src={getServerUrl(item.image || item.img) || "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg"}
                   alt={item.title}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    e.target.src = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800";
+                    e.target.src = "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg";
                   }}
                 />
 

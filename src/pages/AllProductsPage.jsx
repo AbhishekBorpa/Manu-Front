@@ -385,11 +385,11 @@ const AllProductsPage = () => {
                   {/* Image */}
                   <div className="relative overflow-hidden rounded-[24px] md:rounded-[32px] aspect-[4/3] mb-4 md:mb-6">
                     <img
-                      src={getServerUrl(item.image || item.img) || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"}
+                      src={getServerUrl(item.image || item.img) || "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg"}
                       alt={item.title}
                       className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
                       onError={(e) => {
-                        e.target.src = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800";
+                        e.target.src = "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg";
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>

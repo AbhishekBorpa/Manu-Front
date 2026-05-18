@@ -78,11 +78,11 @@ const ProductDetails = () => {
           
           <div className="relative h-[250px] sm:h-[350px] md:h-[500px]">
              <img
-              src={getServerUrl(product.image || product.img) || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"}
+              src={getServerUrl(product.image || product.img) || "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg"}
               alt={product.title}
               className="w-full h-full object-cover"
               onError={(e) => {
-                e.target.src = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800";
+                e.target.src = "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg";
               }}
             />
             <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-white/90 backdrop-blur-md px-2 md:px-3 py-0.5 md:py-1 rounded-full text-[9px] md:text-[10px] font-black text-[#14532D] uppercase tracking-widest shadow-lg">
@@ -169,11 +169,11 @@ const ProductDetails = () => {
               >
                 <div className="relative overflow-hidden rounded-lg md:rounded-xl h-32 md:h-44 mb-3 md:mb-4">
                   <img
-                    src={getServerUrl(item.image || item.img) || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"}
+                    src={getServerUrl(item.image || item.img) || "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg"}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     alt={item.title}
                     onError={(e) => {
-                      e.target.src = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800";
+                      e.target.src = "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg";
                     }}
                   />
                 </div>

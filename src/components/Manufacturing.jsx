@@ -142,11 +142,11 @@ const Manufacturing = () => {
                 <div className="relative overflow-hidden">
 
                   <img
-                    src={getServerUrl(item.img || item.image) || "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800"}
+                    src={getServerUrl(item.img || item.image) || "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg"}
                     alt={item.title}
                     className="w-full h-32 md:h-40 object-cover transition duration-500 group-hover:scale-110"
                     onError={(e) => {
-                      e.target.src = "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800";
+                      e.target.src = "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg";
                     }}
                   />
 
