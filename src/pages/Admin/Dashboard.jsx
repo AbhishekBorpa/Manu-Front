@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -67,11 +67,101 @@ const Dashboard = () => {
     role: "admin"
   });
 
+  const API_URL = import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api";
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const headers = { "Authorization": `Bearer ${token}` };
+
+      // Admin Profile from local storage
+      const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      if (savedUser.id || savedUser._id) {
+        setAdminProfile({
+          id: savedUser.id || savedUser._id,
+          name: savedUser.name || "Admin",
+          email: savedUser.email || "admin@example.com",
+          role: savedUser.role || "admin"
+        });
+      }
+
+      // Parallel fetching
+      const [
+        statsRes,
+        usersRes,
+        servicesRes,
+        ordersRes,
+        testimonialsRes,
+        subsRes,
+        leadsRes,
+        productsRes,
+        catRes,
+        partnersRes
+      ] = await Promise.all([
+        fetch(`${API_URL}/admin/stats`, { headers }),
+        fetch(`${API_URL}/admin/users`, { headers }),
+        fetch(`${API_URL}/admin/services`, { headers }),
+        fetch(`${API_URL}/admin/orders`, { headers }),
+        fetch(`${API_URL}/admin/testimonials`, { headers }),
+        fetch(`${API_URL}/admin/subscribers`, { headers }),
+        fetch(`${API_URL}/leads`, { headers }),
+        fetch(`${API_URL}/products`),
+        fetch(`${API_URL}/categories`),
+        fetch(`${API_URL}/admin/partner-profiles`, { headers })
+      ]);
+
+      const [
+        statsData,
+        usersData,
+        servicesData,
+        ordersData,
+        testimonialsData,
+        subsData,
+        leadsData,
+        productsData,
+        catData,
+        partnersData
+      ] = await Promise.all([
+        statsRes.json(),
+        usersRes.json(),
+        servicesRes.json(),
+        ordersRes.json(),
+        testimonialsRes.json(),
+        subsRes.json(),
+        leadsRes.json(),
+        productsRes.json(),
+        catRes.json(),
+        partnersRes.json()
+      ]);
+
+      if (statsData.success) setRealStats(statsData.stats);
+      if (usersData.success) setUsers(usersData.users);
+      if (servicesData.success) setServices(servicesData.services);
+      if (ordersData.success) setOrders(ordersData.orders);
+      if (testimonialsData.success) setTestimonials(testimonialsData.testimonials);
+      if (subsData.success) setSubscribers(subsData.subscribers);
+      if (leadsData.success) setLeads(leadsData.leads);
+      if (productsData.success) setProducts(productsData.products);
+      if (catData.success) setCategories(catData.categories);
+      if (partnersData.success) setPartnerProfiles(partnersData.profiles);
+
+    } catch (err) {
+      console.error("Dashboard Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [API_URL]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   const handleVerification = async (id, status) => {
     if (window.confirm(`Are you sure you want to mark this seller as ${status}?`)) {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/admin/partner-profiles/${id}/verify`, {
+        const res = await fetch(`${API_URL}/admin/partner-profiles/${id}/verify`, {
           method: "PUT",
           headers: { 
             "Content-Type": "application/json",
@@ -95,13 +185,13 @@ const Dashboard = () => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/${endpoint}/${id}`, {
+        const res = await fetch(`${API_URL}/${endpoint}/${id}`, {
           method: "DELETE",
           headers: { "Authorization": `Bearer ${token}` }
         });
         const data = await res.json();
         if (data.success) {
-          window.location.reload();
+          fetchData();
         } else {
           alert(data.msg || "Failed to delete item.");
         }
@@ -127,82 +217,58 @@ const Dashboard = () => {
     setIsEditModalOpen(true);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const headers = { "Authorization": `Bearer ${token}` };
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!editingItem) return;
 
-        // Admin Profile from local storage
-        const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
-        if (savedUser.id || savedUser._id) {
-          setAdminProfile({
-            id: savedUser.id || savedUser._id,
-            name: savedUser.name || "Admin",
-            email: savedUser.email || "admin@example.com",
-            role: savedUser.role || "admin"
-          });
+    try {
+      const token = localStorage.getItem("token");
+      const endpoint = activeMenu === "Products" ? "products" : 
+                      activeMenu === "Categories" ? "categories" :
+                      activeMenu === "Services" ? "manufacturing" :
+                      activeMenu === "Users" ? "admin/users" :
+                      activeMenu === "Orders" ? "admin/orders" :
+                      activeMenu === "Testimonials" ? "testimonials" :
+                      activeMenu === "Subscribers" ? "admin/subscribers" :
+                      activeMenu === "Leads" ? "leads" : "";
+      
+      if (!endpoint) return;
+
+      let fetchOptions = {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`
         }
+      };
 
-        // Stats
-        const statsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/stats", { headers });
-        const statsData = await statsRes.json();
-        if (statsData.success) setRealStats(statsData.stats);
-
-        // Users
-        const usersRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/users", { headers });
-        const usersData = await usersRes.json();
-        if (usersData.success) setUsers(usersData.users);
-
-        // Services
-        const servicesRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/services", { headers });
-        const servicesData = await servicesRes.json();
-        if (servicesData.success) setServices(servicesData.services);
-
-        // Orders
-        const ordersRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/orders", { headers });
-        const ordersData = await ordersRes.json();
-        if (ordersData.success) setOrders(ordersData.orders);
-
-        // Testimonials
-        const testimonialsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/testimonials", { headers });
-        const testimonialsData = await testimonialsRes.json();
-        if (testimonialsData.success) setTestimonials(testimonialsData.testimonials);
-
-        // Subscribers
-        const subsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/subscribers", { headers });
-        const subsData = await subsRes.json();
-        if (subsData.success) setSubscribers(subsData.subscribers);
-
-        // Leads
-        const leadsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/leads", { headers });
-        const leadsData = await leadsRes.json();
-        if (leadsData.success) setLeads(leadsData.leads);
-
-        // Products
-        const productsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/products");
-        const productsData = await productsRes.json();
-        if (productsData.success) setProducts(productsData.products);
-
-        // Categories
-        const catRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/categories");
-        const catData = await catRes.json();
-        if (catData.success) setCategories(catData.categories);
-
-        // Partner Profiles (Sellers Verifications)
-        const partnersRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/admin/partner-profiles", { headers });
-        const partnersData = await partnersRes.json();
-        if (partnersData.success) setPartnerProfiles(partnersData.profiles);
-
-      } catch (err) {
-        console.error("Dashboard Fetch Error:", err);
-      } finally {
-        setLoading(false);
+      if (["Products", "Categories", "Services"].includes(activeMenu)) {
+        const formDataObj = new FormData();
+        Object.keys(formData).forEach(key => {
+          if (formData[key]) formDataObj.append(key, formData[key]);
+        });
+        if (imageFile) {
+          formDataObj.append("image", imageFile);
+        }
+        fetchOptions.body = formDataObj;
+      } else {
+        fetchOptions.headers["Content-Type"] = "application/json";
+        fetchOptions.body = JSON.stringify(formData);
       }
-    };
-    fetchData();
-  }, []);
+
+      const res = await fetch(`${API_URL}/${endpoint}/${editingItem._id}`, fetchOptions);
+
+      const data = await res.json();
+      if (data.success) {
+        setIsEditModalOpen(false);
+        setEditingItem(null);
+        fetchData();
+      } else {
+        alert(data.msg || "Error updating item");
+      }
+    } catch (err) {
+      console.error("Edit Error:", err);
+    }
+  };
 
   const menuItems = [
     {
@@ -786,7 +852,7 @@ const Dashboard = () => {
                           </span>
                           <div className="flex items-center justify-end gap-3 text-gray-400">
                             <button onClick={() => handleEditClick(order)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
-                            <button onClick={() => handleDelete(order._id, "orders")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                            <button onClick={() => handleDelete(order._id, "admin/orders")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                           </div>
                         </div>
                       )) : <p className="p-10 text-center text-slate-500 text-xs">No orders found.</p>)}
@@ -812,7 +878,7 @@ const Dashboard = () => {
                           <span className="px-3 py-1 rounded-md bg-green-500/10 text-green-400 text-[9px] w-fit">{sub.status}</span>
                           <div className="flex items-center justify-end gap-3 text-gray-400">
                             <button onClick={() => handleEditClick(sub)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
-                            <button onClick={() => handleDelete(sub._id, "subscribers")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                            <button onClick={() => handleDelete(sub._id, "admin/subscribers")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                           </div>
                         </div>
                       )) : <p className="p-10 text-center text-slate-500 text-xs">No subscribers found.</p>)}
@@ -1064,6 +1130,81 @@ const Dashboard = () => {
         </div>
       </main>
 
+      {/* EDIT MODAL */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#081120] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+            <div className="p-6 border-b border-white/10 flex items-center justify-between">
+              <h2 className="text-[18px] font-bold text-white">Edit {activeMenu.slice(0, -1)}</h2>
+              <button 
+                onClick={() => setIsEditModalOpen(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
+              {(activeMenu === "Products" || activeMenu === "Services") && (
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Title</label>
+                  <input type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                </div>
+              )}
+              {activeMenu === "Users" && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Full Name</label>
+                    <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Email</label>
+                    <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Role</label>
+                    <select value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all">
+                      <option value="user">User</option>
+                      <option value="partner">Partner</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+              {activeMenu === "Categories" && (
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Category Name</label>
+                  <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                </div>
+              )}
+              {["Orders", "Subscribers", "Leads"].includes(activeMenu) && (
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Status</label>
+                  <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                    <option value="New">New</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Converted">Converted</option>
+                  </select>
+                </div>
+              )}
+              {["Products", "Categories", "Services"].includes(activeMenu) && (
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Image</label>
+                  <input type="file" onChange={(e) => setImageFile(e.target.files[0])} className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" />
+                </div>
+              )}
+              <button type="submit" className="w-full h-[45px] mt-4 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-sm transition-all shadow-lg shadow-green-600/20">
+                Update {activeMenu.slice(0, -1)}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* ADD MODAL */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
@@ -1111,14 +1252,14 @@ const Dashboard = () => {
                     fetchOptions.body = JSON.stringify(formData);
                   }
 
-                  const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/${endpoint}`, fetchOptions);
+                  const res = await fetch(`${API_URL}/${endpoint}`, fetchOptions);
 
                   const data = await res.json();
                   if (data.success) {
                     setIsAddModalOpen(false);
                     setFormData({ title: "", name: "", email: "", category: "", price: "", description: "", status: "Active", role: "user" });
                     setImageFile(null);
-                    window.location.reload();
+                    fetchData();
                   } else {
                     alert(data.msg || "Error adding item");
                   }

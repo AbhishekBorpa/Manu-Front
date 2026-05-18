@@ -4,14 +4,12 @@ import {
   FaSearch, 
   FaMapMarkerAlt, 
   FaFilter, 
-  FaChevronDown, 
   FaThLarge, 
   FaList, 
   FaStar,
   FaCheckCircle,
   FaTimes
 } from "react-icons/fa";
-import Categories from "../components/Categories";
 import LeadModal from "../components/LeadModal";
 
 
@@ -22,13 +20,31 @@ const AllProductsPage = () => {
 
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(urlCategory || "All Categories");
+  const [priceRange, setPriceRange] = useState(6000000);
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState(["All Categories"]);
+  const [categories, setCategories] = useState({ industry: [], machine: [] });
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  // Sync state with URL
+  useEffect(() => {
+    if (urlCategory) {
+      setSelectedCategory(urlCategory);
+    } else {
+      setSelectedCategory("All Categories");
+    }
+  }, [urlCategory]);
+
+  const handleCategorySelect = (cat) => {
+    setSelectedCategory(cat);
+    if (cat === "All Categories") {
+      navigate("/all-products");
+    } else {
+      navigate(`/all-products?category=${cat}`);
+    }
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -36,8 +52,13 @@ const AllProductsPage = () => {
         const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/categories");
         const data = await res.json();
         if (data.success) {
-          const catNames = data.categories.map(c => c.name);
-          setCategories(["All Categories", ...catNames]);
+          const grouped = data.categories.reduce((acc, cat) => {
+            const type = cat.type || 'machine';
+            if (!acc[type]) acc[type] = [];
+            acc[type].push(cat.name);
+            return acc;
+          }, { industry: [], machine: [] });
+          setCategories(grouped);
         }
       } catch (err) {
         console.error("Categories Fetch Error:", err);
@@ -56,8 +77,8 @@ const AllProductsPage = () => {
         if (data.success) {
           let filtered = data.products;
           
-          // Apply Category Filter from URL or State
-          const catToFilter = selectedCategory !== "All Categories" ? selectedCategory : urlCategory;
+          // Apply Category Filter from State
+          const catToFilter = selectedCategory;
           if (catToFilter && catToFilter !== "All Categories") {
             const lowerCat = catToFilter.toLowerCase();
             filtered = filtered.filter(p => 
@@ -75,6 +96,9 @@ const AllProductsPage = () => {
             );
           }
 
+          // Apply Price Filter
+          filtered = filtered.filter(p => (p.price || 0) <= priceRange);
+
           setProducts(filtered);
         }
       } catch (err) {
@@ -85,7 +109,7 @@ const AllProductsPage = () => {
     };
 
     fetchProducts();
-  }, [search, selectedCategory, urlCategory]);
+  }, [search, selectedCategory, priceRange]);
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
@@ -108,11 +132,6 @@ const AllProductsPage = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* 🔥 CATEGORIES SECTION */}
-      <div className="hidden md:block">
-        <Categories />
       </div>
 
       {/* 🔥 FILTER & SEARCH STRIP */}
@@ -162,18 +181,34 @@ const AllProductsPage = () => {
             </div>
             
             <div className="space-y-8">
+              {/* All Categories Reset */}
+              <button
+                onClick={() => {
+                  handleCategorySelect("All Categories");
+                  setShowFilters(false);
+                }}
+                className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+                  selectedCategory === "All Categories" 
+                    ? 'bg-[#14532D] text-white shadow-lg' 
+                    : 'bg-slate-50 text-slate-500'
+                }`}
+              >
+                All Categories
+              </button>
+
+              {/* Industries */}
               <div>
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Categories</h4>
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Industries & Materials</h4>
                 <div className="space-y-2">
-                  {categories.map(cat => (
+                  {categories.industry.map(cat => (
                     <button
                       key={cat}
                       onClick={() => {
-                        setSelectedCategory(cat);
+                        handleCategorySelect(cat);
                         setShowFilters(false);
                       }}
                       className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-                        selectedCategory === cat 
+                        selectedCategory.toLowerCase() === cat.toLowerCase()
                           ? 'bg-[#14532D] text-white shadow-lg' 
                           : 'bg-slate-50 text-slate-500'
                       }`}
@@ -181,6 +216,48 @@ const AllProductsPage = () => {
                       {cat}
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Machine Types */}
+              <div>
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Machine Types</h4>
+                <div className="space-y-2">
+                  {categories.machine.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        handleCategorySelect(cat);
+                        setShowFilters(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+                        selectedCategory.toLowerCase() === cat.toLowerCase()
+                          ? 'bg-[#14532D] text-white shadow-lg' 
+                          : 'bg-slate-50 text-slate-500'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Price Range</h4>
+                <div className="px-2">
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="6000000" 
+                    step="50000"
+                    value={priceRange}
+                    onChange={(e) => setPriceRange(parseInt(e.target.value))}
+                    className="w-full accent-[#14532D]" 
+                  />
+                  <div className="flex justify-between mt-2 text-[10px] font-black text-slate-400 uppercase">
+                    <span>₹0</span>
+                    <span>Up to ₹{(priceRange/100000).toFixed(1)}L</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -194,16 +271,48 @@ const AllProductsPage = () => {
         <aside className="hidden lg:block w-72 flex-shrink-0">
           <div className="sticky top-[180px] space-y-10">
             
-            {/* Category Filter */}
+            {/* All Categories Reset */}
+            <button
+              onClick={() => handleCategorySelect("All Categories")}
+              className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                selectedCategory === "All Categories" 
+                  ? 'bg-[#14532D] text-white shadow-lg shadow-green-900/20' 
+                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              All Categories
+            </button>
+
+            {/* Industry Filter */}
             <div>
-              <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Categories</h4>
+              <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Industries</h4>
               <div className="space-y-2">
-                {categories.map(cat => (
+                {categories.industry.map(cat => (
                   <button
                     key={cat}
-                    onClick={() => setSelectedCategory(cat)}
+                    onClick={() => handleCategorySelect(cat)}
                     className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                      selectedCategory === cat 
+                      selectedCategory.toLowerCase() === cat.toLowerCase()
+                        ? 'bg-[#14532D] text-white shadow-lg shadow-green-900/20' 
+                        : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Machine Filter */}
+            <div>
+              <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Machine Types</h4>
+              <div className="space-y-2">
+                {categories.machine.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => handleCategorySelect(cat)}
+                    className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                      selectedCategory.toLowerCase() === cat.toLowerCase()
                         ? 'bg-[#14532D] text-white shadow-lg shadow-green-900/20' 
                         : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
                     }`}
@@ -218,10 +327,18 @@ const AllProductsPage = () => {
             <div>
               <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Price Range</h4>
               <div className="px-2">
-                <input type="range" className="w-full accent-[#14532D]" />
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="6000000" 
+                  step="50000"
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(parseInt(e.target.value))}
+                  className="w-full accent-[#14532D]" 
+                />
                 <div className="flex justify-between mt-2 text-[10px] font-black text-slate-400 uppercase">
                   <span>₹0</span>
-                  <span>₹50L+</span>
+                  <span>Up to ₹{(priceRange/100000).toFixed(1)}L</span>
                 </div>
               </div>
             </div>
@@ -291,11 +408,14 @@ const AllProductsPage = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5 md:gap-2">
                         <FaMapMarkerAlt className="text-slate-400 text-[10px] md:text-xs" />
-                        <span className="text-[10px] md:text-xs font-bold text-slate-600">New Delhi</span>
+                        <span className="text-[10px] md:text-xs font-bold text-slate-600">{item.location || 'New Delhi'}</span>
                       </div>
                       <div className="text-right">
                         <p className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-0.5 md:mb-1">Wholesale Price</p>
-                        <p className="text-lg md:text-xl font-black text-slate-900 leading-none">₹8.4L <span className="text-xs text-slate-400 font-bold">*</span></p>
+                        <p className="text-lg md:text-xl font-black text-slate-900 leading-none">
+                          ₹{item.price >= 100000 ? `${(item.price/100000).toFixed(1)}L` : item.price?.toLocaleString()} 
+                          <span className="text-xs text-slate-400 font-bold ml-1">*</span>
+                        </p>
                       </div>
                     </div>
 
@@ -325,6 +445,7 @@ const AllProductsPage = () => {
                 onClick={() => {
                   setSearch("");
                   setSelectedCategory("All Categories");
+                  setPriceRange(6000000);
                   navigate("/all-products");
                 }}
                 className="px-6 md:px-8 py-2.5 md:py-3 bg-[#14532D] text-white rounded-xl md:rounded-2xl font-bold shadow-lg shadow-green-900/20 active:scale-95 text-xs md:text-sm"

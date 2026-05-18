@@ -29,15 +29,11 @@ import KYCVerification from "./pages/Partner/KYCVerification";
 const App = () => {
   const location = useLocation();
 
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState(() => localStorage.getItem("city") || "");
   const [showLocationModal, setShowLocationModal] = useState(false);
 
   useEffect(() => {
-    const savedCity = localStorage.getItem("city");
-
-    if (savedCity) {
-      setCity(savedCity);
-    } else {
+    if (!localStorage.getItem("city")) {
       setShowLocationModal(true);
     }
   }, []);

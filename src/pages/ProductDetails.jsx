@@ -1,38 +1,49 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaArrowLeft, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 import LeadModal from "../components/LeadModal";
-
-
-/* ✅ SAME DATA AS AllProductsPage */
-import cupImg from "../assets/papercup-product.jpg";
-import plateImg from "../assets/paperplate.jpg";
-import bagImg from "../assets/bagmachine.jpg";
-import packagingImg from "../assets/packaging.jpg";
-import cupAutoImg from "../assets/cup-auto.jpg";
-import plateHighImg from "../assets/plate-high.jpg";
-import bagIndustrialImg from "../assets/bag-industrial.jpg";
-import sealingImg from "../assets/sealing.jpg";
-
-/* 🔥 SAME PRODUCTS DATA */
-const allProductsData = [
-  { id: 1, title: "Paper Cup Machine", category: "cup", price: 150000, location: "Delhi", img: cupImg },
-  { id: 2, title: "Paper Plate Machine", category: "plate", price: 55000, location: "Noida", img: plateImg },
-  { id: 3, title: "Bag Making Machine", category: "bag", price: 200000, location: "Gurugram", img: bagImg },
-  { id: 4, title: "Packaging Machine", category: "packaging", price: 120000, location: "Delhi", img: packagingImg },
-
-  { id: 5, title: "Automatic Cup Machine", category: "cup", price: 250000, location: "Mumbai", img: cupAutoImg },
-  { id: 6, title: "High Speed Plate Machine", category: "plate", price: 85000, location: "Pune", img: plateHighImg },
-  { id: 7, title: "Industrial Bag Machine", category: "bag", price: 300000, location: "Delhi", img: bagIndustrialImg },
-  { id: 8, title: "Sealing Packaging Machine", category: "packaging", price: 95000, location: "Noida", img: sealingImg },
-  { id: 9, title: "Sealing Packaging Machine", category: "packaging", price: 95000, location: "Noida", img: sealingImg },
-];
+import { API_BASE_URL } from "../api/config";
 
 const ProductDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [loadingRelated, setLoadingRelated] = useState(true);
   const product = state;
+
+  useEffect(() => {
+    if (!product) return;
+
+    const fetchRelatedProducts = async () => {
+      try {
+        setLoadingRelated(true);
+        const res = await fetch(`${API_BASE_URL}/products`);
+        const data = await res.json();
+        if (data.success) {
+          // Filter related products by category and exclude current product
+          const filtered = data.products.filter(
+            (item) =>
+              item.category === product.category &&
+              item._id !== product._id
+          );
+          
+          // Fallback if no same category products found
+          if (filtered.length === 0) {
+            setRelatedProducts(data.products.filter(item => item._id !== product._id).slice(0, 6));
+          } else {
+            setRelatedProducts(filtered.slice(0, 6));
+          }
+        }
+      } catch (err) {
+        console.error("Related Products Fetch Error:", err);
+      } finally {
+        setLoadingRelated(false);
+      }
+    };
+
+    fetchRelatedProducts();
+  }, [product]);
 
   if (!product) {
     return (
@@ -46,20 +57,6 @@ const ProductDetails = () => {
         </button>
       </div>
     );
-  }
-
-  /* 🔥 RELATED PRODUCTS (FINAL FIX) */
-  let relatedProducts = allProductsData.filter(
-    (item) =>
-      item.category === product.category &&
-      item.id !== product.id
-  );
-
-  // fallback (agar same category kam ho)
-  if (relatedProducts.length === 0) {
-    relatedProducts = allProductsData
-      .filter((item) => item.id !== product.id)
-      .slice(0, 6);
   }
 
   return (
@@ -152,42 +149,47 @@ const ProductDetails = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+        {loadingRelated ? (
+          <div className="text-center py-10">
+            <div className="w-8 h-8 border-4 border-green-500/20 border-t-green-500 rounded-full animate-spin mx-auto mb-2"></div>
+            <p className="text-gray-500 text-xs animate-pulse">Loading similar machines...</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+            {relatedProducts.map((item) => (
+              <div
+                key={item._id}
+                onClick={() =>
+                  navigate("/product-details", { state: item })
+                }
+                className="group bg-white rounded-xl md:rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-2 md:p-4 border border-gray-100 cursor-pointer"
+              >
+                <div className="relative overflow-hidden rounded-lg md:rounded-xl h-32 md:h-44 mb-3 md:mb-4">
+                  <img
+                    src={item.image}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    alt={item.title}
+                  />
+                </div>
 
-          {relatedProducts.slice(0, 6).map((item) => (
-            <div
-              key={item.id}
-              onClick={() =>
-                navigate("/product-details", { state: item })
-              }
-              className="group bg-white rounded-xl md:rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-2 md:p-4 border border-gray-100 cursor-pointer"
-            >
-              <div className="relative overflow-hidden rounded-lg md:rounded-xl h-32 md:h-44 mb-3 md:mb-4">
-                <img
-                  src={item.image || item.img}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  alt={item.title}
-                />
-              </div>
+                <div className="px-1">
+                  <h4 className="text-[#14532D] font-extrabold text-[12px] md:text-base mb-1 group-hover:text-green-600 line-clamp-1">
+                    {item.title}
+                  </h4>
 
-              <div className="px-1">
-                <h4 className="text-[#14532D] font-extrabold text-[12px] md:text-base mb-1 group-hover:text-green-600 line-clamp-1">
-                  {item.title}
-                </h4>
-
-                <div className="flex flex-col md:flex-row md:items-center justify-between mt-1 md:mt-3 gap-1">
-                  <p className="text-[14px] md:text-lg font-black text-slate-900 leading-none">
-                    ₹ {item.price.toLocaleString()}
-                  </p>
-                  <p className="text-[9px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
-                    <FaMapMarkerAlt className="text-red-500 text-[8px] md:text-[10px]" /> {item.location}
-                  </p>
+                  <div className="flex flex-col md:flex-row md:items-center justify-between mt-1 md:mt-3 gap-1">
+                    <p className="text-[14px] md:text-lg font-black text-slate-900 leading-none">
+                      ₹ {item.price?.toLocaleString() || "8,40,000"}
+                    </p>
+                    <p className="text-[9px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
+                      <FaMapMarkerAlt className="text-red-500 text-[8px] md:text-[10px]" /> {item.location || "New Delhi"}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
     </section>

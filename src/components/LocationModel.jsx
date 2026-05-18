@@ -79,6 +79,17 @@ const LocationModal = ({
 
 
 
+  /* 🔥 CLOSE */
+  const handleClose = () => {
+
+    setShow(false);
+
+    setTimeout(
+      () => onClose(),
+      400
+    );
+  };
+
   /* 🔥 ESC CLOSE */
   useEffect(() => {
 
@@ -105,20 +116,6 @@ const LocationModal = ({
       );
 
   }, []);
-
-
-
-
-  /* 🔥 CLOSE */
-  const handleClose = () => {
-
-    setShow(false);
-
-    setTimeout(
-      () => onClose(),
-      400
-    );
-  };
 
 
 

@@ -11,6 +11,32 @@ const LeadModal = ({ isOpen, onClose, product, partnerId }) => {
     budget: '',
     notes: ''
   });
+
+  // Pre-fill user data if logged in
+  React.useEffect(() => {
+    if (isOpen) {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        setFormData(prev => ({
+          ...prev,
+          name: user.name || '',
+          email: user.email || '',
+          phone: user.phone || '',
+          project: product?.title || ''
+        }));
+      } else {
+        // Reset name/email/phone if not logged in (to clear previous user data if any)
+        setFormData(prev => ({
+          ...prev,
+          name: '',
+          email: '',
+          phone: '',
+          project: product?.title || ''
+        }));
+      }
+    }
+  }, [isOpen, product]);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 

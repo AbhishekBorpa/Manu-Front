@@ -131,7 +131,7 @@ const Manufacturing = () => {
                 key={item._id}
                 onClick={() =>
                   navigate(
-                    `/search?q=${item.category}`
+                    `/all-products?category=${item.category}`
                   )
                 }
                 className="cursor-pointer bg-white rounded-xl md:rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-2xl transition-all duration-300 group hover:-translate-y-1 md:hover:-translate-y-2"

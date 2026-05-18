@@ -54,6 +54,16 @@ const Hero = () => {
   const [pulse, setPulse] = useState(false);
   const [hovered, setHovered] = useState(null);
 
+  const nextSlide = () => {
+    setCurrent((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrent((prev) =>
+      prev === 0 ? slides.length - 1 : prev - 1
+    );
+  };
+
   // 🔥 AUTO SLIDE
   useEffect(() => {
     const interval = setInterval(() => {
@@ -84,16 +94,6 @@ const Hero = () => {
     }, 1000);
     return () => clearInterval(pulseInterval);
   }, []);
-
-  const nextSlide = () => {
-    setCurrent((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrent((prev) =>
-      prev === 0 ? slides.length - 1 : prev - 1
-    );
-  };
 
   // 🔥 SOCIAL ICONS
   const socials = [

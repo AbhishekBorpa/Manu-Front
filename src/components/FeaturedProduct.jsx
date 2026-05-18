@@ -140,7 +140,7 @@ const FeaturedProducts = () => {
             <div
               key={item._id}
               onClick={() =>
-                navigate("/products")
+                navigate(`/all-products?category=${item.category}`)
               }
               className="group bg-white rounded-2xl md:rounded-[22px] border border-gray-200 shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer"
             >
@@ -223,7 +223,7 @@ const FeaturedProducts = () => {
 
         <button
           onClick={() =>
-            navigate("/products")
+            navigate("/all-products")
           }
           className="bg-[#14532D] hover:bg-[#166534] text-white px-6 md:px-8 py-2.5 md:py-3 rounded-lg md:rounded-xl font-semibold text-sm md:text-base transition"
         >

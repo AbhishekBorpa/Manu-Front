@@ -1,13 +1,77 @@
-import React from 'react';
-import { FaPlus, FaSearch, FaBox, FaEdit, FaTrashAlt, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaPlus, FaSearch, FaBox, FaEdit, FaTrashAlt, FaCheckCircle, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
+import { API_BASE_URL } from '../../api/config';
 
 const Inventory = () => {
-  const items = [
-    { id: 1, name: 'Semi-Auto Paper Cup Machine', category: 'Paper Cup', sku: 'PC-200-SA', stock: 12, price: '₹4.5L', status: 'In Stock' },
-    { id: 2, name: 'High-Speed Fully Auto Machine', category: 'Paper Cup', sku: 'PC-500-FA', stock: 3, price: '₹12.8L', status: 'Low Stock' },
-    { id: 3, name: 'Paper Bag Making Machine', category: 'Packaging', sku: 'PB-100-WM', stock: 0, price: '₹6.2L', status: 'Out of Stock' },
-    { id: 4, name: 'Disposable Plate Hydraulic Press', category: 'Plates', sku: 'DP-HYD-01', stock: 8, price: '₹2.1L', status: 'In Stock' },
-  ];
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    category: '',
+    sku: '',
+    stock: 0,
+    price: '',
+    description: ''
+  });
+
+  const fetchInventory = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/partner/inventory`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) setItems(data);
+    } catch (err) {
+      console.error("Fetch inventory error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInventory();
+  }, []);
+
+  const handleAddSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/partner/inventory`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        setIsModalOpen(false);
+        setFormData({ name: '', category: '', sku: '', stock: 0, price: '', description: '' });
+        fetchInventory();
+      } else {
+        const data = await res.json();
+        alert(data.msg || "Failed to add item");
+      }
+    } catch (err) {
+      console.error("Add inventory error:", err);
+    }
+  };
+
+  const filteredItems = items.filter(item => 
+    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.sku.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-10 h-10 border-4 border-green-500/20 border-t-green-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -16,7 +80,10 @@ const Inventory = () => {
           <h1 className="text-2xl font-bold text-slate-800">Inventory Management</h1>
           <p className="text-slate-500 text-sm">Update your machinery stock and listing prices.</p>
         </div>
-        <button className="bg-[#14532D] text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#166534] transition-all flex items-center gap-2">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="bg-[#14532D] text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#166534] transition-all flex items-center gap-2"
+        >
           <FaPlus /> Add New Item
         </button>
       </div>
@@ -28,15 +95,10 @@ const Inventory = () => {
           <input 
             type="text" 
             placeholder="Search by SKU or Name..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-green-500 transition-all text-sm"
           />
-        </div>
-        <div className="flex gap-2 p-1 bg-slate-100 rounded-xl w-full md:w-auto">
-          {['All Items', 'In Stock', 'Out of Stock'].map((tab, i) => (
-            <button key={tab} className={`flex-1 md:flex-none px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${i === 0 ? 'bg-white shadow-sm text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}>
-              {tab}
-            </button>
-          ))}
         </div>
       </div>
 
@@ -55,8 +117,8 @@ const Inventory = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {items.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
+              {filteredItems.map((item) => (
+                <tr key={item._id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400">
@@ -83,10 +145,10 @@ const Inventory = () => {
                       item.status === 'In Stock' ? 'text-green-600' :
                       item.status === 'Low Stock' ? 'text-orange-600' : 'text-red-600'
                     }`}>
-                      {item.status === 'In Stock' && <FaCheckCircle />}
-                      {item.status === 'Low Stock' && <FaExclamationTriangle />}
-                      {item.status === 'Out of Stock' && <FaExclamationTriangle />}
-                      {item.status}
+                      {(item.status === 'In Stock' || item.stock > 5) && <FaCheckCircle />}
+                      {(item.status === 'Low Stock' || (item.stock > 0 && item.stock <= 5)) && <FaExclamationTriangle />}
+                      {(item.status === 'Out of Stock' || item.stock === 0) && <FaExclamationTriangle />}
+                      {item.stock === 0 ? 'Out of Stock' : item.stock <= 5 ? 'Low Stock' : 'In Stock'}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -101,6 +163,45 @@ const Inventory = () => {
           </table>
         </div>
       </div>
+
+      {/* Add Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[32px] w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="bg-[#14532D] p-6 text-white flex items-center justify-between">
+              <h3 className="text-xl font-bold">Add New Machine</h3>
+              <button onClick={() => setIsModalOpen(false)}><FaTimes /></button>
+            </div>
+            <form onSubmit={handleAddSubmit} className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Machine Name</label>
+                  <input required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">SKU ID</label>
+                  <input required value={formData.sku} onChange={(e) => setFormData({...formData, sku: e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Category</label>
+                  <input required value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" placeholder="e.g. Paper Cup" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Price</label>
+                  <input required value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" placeholder="e.g. ₹4.5L" />
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Stock Quantity</label>
+                <input type="number" required value={formData.stock} onChange={(e) => setFormData({...formData, stock: parseInt(e.target.value)})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" />
+              </div>
+              <button type="submit" className="w-full py-3 bg-[#14532D] text-white rounded-xl font-bold hover:bg-slate-900 transition-all">Save to Inventory</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

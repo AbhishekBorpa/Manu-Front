@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaEnvelope, FaLock, FaArrowRight, FaHandshake, FaTimes, FaUser, FaPhone } from 'react-icons/fa';
 
 const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(initialMode === 'login');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,7 +12,9 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setIsLogin(initialMode === 'login');
+    if (isOpen) {
+      setIsLogin(initialMode === 'login');
+    }
   }, [initialMode, isOpen]);
 
   if (!isOpen) return null;
