@@ -7,28 +7,49 @@ const MyLeads = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await fetch(`${API_BASE_URL}/partner/leads`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setLeads(data);
+  const fetchLeads = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/partner/leads`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      } catch (err) {
-        console.error("Fetch leads error:", err);
-      } finally {
-        setLoading(false);
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setLeads(data);
       }
-    };
+    } catch (err) {
+      console.error("Fetch leads error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchLeads();
   }, []);
+
+  const handleStatusUpdate = async (id, newStatus) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/partner/leads/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        fetchLeads();
+      } else {
+        alert("Failed to update status");
+      }
+    } catch (err) {
+      console.error("Update lead error:", err);
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -115,11 +136,20 @@ const MyLeads = () => {
                     {lead.name[0]}
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                    <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2 flex-wrap">
                       {lead.name}
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider ${getStatusColor(lead.status)}`}>
-                        {lead.status}
-                      </span>
+                      <select 
+                        value={lead.status}
+                        onChange={(e) => handleStatusUpdate(lead._id, e.target.value)}
+                        className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold outline-none border-none cursor-pointer ${getStatusColor(lead.status)}`}
+                      >
+                        <option value="New">New</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Negotiation">Negotiation</option>
+                        <option value="Converted">Converted</option>
+                        <option value="Nurturing">Nurturing</option>
+                        <option value="Lost">Lost</option>
+                      </select>
                     </h3>
                     <p className="text-sm text-slate-500 font-medium">{lead.project}</p>
                     <div className="flex items-center gap-4 mt-3 text-xs text-slate-400">

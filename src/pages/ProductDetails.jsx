@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaArrowLeft, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 import LeadModal from "../components/LeadModal";
-import { API_BASE_URL } from "../api/config";
+import { API_BASE_URL, getServerUrl } from "../api/config";
 
 const ProductDetails = () => {
   const { state } = useLocation();
@@ -78,9 +78,12 @@ const ProductDetails = () => {
           
           <div className="relative h-[250px] sm:h-[350px] md:h-[500px]">
              <img
-              src={product.image || product.img}
+              src={getServerUrl(product.image || product.img) || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"}
               alt={product.title}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.src = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800";
+              }}
             />
             <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-white/90 backdrop-blur-md px-2 md:px-3 py-0.5 md:py-1 rounded-full text-[9px] md:text-[10px] font-black text-[#14532D] uppercase tracking-widest shadow-lg">
               {product.category || 'Industrial'}
@@ -166,9 +169,12 @@ const ProductDetails = () => {
               >
                 <div className="relative overflow-hidden rounded-lg md:rounded-xl h-32 md:h-44 mb-3 md:mb-4">
                   <img
-                    src={item.image}
+                    src={getServerUrl(item.image || item.img) || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     alt={item.title}
+                    onError={(e) => {
+                      e.target.src = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800";
+                    }}
                   />
                 </div>
 

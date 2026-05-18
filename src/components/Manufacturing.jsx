@@ -10,6 +10,7 @@ import {
 import {
   useNavigate,
 } from "react-router-dom";
+import { getServerUrl } from "../api/config";
 
 const Manufacturing = () => {
 
@@ -141,9 +142,12 @@ const Manufacturing = () => {
                 <div className="relative overflow-hidden">
 
                   <img
-                    src={item.img}
+                    src={getServerUrl(item.img || item.image) || "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800"}
                     alt={item.title}
                     className="w-full h-32 md:h-40 object-cover transition duration-500 group-hover:scale-110"
+                    onError={(e) => {
+                      e.target.src = "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800";
+                    }}
                   />
 
 

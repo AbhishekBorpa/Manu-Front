@@ -7,6 +7,8 @@ const Inventory = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingItemId, setEditingItemId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -35,28 +37,70 @@ const Inventory = () => {
     fetchInventory();
   }, []);
 
-  const handleAddSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_BASE_URL}/partner/inventory`, {
-        method: 'POST',
+      const url = isEditMode 
+        ? `${API_BASE_URL}/partner/inventory/${editingItemId}`
+        : `${API_BASE_URL}/partner/inventory`;
+      
+      const method = isEditMode ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(formData)
       });
+
       if (res.ok) {
         setIsModalOpen(false);
+        setIsEditMode(false);
+        setEditingItemId(null);
         setFormData({ name: '', category: '', sku: '', stock: 0, price: '', description: '' });
         fetchInventory();
       } else {
         const data = await res.json();
-        alert(data.msg || "Failed to add item");
+        alert(data.msg || "Operation failed");
       }
     } catch (err) {
-      console.error("Add inventory error:", err);
+      console.error("Inventory error:", err);
+    }
+  };
+
+  const handleEdit = (item) => {
+    setFormData({
+      name: item.name,
+      category: item.category,
+      sku: item.sku,
+      stock: item.stock,
+      price: item.price,
+      description: item.description || ''
+    });
+    setEditingItemId(item._id);
+    setIsEditMode(true);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this item?")) {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_BASE_URL}/partner/inventory/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          fetchInventory();
+        } else {
+          alert("Failed to delete item");
+        }
+      } catch (err) {
+        console.error("Delete inventory error:", err);
+      }
     }
   };
 
@@ -153,8 +197,18 @@ const Inventory = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"><FaEdit /></button>
-                      <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"><FaTrashAlt /></button>
+                      <button 
+                        onClick={() => handleEdit(item)}
+                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(item._id)}
+                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                      >
+                        <FaTrashAlt />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -164,15 +218,24 @@ const Inventory = () => {
         </div>
       </div>
 
-      {/* Add Modal */}
+      {/* Add/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-[32px] w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
             <div className="bg-[#14532D] p-6 text-white flex items-center justify-between">
-              <h3 className="text-xl font-bold">Add New Machine</h3>
-              <button onClick={() => setIsModalOpen(false)}><FaTimes /></button>
+              <h3 className="text-xl font-bold">{isEditMode ? 'Edit Machine' : 'Add New Machine'}</h3>
+              <button 
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setIsEditMode(false);
+                  setEditingItemId(null);
+                  setFormData({ name: '', category: '', sku: '', stock: 0, price: '', description: '' });
+                }}
+              >
+                <FaTimes />
+              </button>
             </div>
-            <form onSubmit={handleAddSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Machine Name</label>
@@ -197,7 +260,9 @@ const Inventory = () => {
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Stock Quantity</label>
                 <input type="number" required value={formData.stock} onChange={(e) => setFormData({...formData, stock: parseInt(e.target.value)})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" />
               </div>
-              <button type="submit" className="w-full py-3 bg-[#14532D] text-white rounded-xl font-bold hover:bg-slate-900 transition-all">Save to Inventory</button>
+              <button type="submit" className="w-full py-3 bg-[#14532D] text-white rounded-xl font-bold hover:bg-slate-900 transition-all">
+                {isEditMode ? 'Update Machine' : 'Save to Inventory'}
+              </button>
             </form>
           </div>
         </div>
