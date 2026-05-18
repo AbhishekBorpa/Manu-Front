@@ -11,7 +11,7 @@ import {
   FaTimes
 } from "react-icons/fa";
 import LeadModal from "../components/LeadModal";
-import { getServerUrl } from "../api/config";
+import { getServerUrl, getLocalFallback } from "../api/config";
 
 
 const AllProductsPage = () => {
@@ -76,6 +76,7 @@ const AllProductsPage = () => {
         const data = await res.json();
         
         if (data.success) {
+          console.log("FETCHED PRODUCTS:", data.products);
           let filtered = data.products;
           
           // Apply Category Filter from State
@@ -385,11 +386,11 @@ const AllProductsPage = () => {
                   {/* Image */}
                   <div className="relative overflow-hidden rounded-[24px] md:rounded-[32px] aspect-[4/3] mb-4 md:mb-6">
                     <img
-                      src={getServerUrl(item.image || item.img) || "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg"}
+                      src={getServerUrl(item.image || item.img) || getLocalFallback(item.title, item.category)}
                       alt={item.title}
                       className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
                       onError={(e) => {
-                        e.target.src = "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg";
+                        e.target.src = getLocalFallback(item.title, item.category);
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>

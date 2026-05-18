@@ -14,7 +14,7 @@ import {
   FaTools,
 } from "react-icons/fa";
 import LeadModal from "./LeadModal";
-import { getServerUrl } from "../api/config";
+import { getServerUrl, getLocalFallback } from "../api/config";
 
 
 /* 🔥 ICON MAP */
@@ -149,11 +149,11 @@ const FeaturedProducts = () => {
 
                 {/* 🔥 IMAGE */}
                 <img
-                  src={getServerUrl(item.image || item.img) || "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg"}
+                  src={getServerUrl(item.image || item.img) || getLocalFallback(item.title, item.category)}
                   alt={item.title}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    e.target.src = "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg";
+                    e.target.src = getLocalFallback(item.title, item.category);
                   }}
                 />
 
