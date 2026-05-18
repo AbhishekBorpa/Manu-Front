@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
-import { API_BASE_URL } from "../api/config";
+import { useLocation, useNavigate } from "react-router-dom";
+import { FaSearch, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
+import { API_BASE_URL, getServerUrl, getLocalFallback } from "../api/config";
+import LeadModal from "../components/LeadModal";
 
 const locations = ["Patna", "Delhi", "Noida", "Hajipur", "Vaishali", "Nalanda", "Kolkata"];
 
 const SearchResultsPage = ({ city, setCity }) => {
   const locationHook = useLocation();
+  const navigate = useNavigate();
   const query = new URLSearchParams(locationHook.search);
   const searchQuery = query.get("q") || "";
 
@@ -14,6 +16,8 @@ const SearchResultsPage = ({ city, setCity }) => {
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const activeLocation = city;
 
@@ -121,12 +125,19 @@ const SearchResultsPage = ({ city, setCity }) => {
           </div>
         ) : (
           products.map((item, i) => (
-            <div key={i} className="bg-white rounded-xl md:rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-3 md:p-4 border border-gray-100 group">
+            <div
+              key={i}
+              onClick={() => navigate("/product-details", { state: item })}
+              className="bg-white rounded-xl md:rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-3 md:p-4 border border-gray-100 group cursor-pointer"
+            >
               <div className="relative overflow-hidden rounded-lg md:rounded-2xl h-36 md:h-48 mb-3 md:mb-4">
                 <img 
-                  src={item.image} 
+                  src={getServerUrl(item.image || item.img) || getLocalFallback(item.title, item.category)}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                   alt={item.title}
+                  onError={(e) => {
+                    e.target.src = getLocalFallback(item.title, item.category);
+                  }}
                 />
               </div>
 
@@ -139,13 +150,23 @@ const SearchResultsPage = ({ city, setCity }) => {
                 </h3>
 
                 <div className="flex items-center justify-between mb-3 md:mb-4 mt-2">
-                  <p className="text-base md:text-xl font-black text-gray-900 leading-none">₹{item.price?.toLocaleString() || "8,40,000"}</p>
+                  <p className="text-base md:text-xl font-black text-gray-900 leading-none">
+                    ₹{item.price >= 100000 ? `${(item.price/100000).toFixed(1)}L` : item.price?.toLocaleString() || "8.4L"}
+                  </p>
                   <p className="text-[9px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
                     <FaMapMarkerAlt className="text-[#065f46] text-[10px]" /> {item.location || "New Delhi"}
                   </p>
                 </div>
 
-                <button className="w-full bg-slate-900 hover:bg-[#065f46] text-white py-2.5 md:py-3 rounded-lg md:rounded-xl font-bold text-[11px] md:text-sm shadow-lg shadow-slate-900/10 hover:shadow-green-900/20 transition-all active:scale-95">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsModalOpen(true);
+                    setSelectedProduct(item);
+                  }}
+                  className="w-full bg-slate-900 hover:bg-[#065f46] text-white py-2.5 md:py-3 rounded-lg md:rounded-xl font-bold text-[11px] md:text-sm shadow-lg shadow-slate-900/10 hover:shadow-green-900/20 transition-all active:scale-95 text-center block"
+                >
                   Contact Supplier
                 </button>
               </div>
@@ -154,6 +175,13 @@ const SearchResultsPage = ({ city, setCity }) => {
         )}
 
       </div>
+
+      <LeadModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={selectedProduct}
+        partnerId={selectedProduct?.partnerId}
+      />
     </section>
   );
 };
