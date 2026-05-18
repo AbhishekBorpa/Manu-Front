@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaMapMarkerAlt, FaArrowLeft, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+import { FaMapMarkerAlt, FaArrowLeft, FaPhoneAlt, FaEnvelope, FaTimes, FaExternalLinkAlt, FaClock } from "react-icons/fa";
 import LeadModal from "../components/LeadModal";
 import { API_BASE_URL, getServerUrl, getLocalFallback } from "../api/config";
 
@@ -8,6 +8,7 @@ const ProductDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCallModalOpen, setIsCallModalOpen] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(true);
   const product = state;
@@ -97,7 +98,7 @@ const ProductDetails = () => {
 
             <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-4 md:mb-6">
               <div className="flex items-center gap-1.5 text-gray-500 font-bold text-xs md:text-sm">
-                <FaMapMarkerAlt className="text-red-500" /> New Delhi, India
+                <FaMapMarkerAlt className="text-red-500" /> {product.location || 'New Delhi'}, India
               </div>
               <div className="hidden sm:block h-4 w-[1px] bg-gray-200"></div>
               <div className="text-green-600 font-bold text-xs md:text-sm">In Stock</div>
@@ -110,7 +111,9 @@ const ProductDetails = () => {
             <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6 mb-6 md:mb-8 border border-slate-100">
               <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Wholesale Price</p>
               <div className="flex items-end gap-2">
-                <span className="text-2xl md:text-4xl font-black text-slate-900 leading-none">₹{product.price?.toLocaleString() || '8,40,000'}</span>
+                <span className="text-2xl md:text-4xl font-black text-slate-900 leading-none">
+                  ₹{product.price >= 100000 ? `${(product.price/100000).toFixed(1)}L` : product.price?.toLocaleString() || '8,40,000'}
+                </span>
                 <span className="text-[10px] md:text-sm font-bold text-slate-400 pb-0.5 md:pb-1">* Excl. GST</span>
               </div>
             </div>
@@ -123,15 +126,17 @@ const ProductDetails = () => {
                 <FaEnvelope /> Contact Supplier
               </button>
               <button 
+                onClick={() => setIsCallModalOpen(true)}
                 className="flex-1 bg-white border-2 border-slate-200 text-slate-800 py-3 md:py-4 rounded-xl font-bold hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm md:text-base"
               >
-                <FaPhoneAlt size={12} /> Call Now
+                <FaPhoneAlt size={12} className="text-green-600" /> Call Now
               </button>
             </div>
           </div>
         </div>
       </div>
 
+      {/* LEAD CONTACT INQUIRY MODAL */}
       <LeadModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
@@ -139,6 +144,66 @@ const ProductDetails = () => {
         partnerId={product.partnerId}
       />
 
+      {/* 🔥 PREMIUM SUPPLIER CALL OVERLAY MODAL */}
+      {isCallModalOpen && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsCallModalOpen(false)}></div>
+          <div className="relative bg-white rounded-[32px] w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="bg-[#14532D] p-6 text-white flex justify-between items-center">
+              <div>
+                <h3 className="text-lg font-black uppercase tracking-wider">Contact Supplier</h3>
+                <p className="text-xs text-green-100/70 font-medium">Verify credentials & source directly</p>
+              </div>
+              <button onClick={() => setIsCallModalOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <FaTimes />
+              </button>
+            </div>
+            
+            <div className="p-6 md:p-8 space-y-6">
+              <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <div className="w-12 h-12 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-xl">
+                  <FaPhoneAlt />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none mb-1">Direct Line</p>
+                  <a href="tel:+919876543210" className="text-lg font-black text-slate-800 hover:text-green-600 transition-colors flex items-center gap-1">
+                    +91 98765 43210 <FaExternalLinkAlt className="text-xs text-slate-400" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center gap-2.5 text-xs text-slate-500 font-medium">
+                  <FaClock className="text-green-600" />
+                  <span>Available: 9:30 AM to 6:30 PM (Mon-Sat)</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Call the supplier to request wholesale catalogs, discuss custom machinery specifications, or schedule a physical factory site audit.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2">
+                <a
+                  href="tel:+919876543210"
+                  className="w-full py-3 bg-[#14532D] text-white rounded-xl font-bold text-center hover:bg-[#166534] transition-all flex items-center justify-center gap-2 text-sm"
+                >
+                  <FaPhoneAlt size={12} /> Call Now
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsCallModalOpen(false);
+                    setIsModalOpen(true);
+                  }}
+                  className="w-full py-3 bg-slate-100 text-slate-700 rounded-xl font-bold text-center hover:bg-slate-200 transition-all text-sm"
+                >
+                  Send Inquiry Form instead
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* RELATED PRODUCTS */}
       <div className="max-w-6xl mx-auto mt-10 md:mt-20">
@@ -185,7 +250,7 @@ const ProductDetails = () => {
 
                   <div className="flex flex-col md:flex-row md:items-center justify-between mt-1 md:mt-3 gap-1">
                     <p className="text-[14px] md:text-lg font-black text-slate-900 leading-none">
-                      ₹ {item.price?.toLocaleString() || "8,40,000"}
+                      ₹ {item.price >= 100000 ? `${(item.price/100000).toFixed(1)}L` : item.price?.toLocaleString() || "8,40,000"}
                     </p>
                     <p className="text-[9px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
                       <FaMapMarkerAlt className="text-red-500 text-[8px] md:text-[10px]" /> {item.location || "New Delhi"}
