@@ -91,34 +91,34 @@ const SearchResultsPage = ({ city, setCity }) => {
     <section className="bg-gradient-to-b from-[#f8fafc] to-[#eef2f7] min-h-screen">
 
       {/* HEADER */}
-      <div className="bg-white shadow-md z-10 pt-4 md:pt-6">
+      <div className="bg-white shadow-md z-10 pt-2 md:pt-6">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
 
-          <h2 className="text-xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-5">
+          <h2 className="text-lg md:text-3xl font-bold text-gray-800 mb-3 md:mb-5">
             {search || "All Products"} <span className="hidden sm:inline">near</span> 
             <span className="text-[#065f46] ml-2">{activeLocation}</span>
           </h2>
 
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+          <div className="flex flex-col lg:flex-row gap-3 md:gap-4 items-start lg:items-center justify-between">
 
             {/* SEARCH */}
             <div className="flex items-center w-full lg:w-[420px] bg-gray-100 rounded-full px-4 md:px-5 py-2 md:py-3 shadow-inner focus-within:ring-2 ring-[#065f46] transition-all">
-              <FaSearch className="text-gray-400 text-sm" />
+              <FaSearch className="text-gray-400 text-xs md:text-sm" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search machines..."
-                className="ml-3 w-full bg-transparent outline-none text-xs md:text-sm text-gray-700"
+                className="ml-2 md:ml-3 w-full bg-transparent outline-none text-[11px] md:text-sm text-gray-700"
               />
             </div>
 
             {/* LOCATIONS */}
-            <div className="flex gap-2 flex-wrap overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
+            <div className="flex gap-1.5 md:gap-2 flex-wrap overflow-x-auto pb-1 sm:pb-0 scrollbar-hide w-full lg:w-auto">
               {locations.map((loc) => (
                 <button
                   key={loc}
                   onClick={() => setCity(loc)}
-                  className={`px-4 md:px-5 py-1.5 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all whitespace-nowrap ${
+                  className={`px-3 md:px-5 py-1 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all whitespace-nowrap ${
                     activeLocation === loc
                       ? "bg-[#065f46] text-white shadow-md scale-105"
                       : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
@@ -137,18 +137,18 @@ const SearchResultsPage = ({ city, setCity }) => {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
 
         {products.length === 0 ? (
-          <div className="col-span-full py-20 text-center">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-               <FaSearch className="text-gray-300 text-2xl" />
+          <div className="col-span-full py-16 md:py-20 text-center">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+               <FaSearch className="text-gray-300 text-xl md:text-2xl" />
             </div>
-            <p className="text-gray-500 font-bold text-lg">
+            <p className="text-gray-500 font-bold text-sm md:text-lg">
               No machines found matching "{search}"
             </p>
           </div>
         ) : (
           products.map((item, i) => (
-            <div key={i} className="bg-white rounded-2xl md:rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-3 md:p-4 border border-gray-100 group">
-              <div className="relative overflow-hidden rounded-xl md:rounded-2xl h-40 md:h-48 mb-3 md:mb-4">
+            <div key={i} className="bg-white rounded-xl md:rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-3 md:p-4 border border-gray-100 group">
+              <div className="relative overflow-hidden rounded-lg md:rounded-2xl h-36 md:h-48 mb-3 md:mb-4">
                 <img 
                   src={item.img} 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
@@ -157,21 +157,21 @@ const SearchResultsPage = ({ city, setCity }) => {
               </div>
 
               <div className="px-1">
-                <div className="flex items-center gap-2 text-[#065f46] text-[10px] font-bold uppercase tracking-wider mb-1">
+                <div className="flex items-center gap-2 text-[#065f46] text-[9px] md:text-[10px] font-bold uppercase tracking-wider mb-1">
                   <span>{item.category}</span>
                 </div>
                 <h3 className="text-gray-900 font-extrabold text-sm md:text-base mb-1 line-clamp-1 group-hover:text-[#065f46] transition-colors">
                   {item.title}
                 </h3>
 
-                <div className="flex items-center justify-between mb-4 mt-2">
-                  <p className="text-lg md:text-xl font-black text-gray-900 leading-none">{item.price}</p>
-                  <p className="text-[10px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
-                    <FaMapMarkerAlt className="text-[#065f46]" /> {item.location}
+                <div className="flex items-center justify-between mb-3 md:mb-4 mt-2">
+                  <p className="text-base md:text-xl font-black text-gray-900 leading-none">{item.price}</p>
+                  <p className="text-[9px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
+                    <FaMapMarkerAlt className="text-[#065f46] text-[10px]" /> {item.location}
                   </p>
                 </div>
 
-                <button className="w-full bg-slate-900 hover:bg-[#065f46] text-white py-2.5 md:py-3 rounded-xl font-bold text-xs md:text-sm shadow-lg shadow-slate-900/10 hover:shadow-green-900/20 transition-all active:scale-95">
+                <button className="w-full bg-slate-900 hover:bg-[#065f46] text-white py-2.5 md:py-3 rounded-lg md:rounded-xl font-bold text-[11px] md:text-sm shadow-lg shadow-slate-900/10 hover:shadow-green-900/20 transition-all active:scale-95">
                   Contact Supplier
                 </button>
               </div>

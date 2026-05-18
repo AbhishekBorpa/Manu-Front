@@ -116,12 +116,12 @@ const FeaturedProducts = () => {
 
 
   return (
-    <section className="py-16 bg-[#f5f7f6]">
+    <section className="py-10 md:py-16 bg-[#f5f7f6]">
 
       {/* 🔥 TOP */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-8 md:mb-12 px-4">
 
-        <h2 className="text-4xl font-bold text-[#14532D]">
+        <h2 className="text-2xl md:text-4xl font-bold text-[#14532D]">
 
           Featured Machines & Products
 
@@ -132,7 +132,7 @@ const FeaturedProducts = () => {
 
 
       {/* 🔥 GRID */}
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         {products.map(
           (item) => (
@@ -142,11 +142,11 @@ const FeaturedProducts = () => {
               onClick={() =>
                 navigate("/products")
               }
-              className="group bg-white rounded-[22px] border border-gray-200 shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer"
+              className="group bg-white rounded-2xl md:rounded-[22px] border border-gray-200 shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer"
             >
 
               {/* 🔥 IMAGE AREA */}
-              <div className="relative h-[165px] overflow-hidden">
+              <div className="relative h-[140px] md:h-[165px] overflow-hidden">
 
                 {/* 🔥 IMAGE */}
                 <img
@@ -158,12 +158,12 @@ const FeaturedProducts = () => {
 
 
                 {/* 🔥 CURVE */}
-                <div className="absolute bottom-0 left-0 w-[110px] h-[85px] bg-white rounded-tr-[90px]"></div>
+                <div className="absolute bottom-0 left-0 w-[80px] md:w-[110px] h-[60px] md:h-[85px] bg-white rounded-tr-[70px] md:rounded-tr-[90px]"></div>
 
 
 
                 {/* 🔥 ICON */}
-                <div className="absolute bottom-5 left-5 w-[74px] h-[74px] rounded-full bg-[#2E9635] border-[5px] border-white flex items-center justify-center text-white text-3xl shadow-lg">
+                <div className="absolute bottom-3 left-3 md:bottom-5 md:left-5 w-[50px] md:w-[74px] h-[50px] md:h-[74px] rounded-full bg-[#2E9635] border-[3px] md:border-[5px] border-white flex items-center justify-center text-white text-xl md:text-3xl shadow-lg">
 
                   {iconMap[item.icon]}
 
@@ -174,10 +174,10 @@ const FeaturedProducts = () => {
 
 
               {/* 🔥 CONTENT */}
-              <div className="px-5 pt-4 pb-5">
+              <div className="px-4 md:px-5 pt-3 md:pt-4 pb-4 md:pb-5">
 
                 {/* 🔥 TITLE */}
-                <h3 className="text-[18px] font-extrabold text-[#14532D] uppercase leading-6">
+                <h3 className="text-[16px] md:text-[18px] font-extrabold text-[#14532D] uppercase leading-tight md:leading-6">
 
                   {item.title}
 
@@ -186,7 +186,7 @@ const FeaturedProducts = () => {
 
 
                 {/* 🔥 DESC */}
-                <p className="text-gray-700 mt-3 text-[15px] leading-7 min-h-[95px]">
+                <p className="text-gray-700 mt-2 md:mt-3 text-[13px] md:text-[15px] leading-relaxed md:leading-7 min-h-[70px] md:min-h-[95px]">
 
                   {item.desc}
 
@@ -195,7 +195,7 @@ const FeaturedProducts = () => {
 
 
                 {/* 🔥 HOVER LINE */}
-                <div className="mt-5 w-12 group-hover:w-24 h-[5px] bg-[#14532D] rounded-full transition-all duration-300"></div>
+                <div className="mt-4 md:mt-5 w-10 md:w-12 group-hover:w-16 md:group-hover:w-24 h-[4px] md:h-[5px] bg-[#14532D] rounded-full transition-all duration-300"></div>
 
                 <button 
                   onClick={(e) => {
@@ -203,7 +203,7 @@ const FeaturedProducts = () => {
                     setIsModalOpen(true);
                     setSelectedProduct(item);
                   }}
-                  className="mt-6 w-full py-3 bg-[#14532D] text-white rounded-xl font-bold text-sm shadow-md hover:bg-slate-900 transition-all active:scale-95"
+                  className="mt-5 md:mt-6 w-full py-2.5 md:py-3 bg-[#14532D] text-white rounded-lg md:rounded-xl font-bold text-xs md:text-sm shadow-md hover:bg-slate-900 transition-all active:scale-95"
                 >
                   Contact Supplier
                 </button>
@@ -219,13 +219,13 @@ const FeaturedProducts = () => {
 
 
       {/* 🔥 BUTTON */}
-      <div className="text-center mt-12">
+      <div className="text-center mt-10 md:mt-12">
 
         <button
           onClick={() =>
             navigate("/products")
           }
-          className="bg-[#14532D] hover:bg-[#166534] text-white px-8 py-3 rounded-xl font-semibold transition"
+          className="bg-[#14532D] hover:bg-[#166534] text-white px-6 md:px-8 py-2.5 md:py-3 rounded-lg md:rounded-xl font-semibold text-sm md:text-base transition"
         >
 
           View All Products

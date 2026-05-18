@@ -96,14 +96,14 @@ const Manufacturing = () => {
 
 
   return (
-    <section className="bg-white py-16">
+    <section className="bg-white py-8 md:py-16">
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
 
         {/* 🔥 HEADER */}
-        <div className="mb-10">
+        <div className="mb-6 md:mb-10">
 
-          <h2 className="text-4xl font-bold text-gray-900">
+          <h2 className="text-2xl md:text-4xl font-bold text-gray-900">
 
             Choose Your Manufacturing
 
@@ -111,7 +111,7 @@ const Manufacturing = () => {
 
 
 
-          <p className="text-gray-500 mt-3">
+          <p className="text-gray-500 mt-2 md:mt-3 text-sm md:text-base">
 
             Explore premium industrial manufacturing solutions
 
@@ -122,7 +122,7 @@ const Manufacturing = () => {
 
 
         {/* 🔥 GRID */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
 
           {manufacturingData.map(
             (item) => (
@@ -134,7 +134,7 @@ const Manufacturing = () => {
                     `/search?q=${item.category}`
                   )
                 }
-                className="cursor-pointer bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2"
+                className="cursor-pointer bg-white rounded-xl md:rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-2xl transition-all duration-300 group hover:-translate-y-1 md:hover:-translate-y-2"
               >
 
                 {/* 🔥 IMAGE */}
@@ -143,13 +143,13 @@ const Manufacturing = () => {
                   <img
                     src={item.img}
                     alt={item.title}
-                    className="w-full h-40 object-cover transition duration-500 group-hover:scale-110"
+                    className="w-full h-32 md:h-40 object-cover transition duration-500 group-hover:scale-110"
                   />
 
 
 
                   {/* 🔥 TAG */}
-                  <span className="absolute top-3 left-3 bg-[#14532D] text-white text-[11px] px-3 py-1 rounded-full shadow">
+                  <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-[#14532D] text-white text-[9px] md:text-[11px] px-2 md:px-3 py-0.5 md:py-1 rounded-full shadow">
 
                     {item.tag}
 
@@ -158,9 +158,9 @@ const Manufacturing = () => {
 
 
                   {/* 🔥 RATING */}
-                  <span className="absolute bottom-3 right-3 bg-white text-black text-xs px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
+                  <span className="absolute bottom-2 right-2 md:bottom-3 md:right-3 bg-white text-black text-[9px] md:text-xs px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 shadow">
 
-                    <FaStar className="text-yellow-500 text-[11px]" />
+                    <FaStar className="text-yellow-500 text-[9px] md:text-[11px]" />
 
                     {item.rating}
 
@@ -171,9 +171,9 @@ const Manufacturing = () => {
 
 
                 {/* 🔥 CONTENT */}
-                <div className="p-4">
+                <div className="p-3 md:p-4">
 
-                  <h3 className="text-[14px] font-semibold text-gray-800 leading-6 min-h-[55px] group-hover:text-[#14532D] transition">
+                  <h3 className="text-[12px] md:text-[14px] font-semibold text-gray-800 leading-tight md:leading-6 min-h-[40px] md:min-h-[55px] group-hover:text-[#14532D] transition">
 
                     {item.title}
 
@@ -181,7 +181,7 @@ const Manufacturing = () => {
 
 
 
-                  <p className="text-sm font-bold text-[#14532D] mt-2">
+                  <p className="text-[12px] md:text-sm font-bold text-[#14532D] mt-1 md:mt-2">
 
                     {item.price}
 
@@ -190,7 +190,7 @@ const Manufacturing = () => {
 
 
                   {/* 🔥 LINE */}
-                  <div className="mt-4 w-10 h-[4px] bg-[#14532D] rounded-full group-hover:w-20 transition-all duration-300"></div>
+                  <div className="mt-2 md:mt-4 w-6 md:w-10 h-[3px] md:h-[4px] bg-[#14532D] rounded-full group-hover:w-12 md:group-hover:w-20 transition-all duration-300"></div>
 
                 </div>
 

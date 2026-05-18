@@ -82,43 +82,43 @@ const LeadModal = ({ isOpen, onClose, product, partnerId }) => {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-8 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-3 md:space-y-4 max-h-[70vh] overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Full Name</label>
-                  <input required name="name" value={formData.name} onChange={handleChange} className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="John Doe" />
+                  <input required name="name" value={formData.name} onChange={handleChange} className="w-full px-4 md:px-5 py-2.5 md:py-3 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="John Doe" />
                 </div>
                 <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Phone Number</label>
-                  <input required name="phone" value={formData.phone} onChange={handleChange} className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="+91 ..." />
+                  <input required name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 md:px-5 py-2.5 md:py-3 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="+91 ..." />
                 </div>
               </div>
 
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Email Address</label>
-                <input required name="email" type="email" value={formData.email} onChange={handleChange} className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="john@company.com" />
+                <input required name="email" type="email" value={formData.email} onChange={handleChange} className="w-full px-4 md:px-5 py-2.5 md:py-3 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="john@company.com" />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Location</label>
-                  <input name="location" value={formData.location} onChange={handleChange} className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="City, State" />
+                  <input name="location" value={formData.location} onChange={handleChange} className="w-full px-4 md:px-5 py-2.5 md:py-3 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="City, State" />
                 </div>
                 <div>
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Estimated Budget</label>
-                  <input name="budget" value={formData.budget} onChange={handleChange} className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="e.g. ₹5L - ₹10L" />
+                  <input name="budget" value={formData.budget} onChange={handleChange} className="w-full px-4 md:px-5 py-2.5 md:py-3 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all" placeholder="e.g. ₹5L - ₹10L" />
                 </div>
               </div>
 
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Requirements / Notes</label>
-                <textarea name="notes" value={formData.notes} onChange={handleChange} rows="3" className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all resize-none" placeholder="Tell us more about your requirements..."></textarea>
+                <textarea name="notes" value={formData.notes} onChange={handleChange} rows="3" className="w-full px-4 md:px-5 py-2.5 md:py-3 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all resize-none" placeholder="Tell us more about your requirements..."></textarea>
               </div>
 
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full py-4 bg-[#14532D] text-white rounded-2xl font-black text-sm shadow-xl shadow-green-900/20 hover:bg-slate-900 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
+                className="w-full py-3 md:py-4 bg-[#14532D] text-white rounded-xl md:rounded-2xl font-black text-sm shadow-xl shadow-green-900/20 hover:bg-slate-900 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
               >
                 {loading ? 'Processing...' : (
                   <>

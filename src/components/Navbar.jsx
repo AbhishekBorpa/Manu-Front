@@ -170,14 +170,14 @@ const Navbar = ({
   return (
     <>
       <div className="w-full bg-[#F3F4F6] fixed top-[40px] md:top-[44px] z-[999] border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-3 flex items-center justify-between gap-4 md:gap-6">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-1.5 md:py-3 flex items-center justify-between gap-3 md:gap-6">
           
           {/* 🔥 LOGO */}
-          <div className="flex items-center h-[40px] md:h-[46px] flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
+          <div className="flex items-center h-[32px] md:h-[46px] flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
             <img
               src={logo}
               alt="UltraClap Logo"
-              className="h-[50px] md:h-[60px] w-auto object-contain"
+              className="h-[40px] md:h-[60px] w-auto object-contain"
             />
           </div>
 
@@ -317,33 +317,38 @@ const Navbar = ({
           </div>
 
           {/* 🔥 MOBILE ACTIONS (Location & Hamburger) */}
-          <div className="flex lg:hidden items-center gap-3">
+          <div className="flex lg:hidden items-center gap-2">
             <div
               onClick={onOpenLocation}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-full shadow-sm text-xs text-gray-700"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-300 rounded-full shadow-sm text-[10px] text-gray-700"
             >
               <FaMapMarkerAlt className="text-[#14532D]" />
-              <span className="max-w-[80px] sm:max-w-[120px] truncate">{city || navbar.defaultCity}</span>
+              <span className="max-w-[70px] sm:max-w-[120px] truncate">{city || navbar.defaultCity}</span>
             </div>
             
             <button 
               onClick={() => setIsMenuOpen(true)}
-              className="text-[#14532D] p-2 bg-white rounded-full shadow-sm border border-gray-200"
+              className="text-[#14532D] p-1.5 bg-white rounded-full shadow-sm border border-gray-200"
             >
-              <FaBars size={20} />
+              <FaBars size={18} />
             </button>
           </div>
         </div>
 
         {/* 🔥 MOBILE SEARCH BAR (Sticky below Navbar) */}
         <div className="lg:hidden px-4 pb-2">
-          <div className="flex items-center bg-white border border-gray-300 rounded-full shadow-sm h-[40px] overflow-hidden">
+          <div className="flex items-center bg-white border border-gray-300 rounded-full shadow-sm h-[36px] overflow-hidden">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && search.trim() !== "") {
+                  navigate(`/search?q=${search}`);
+                }
+              }}
               placeholder={navbar.placeholder}
-              className="flex-1 px-4 text-xs outline-none text-gray-700 h-full"
+              className="flex-1 px-4 text-[11px] outline-none text-gray-700 h-full"
             />
             <button
               onClick={() => {
@@ -351,7 +356,7 @@ const Navbar = ({
               }}
               className="bg-[#14532D] px-4 h-full text-white"
             >
-              <FaSearch size={14} />
+              <FaSearch size={12} />
             </button>
           </div>
         </div>

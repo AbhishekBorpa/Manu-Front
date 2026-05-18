@@ -182,13 +182,13 @@ const BannerSlider = () => {
 
                 <div
                   key={index}
-                  className="min-w-full grid md:grid-cols-2 items-center"
+                  className="min-w-full flex flex-col md:grid md:grid-cols-2 items-center"
                 >
 
                   {/* 🔥 LEFT */}
-                  <div className="p-8 space-y-5">
+                  <div className="p-6 md:p-8 space-y-3 md:space-y-5 order-2 md:order-1 text-center md:text-left">
 
-                    <h2 className="text-4xl font-bold leading-tight">
+                    <h2 className="text-2xl md:text-4xl font-bold leading-tight">
 
                       {slide.title}
 
@@ -200,20 +200,20 @@ const BannerSlider = () => {
 
                     </h2>
 
-                    <p className="text-gray-500 text-lg">
+                    <p className="text-gray-500 text-sm md:text-lg">
                       {slide.desc}
                     </p>
 
 
 
                     {/* 🔥 BUTTON */}
-                    <div className="flex items-center gap-4 pt-2">
+                    <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4 pt-2 justify-center md:justify-start">
 
-                      <button className="bg-[#14532D] text-white px-6 py-3 rounded-lg hover:bg-green-800 transition">
+                      <button className="bg-[#14532D] text-white px-5 md:px-6 py-2.5 md:py-3 rounded-lg hover:bg-green-800 transition text-sm md:text-base font-bold shadow-md">
                         Explore More
                       </button>
 
-                      <p className="text-sm text-gray-400">
+                      <p className="text-[10px] md:text-sm text-gray-400">
                         Trusted by 500+ Manufacturers
                       </p>
 
@@ -224,11 +224,13 @@ const BannerSlider = () => {
 
 
                   {/* 🔥 IMAGE */}
-                  <img
-                    src={imageMap[slide.image] || slide.image}
-                    className="w-full h-[300px] object-cover"
-                    alt={slide.title}
-                  />
+                  <div className="order-1 md:order-2 w-full">
+                    <img
+                      src={imageMap[slide.image] || slide.image}
+                      className="w-full h-[200px] md:h-[350px] object-cover"
+                      alt={slide.title}
+                    />
+                  </div>
 
 
                 </div>

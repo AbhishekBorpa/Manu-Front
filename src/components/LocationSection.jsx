@@ -99,12 +99,12 @@ const LocationSection = () => {
 
 
   return (
-    <section className="bg-gray-50 py-16">
+    <section className="bg-gray-50 py-10 md:py-16">
 
-      <div className="max-w-7xl mx-auto px-6 text-center">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 text-center">
 
         {/* 🔥 TOP TAG */}
-        <div className="inline-flex items-center gap-2 bg-green-100 text-[#14532D] px-4 py-2 rounded-full text-sm mb-4">
+        <div className="inline-flex items-center gap-2 bg-green-100 text-[#14532D] px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm mb-3 md:mb-4">
 
           <FaMapMarkerAlt />
 
@@ -115,7 +115,7 @@ const LocationSection = () => {
 
 
         {/* 🔥 HEADING */}
-        <h2 className="text-4xl font-bold text-gray-900 mb-3">
+        <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-2 md:mb-3">
 
           Available in{" "}
 
@@ -129,7 +129,7 @@ const LocationSection = () => {
 
 
 
-        <p className="text-gray-600 mb-10">
+        <p className="text-gray-600 text-sm md:text-lg mb-8 md:mb-10">
 
           Experience our premium home services across India
 
@@ -138,17 +138,17 @@ const LocationSection = () => {
 
 
         {/* 🔥 GRID */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-4 gap-x-8 text-left justify-center">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-3 md:gap-y-4 gap-x-4 md:gap-x-8 text-left justify-center">
 
           {visibleCities.map(
             (city) => (
 
               <div
                 key={city._id}
-                className="flex items-center gap-2 text-gray-700"
+                className="flex items-center gap-2 text-gray-700 text-xs md:text-base"
               >
 
-                <FaMapMarkerAlt className="text-[#14532D] text-sm" />
+                <FaMapMarkerAlt className="text-[#14532D] text-[10px] md:text-sm" />
 
                 {city.name}
 
@@ -167,7 +167,7 @@ const LocationSection = () => {
               !showAll
             )
           }
-          className="mt-10 bg-[#14532D] hover:bg-[#166534] text-white px-6 py-3 rounded-lg font-medium transition"
+          className="mt-8 md:mt-10 bg-[#14532D] hover:bg-[#166534] text-white px-6 py-2.5 md:py-3 rounded-lg font-medium text-sm md:text-base transition"
         >
 
           {showAll

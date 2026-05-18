@@ -63,69 +63,69 @@ const ProductDetails = () => {
   }
 
   return (
-    <section className="bg-[#f5f7f6] min-h-screen py-6 md:py-10 px-4 md:px-6">
+    <section className="bg-[#f5f7f6] min-h-screen py-4 md:py-10 px-4 md:px-6">
       
       {/* Back Button */}
-      <div className="max-w-6xl mx-auto mb-6">
+      <div className="max-w-6xl mx-auto mb-4 md:mb-6">
         <button 
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-500 hover:text-[#14532D] font-bold text-sm transition-colors"
+          className="flex items-center gap-2 text-gray-500 hover:text-[#14532D] font-bold text-xs md:text-sm transition-colors"
         >
-          <FaArrowLeft size={12} /> Back
+          <FaArrowLeft size={10} /> Back
         </button>
       </div>
 
       {/* MAIN PRODUCT */}
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl md:rounded-[32px] shadow-sm overflow-hidden border border-gray-100">
+      <div className="max-w-6xl mx-auto bg-white rounded-xl md:rounded-[32px] shadow-sm overflow-hidden border border-gray-100">
         <div className="grid grid-cols-1 md:grid-cols-2">
           
-          <div className="relative h-[300px] md:h-[500px]">
+          <div className="relative h-[250px] sm:h-[350px] md:h-[500px]">
              <img
               src={product.image || product.img}
               alt={product.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-[#14532D] uppercase tracking-widest shadow-lg">
+            <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-white/90 backdrop-blur-md px-2 md:px-3 py-0.5 md:py-1 rounded-full text-[9px] md:text-[10px] font-black text-[#14532D] uppercase tracking-widest shadow-lg">
               {product.category || 'Industrial'}
             </div>
           </div>
 
-          <div className="p-6 md:p-10 flex flex-col justify-center">
-            <h2 className="text-2xl md:text-4xl font-black text-[#14532D] leading-tight mb-4">
+          <div className="p-5 md:p-10 flex flex-col justify-center">
+            <h2 className="text-xl md:text-4xl font-black text-[#14532D] leading-tight mb-3 md:mb-4">
               {product.title}
             </h2>
 
-            <div className="flex items-center gap-4 mb-6">
-              <div className="flex items-center gap-1.5 text-gray-500 font-bold text-sm">
+            <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-4 md:mb-6">
+              <div className="flex items-center gap-1.5 text-gray-500 font-bold text-xs md:text-sm">
                 <FaMapMarkerAlt className="text-red-500" /> New Delhi, India
               </div>
-              <div className="h-4 w-[1px] bg-gray-200"></div>
-              <div className="text-green-600 font-bold text-sm">In Stock</div>
+              <div className="hidden sm:block h-4 w-[1px] bg-gray-200"></div>
+              <div className="text-green-600 font-bold text-xs md:text-sm">In Stock</div>
             </div>
 
-            <p className="text-gray-600 leading-relaxed mb-8 text-sm md:text-base">
+            <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-xs md:text-base">
               {product.desc || "Experience top-tier industrial performance with this advanced machinery. Engineered for precision, high output, and long-term durability in demanding manufacturing environments."}
             </p>
 
-            <div className="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Wholesale Price</p>
+            <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6 mb-6 md:mb-8 border border-slate-100">
+              <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Wholesale Price</p>
               <div className="flex items-end gap-2">
-                <span className="text-3xl md:text-4xl font-black text-slate-900 leading-none">₹{product.price?.toLocaleString() || '8,40,000'}</span>
-                <span className="text-sm font-bold text-slate-400 pb-1">* Excl. GST</span>
+                <span className="text-2xl md:text-4xl font-black text-slate-900 leading-none">₹{product.price?.toLocaleString() || '8,40,000'}</span>
+                <span className="text-[10px] md:text-sm font-bold text-slate-400 pb-0.5 md:pb-1">* Excl. GST</span>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
               <button 
                 onClick={() => setIsModalOpen(true)}
-                className="flex-1 bg-[#14532D] hover:bg-[#166534] text-white py-4 rounded-xl font-bold shadow-lg shadow-green-900/10 transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="flex-1 bg-[#14532D] hover:bg-[#166534] text-white py-3 md:py-4 rounded-xl font-bold shadow-lg shadow-green-900/10 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm md:text-base"
               >
                 <FaEnvelope /> Contact Supplier
               </button>
               <button 
-                className="flex-1 bg-white border-2 border-slate-200 text-slate-800 py-4 rounded-xl font-bold hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="flex-1 bg-white border-2 border-slate-200 text-slate-800 py-3 md:py-4 rounded-xl font-bold hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm md:text-base"
               >
-                <FaPhoneAlt size={14} /> Call Now
+                <FaPhoneAlt size={12} /> Call Now
               </button>
             </div>
           </div>
@@ -141,28 +141,28 @@ const ProductDetails = () => {
 
 
       {/* RELATED PRODUCTS */}
-      <div className="max-w-6xl mx-auto mt-12 md:mt-20">
+      <div className="max-w-6xl mx-auto mt-10 md:mt-20">
 
-        <div className="flex items-center justify-between mb-8">
-          <h3 className="text-xl md:text-2xl font-black text-slate-900">
+        <div className="flex items-center justify-between mb-6 md:mb-8">
+          <h3 className="text-lg md:text-2xl font-black text-slate-900">
             Similar <span className="text-[#14532D]">Machinery</span>
           </h3>
-          <button onClick={() => navigate("/all-products")} className="text-xs font-black text-[#14532D] hover:underline uppercase tracking-widest">
+          <button onClick={() => navigate("/all-products")} className="text-[10px] md:text-xs font-black text-[#14532D] hover:underline uppercase tracking-widest">
             View All
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
 
-          {relatedProducts.map((item) => (
+          {relatedProducts.slice(0, 6).map((item) => (
             <div
               key={item.id}
               onClick={() =>
                 navigate("/product-details", { state: item })
               }
-              className="group bg-white rounded-2xl md:rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-3 md:p-4 border border-gray-100 cursor-pointer"
+              className="group bg-white rounded-xl md:rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-2 md:p-4 border border-gray-100 cursor-pointer"
             >
-              <div className="relative overflow-hidden rounded-xl h-40 md:h-44 mb-4">
+              <div className="relative overflow-hidden rounded-lg md:rounded-xl h-32 md:h-44 mb-3 md:mb-4">
                 <img
                   src={item.image || item.img}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -171,16 +171,16 @@ const ProductDetails = () => {
               </div>
 
               <div className="px-1">
-                <h4 className="text-[#14532D] font-extrabold text-sm md:text-base mb-1 group-hover:text-green-600">
+                <h4 className="text-[#14532D] font-extrabold text-[12px] md:text-base mb-1 group-hover:text-green-600 line-clamp-1">
                   {item.title}
                 </h4>
 
-                <div className="flex items-center justify-between mt-3">
-                  <p className="text-lg font-black text-slate-900 leading-none">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mt-1 md:mt-3 gap-1">
+                  <p className="text-[14px] md:text-lg font-black text-slate-900 leading-none">
                     ₹ {item.price.toLocaleString()}
                   </p>
-                  <p className="text-[10px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
-                    <FaMapMarkerAlt className="text-red-500" /> {item.location}
+                  <p className="text-[9px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
+                    <FaMapMarkerAlt className="text-red-500 text-[8px] md:text-[10px]" /> {item.location}
                   </p>
                 </div>
               </div>

@@ -91,19 +91,19 @@ const AllProductsPage = () => {
     <div className="bg-[#F8FAFC] min-h-screen">
       
       {/* 🔥 PREMIUM HERO HEADER */}
-      <div className="bg-[#14532D] pt-16 md:pt-24 pb-8 md:pb-12 px-6 relative overflow-hidden">
+      <div className="bg-[#14532D] pt-12 md:pt-24 pb-6 md:pb-12 px-4 md:px-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 md:w-96 h-64 md:h-96 bg-white/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
             <div>
-              <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-2 md:mb-4">
+              <h1 className="text-2xl md:text-5xl font-black text-white tracking-tight mb-1 md:mb-4">
                 Industrial <span className="text-green-400">Marketplace</span>
               </h1>
-              <p className="text-green-100/70 font-medium max-w-xl text-sm md:text-base">
+              <p className="text-green-100/70 font-medium max-w-xl text-xs md:text-base">
                 Explore the world's largest collection of manufacturing machinery and industrial supplies.
               </p>
             </div>
-            <div className="inline-flex items-center gap-4 text-white/60 text-xs md:text-sm font-bold bg-black/20 backdrop-blur-md px-4 md:px-6 py-2 md:py-3 rounded-2xl border border-white/10 w-fit">
+            <div className="inline-flex items-center gap-2 md:gap-4 text-white/60 text-[10px] md:text-sm font-bold bg-black/20 backdrop-blur-md px-3 md:px-6 py-1.5 md:py-3 rounded-xl md:rounded-2xl border border-white/10 w-fit">
               <span>{products.length} Products Found</span>
             </div>
           </div>
@@ -116,32 +116,32 @@ const AllProductsPage = () => {
       </div>
 
       {/* 🔥 FILTER & SEARCH STRIP */}
-      <div className="sticky top-[105px] lg:top-[110px] z-[100] bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex flex-wrap items-center justify-between gap-3 md:gap-4">
+      <div className="sticky top-[72px] md:top-[88px] z-[100] bg-white border-b border-slate-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-4 flex items-center justify-between gap-2 md:gap-4">
           
           {/* Search */}
-          <div className="flex-1 min-w-[200px] md:min-w-[300px] relative group">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#14532D] transition-colors" />
+          <div className="flex-1 min-w-0 relative group">
+            <FaSearch className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#14532D] transition-colors text-xs md:text-sm" />
             <input 
               type="text" 
-              placeholder="Search machines..."
-              className="w-full pl-10 md:pl-12 pr-4 py-2 md:py-3 bg-slate-100 border-none rounded-xl md:rounded-2xl text-xs md:text-sm font-medium focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all outline-none"
+              placeholder="Search..."
+              className="w-full pl-8 md:pl-12 pr-3 py-1.5 md:py-3 bg-slate-100 border-none rounded-lg md:rounded-2xl text-[11px] md:text-sm font-medium focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all outline-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
           {/* Controls */}
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex items-center gap-1.5 md:gap-3">
             <button 
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 md:px-5 py-2 md:py-3 bg-white border border-slate-200 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 md:px-5 py-1.5 md:py-3 bg-white border border-slate-200 rounded-lg md:rounded-2xl text-[11px] md:text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all active:scale-95"
             >
-              <FaFilter className="text-[#14532D]" />
-              <span className="hidden sm:inline">Filters</span>
+              <FaFilter className="text-[#14532D] text-[10px] md:text-sm" />
+              <span>Filters</span>
             </button>
-            <div className="h-8 md:h-10 w-[1px] bg-slate-200 mx-1 md:mx-2 hidden sm:block"></div>
-            <div className="flex bg-slate-100 p-1 rounded-lg md:rounded-xl">
+            <div className="h-6 md:h-10 w-[1px] bg-slate-200 mx-1 hidden sm:block"></div>
+            <div className="hidden sm:flex bg-slate-100 p-1 rounded-lg md:rounded-xl">
               <button className="p-1.5 md:p-2 bg-white shadow-sm text-[#14532D] rounded-md md:rounded-lg"><FaThLarge className="text-xs md:text-base" /></button>
               <button className="p-1.5 md:p-2 text-slate-400"><FaList className="text-xs md:text-base" /></button>
             </div>

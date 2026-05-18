@@ -102,14 +102,14 @@ const FAQ = () => {
 
 
   return (
-    <section className="bg-white py-16">
+    <section className="bg-white py-10 md:py-16">
 
-      <div className="max-w-4xl mx-auto px-6">
+      <div className="max-w-4xl mx-auto px-4 md:px-6">
 
         {/* 🔥 HEADER */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-12">
 
-          <h2 className="text-4xl font-bold text-gray-900">
+          <h2 className="text-2xl md:text-4xl font-bold text-gray-900">
 
             Frequently Asked Questions
 
@@ -117,7 +117,7 @@ const FAQ = () => {
 
 
 
-          <p className="text-gray-500 mt-3 text-lg">
+          <p className="text-gray-500 mt-2 md:mt-3 text-sm md:text-lg">
 
             Find answers to common questions
 
@@ -128,7 +128,7 @@ const FAQ = () => {
 
 
         {/* 🔥 FAQ LIST */}
-        <div className="space-y-5">
+        <div className="space-y-4 md:space-y-5">
 
           {faqs.map(
             (
@@ -138,7 +138,7 @@ const FAQ = () => {
 
               <div
                 key={faq._id}
-                className="bg-gray-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+                className="bg-gray-50 rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100"
               >
 
                 {/* 🔥 QUESTION */}
@@ -146,10 +146,10 @@ const FAQ = () => {
                   onClick={() =>
                     toggleFAQ(index)
                   }
-                  className="w-full flex items-center justify-between px-7 py-5 text-left"
+                  className="w-full flex items-center justify-between px-5 md:px-7 py-4 md:py-5 text-left"
                 >
 
-                  <span className="text-lg font-semibold text-gray-800">
+                  <span className="text-base md:text-lg font-semibold text-gray-800 leading-tight">
 
                     {faq.question}
 
@@ -158,7 +158,7 @@ const FAQ = () => {
 
 
                   <FaChevronDown
-                    className={`text-[#14532D] text-sm transition-transform duration-300 ${
+                    className={`text-[#14532D] text-xs md:text-sm transition-transform duration-300 flex-shrink-0 ml-4 ${
                       openIndex === index
                         ? "rotate-180"
                         : ""
@@ -180,7 +180,7 @@ const FAQ = () => {
 
                   <div className="overflow-hidden">
 
-                    <div className="px-7 pb-5 text-gray-600 leading-relaxed">
+                    <div className="px-5 md:px-7 pb-4 md:pb-5 text-gray-600 text-sm md:text-base leading-relaxed">
 
                       {faq.answer}
 

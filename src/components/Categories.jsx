@@ -51,47 +51,47 @@ const Categories = () => {
   if (!categories || categories.length === 0) return null;
 
   return (
-    <section className="bg-white py-24 relative overflow-hidden">
+    <section className="bg-white py-12 md:py-24 relative overflow-hidden">
       {/* Background accents */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-green-50 rounded-full blur-3xl opacity-50 translate-x-1/2 -translate-y-1/2"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-2xl opacity-50 -translate-x-1/2 translate-y-1/2"></div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         {/* 🔥 HEADER */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-8 md:mb-16">
           <div>
-            <span className="text-[#14532D] font-bold text-sm tracking-[0.2em] uppercase mb-3 block">Marketplace</span>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+            <span className="text-[#14532D] font-bold text-[10px] md:text-sm tracking-[0.2em] uppercase mb-1 md:mb-3 block">Marketplace</span>
+            <h2 className="text-2xl md:text-5xl font-black text-slate-900 tracking-tight">
               Browse By <span className="text-[#14532D]">Categories</span>
             </h2>
           </div>
           <button 
             onClick={() => navigate('/all-products')}
-            className="group flex items-center gap-2 px-6 py-3 bg-slate-50 hover:bg-[#14532D] text-slate-700 hover:text-white rounded-2xl font-bold transition-all duration-300"
+            className="group self-start flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-slate-50 hover:bg-[#14532D] text-slate-700 hover:text-white rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all duration-300"
           >
-            View All Industries
-            <FaChevronRight className="text-[10px] group-hover:translate-x-1 transition-transform" />
+            View All
+            <FaChevronRight className="text-[8px] md:text-[10px] group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
 
         {/* 🔥 GRID */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-6">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 md:gap-6">
           {categories.slice(0, 8).map((cat) => (
             <div
               key={cat._id}
               onClick={() => navigate(`/all-products?category=${cat.name}`)}
-              className="group relative flex flex-col items-center justify-center p-8 bg-white border border-slate-100 rounded-[32px] shadow-sm hover:shadow-2xl hover:shadow-green-900/10 hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden"
+              className="group relative flex flex-col items-center justify-center p-4 md:p-8 bg-white border border-slate-100 rounded-2xl md:rounded-[32px] shadow-sm hover:shadow-2xl hover:shadow-green-900/10 hover:-translate-y-1 md:hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden"
             >
               {/* Background gradient on hover */}
               <div className="absolute inset-0 bg-gradient-to-b from-green-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
               {/* 🔥 ICON CONTAINER */}
-              <div className="relative z-10 mb-5 w-16 h-16 bg-slate-50 group-hover:bg-[#14532D] rounded-2xl flex items-center justify-center text-2xl text-slate-600 group-hover:text-white group-hover:rotate-[360deg] transition-all duration-700 shadow-inner group-hover:shadow-green-900/20">
+              <div className="relative z-10 mb-2 md:mb-5 w-10 h-10 md:w-16 md:h-16 bg-slate-50 group-hover:bg-[#14532D] rounded-xl md:rounded-2xl flex items-center justify-center text-lg md:text-2xl text-slate-600 group-hover:text-white group-hover:rotate-[360deg] transition-all duration-700 shadow-inner group-hover:shadow-green-900/20">
                 {iconMap[cat.icon] || <FaCogs />}
               </div>
 
               {/* 🔥 TEXT */}
-              <p className="relative z-10 text-sm font-extrabold text-slate-700 group-hover:text-slate-900 text-center leading-tight">
+              <p className="relative z-10 text-[10px] md:text-sm font-extrabold text-slate-700 group-hover:text-slate-900 text-center leading-tight">
                 {cat.name}
               </p>
 

@@ -200,36 +200,36 @@ const Hero = () => {
       </div>
 
       {/* 🔥 CONTENT */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center justify-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center justify-center">
 
-        <div className="max-w-3xl text-white text-center space-y-4 md:space-y-6">
+        <div className="max-w-3xl text-white text-center space-y-3 md:space-y-6">
 
           {/* STEP 1 */}
-          <p className={`text-green-400 text-sm md:text-base font-semibold transition-all duration-700 ${
+          <p className={`text-green-400 text-xs md:text-base font-semibold transition-all duration-700 ${
             step >= 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}>
             {slides[current].subtitle}
           </p>
 
           {/* STEP 2 */}
-          <h1 className={`text-3xl md:text-5xl lg:text-6xl font-bold transition-all duration-700 leading-tight ${
+          <h1 className={`text-2xl md:text-5xl lg:text-6xl font-bold transition-all duration-700 leading-tight px-2 ${
             step >= 2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}>
-            Your Trusted Partner in <br />
+            Your Trusted Partner in <br className="hidden md:block" />
             <span className="text-green-500">{slides[current].title}</span>
           </h1>
 
           {/* STEP 3 */}
-          <p className={`text-gray-200 text-xs md:text-base lg:text-lg transition-all duration-700 max-w-2xl mx-auto ${
+          <p className={`text-gray-200 text-[10px] md:text-base lg:text-lg transition-all duration-700 max-w-2xl mx-auto px-4 ${
             step >= 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}>
             {slides[current].desc}
           </p>
 
           {/* 🔥 SEARCH - Responsive stack */}
-          <div className="flex flex-col sm:flex-row bg-white rounded-xl overflow-hidden shadow-2xl max-w-xl mx-auto w-full border border-gray-100">
+          <div className="flex flex-col sm:flex-row bg-white rounded-lg sm:rounded-xl overflow-hidden shadow-2xl max-w-xl mx-auto w-[90%] sm:w-full border border-gray-100 mt-4 md:mt-8">
 
-            <select className="px-4 py-3 bg-gray-50 text-black border-b sm:border-b-0 sm:border-r text-sm focus:outline-none">
+            <select className="px-3 md:px-4 py-2 md:py-3 bg-gray-50 text-black border-b sm:border-b-0 sm:border-r text-[11px] md:text-sm focus:outline-none">
               <option>All Categories</option>
               <option>Manufacturing</option>
               <option>Services</option>
@@ -237,30 +237,30 @@ const Hero = () => {
 
             <input
               type="text"
-              placeholder="Search products or services..."
-              className="flex-1 px-4 py-3 text-black outline-none text-sm"
+              placeholder="Search products..."
+              className="flex-1 px-3 md:px-4 py-2 md:py-3 text-black outline-none text-[11px] md:text-sm"
             />
 
-            <button className="bg-[#14532D] hover:bg-[#166534] transition-colors px-8 py-3 text-white font-bold text-sm">
+            <button className="bg-[#14532D] hover:bg-[#166534] transition-colors px-4 md:px-8 py-2 md:py-3 text-white font-bold text-xs md:text-sm">
               Search
             </button>
 
           </div>
 
           {/* 🔥 BADGES - Hidden or scaled on small screens */}
-          <div className="hidden sm:flex flex-wrap gap-4 md:gap-8 justify-center pt-2 md:pt-4 text-xs md:text-sm font-medium">
+          <div className="flex flex-wrap gap-3 md:gap-8 justify-center pt-2 md:pt-4 text-[9px] md:text-sm font-medium">
 
-            <div className="flex items-center gap-2">
-              <FaShieldAlt className="text-green-500 text-lg" />
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <FaShieldAlt className="text-green-500 text-sm md:text-lg" />
               <span>Verified Manufacturers</span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <FaBoxOpen className="text-green-500 text-lg" />
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <FaBoxOpen className="text-green-500 text-sm md:text-lg" />
               <span>Best Industry Prices</span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2">
               <FaBolt className="text-green-500 text-lg" />
               <span>Fast Lead Response</span>
             </div>
@@ -268,7 +268,7 @@ const Hero = () => {
           </div>
 
           {/* 🔥 SUPPORTED BY */}
-          <div className="flex items-center justify-center gap-3 mt-4 md:mt-8 scale-75 md:scale-100">
+          <div className="flex items-center justify-center gap-3 mt-4 md:mt-8 scale-[0.7] md:scale-100">
             <div className="h-[1px] w-12 md:w-20 bg-orange-400"></div>
             <div className="bg-[#14532D] text-white px-5 py-1.5 rounded-full tracking-[3px] md:tracking-[5px] text-[10px] font-bold whitespace-nowrap">
               SUPPORTED BY
