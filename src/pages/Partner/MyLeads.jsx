@@ -6,6 +6,23 @@ const MyLeads = () => {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [activeLead, setActiveLead] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('All');
+
+  const exportLeads = () => {
+    if (leads.length === 0) return alert("No leads to export");
+    const headers = "Name,Project,Location,Status,Budget,Email,Phone,Date\n";
+    const rows = leads.map(l => `${l.name},${l.project},${l.location},${l.status},${l.budget},${l.email},${l.phone},${new Date(l.createdAt).toLocaleDateString()}`).join("\n");
+    const csvContent = "data:text/csv;charset=utf-8," + headers + rows;
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "my_leads.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const fetchLeads = async () => {
     try {
@@ -62,11 +79,15 @@ const MyLeads = () => {
     }
   };
 
-  const filteredLeads = leads.filter(lead => 
-    lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredLeads = leads.filter(lead => {
+    const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.location.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === 'All' || lead.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   if (loading) {
     return (
@@ -83,12 +104,37 @@ const MyLeads = () => {
           <h1 className="text-3xl font-black text-slate-800 tracking-tight">My Leads</h1>
           <p className="text-slate-500 font-medium">Manage and track your manufacturing inquiries</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition-all">
-            <FaFilter className="text-xs text-[#14532D]" />
+        <div className="flex items-center gap-3 relative">
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all border ${
+              showFilters ? 'bg-green-50 border-green-500 text-[#14532D]' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+            }`}
+          >
+            <FaFilter className="text-xs" />
             Filters
           </button>
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-[#14532D] text-white rounded-xl font-bold hover:bg-[#166534] transition-all shadow-lg shadow-green-900/10">
+          
+          {showFilters && (
+            <div className="absolute top-14 right-0 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 p-2 animate-in fade-in slide-in-from-top-2">
+              {['All', 'New', 'In Progress', 'Converted', 'Lost'].map((status) => (
+                <button
+                  key={status}
+                  onClick={() => {setStatusFilter(status); setShowFilters(false);}}
+                  className={`w-full text-left px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                    statusFilter === status ? 'bg-green-50 text-[#14532D]' : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <button 
+            onClick={exportLeads}
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#14532D] text-white rounded-xl font-bold hover:bg-[#166534] transition-all shadow-lg shadow-green-900/10"
+          >
             <FaDownload className="text-xs" />
             Export CSV
           </button>
@@ -166,7 +212,10 @@ const MyLeads = () => {
                   <a href={`mailto:${lead.email}`} className="flex-1 lg:flex-none p-3 bg-purple-50 text-purple-600 rounded-xl hover:bg-purple-100 transition-colors" title="Email">
                     <FaEnvelope />
                   </a>
-                  <button className="flex-1 lg:flex-none px-6 py-3 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-colors">
+                  <button 
+                    onClick={() => setActiveLead(lead)}
+                    className="flex-1 lg:flex-none px-6 py-3 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-colors"
+                  >
                     View Details
                   </button>
                 </div>
@@ -180,6 +229,53 @@ const MyLeads = () => {
           </div>
         )}
       </div>
+
+      {/* Lead Details Modal */}
+      {activeLead && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[32px] w-full max-w-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="bg-[#14532D] p-6 text-white flex items-center justify-between">
+              <h3 className="text-xl font-bold">Lead Details</h3>
+              <button onClick={() => setActiveLead(null)}><FaExclamationCircle className="rotate-180" /></button>
+            </div>
+            <div className="p-8 space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Client Name</label>
+                  <p className="font-bold text-slate-800">{activeLead.name}</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Project</label>
+                  <p className="font-bold text-slate-800">{activeLead.project}</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Email</label>
+                  <p className="font-bold text-slate-800">{activeLead.email}</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Phone</label>
+                  <p className="font-bold text-slate-800">{activeLead.phone}</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Location</label>
+                  <p className="font-bold text-slate-800">{activeLead.location}</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Budget</label>
+                  <p className="font-bold text-slate-800">{activeLead.budget}</p>
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Message</label>
+                <p className="text-sm text-slate-600 bg-slate-50 p-4 rounded-xl">{activeLead.message || "No specific message provided."}</p>
+              </div>
+              <div className="pt-6 border-t border-slate-100 flex justify-end">
+                <button onClick={() => setActiveLead(null)} className="px-6 py-2 bg-[#14532D] text-white rounded-xl font-bold">Close Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

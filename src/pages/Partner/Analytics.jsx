@@ -1,7 +1,11 @@
-import React from 'react';
-import { FaChartBar, FaCalendarAlt, FaArrowUp, FaChevronDown, FaArrowDown } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaChartBar, FaCalendarAlt, FaArrowUp, FaChevronDown, FaArrowDown, FaTimesCircle } from 'react-icons/fa';
 
 const Analytics = () => {
+  const [dateRange, setDateRange] = useState('Last 30 Days');
+  const [showDateRange, setShowDateRange] = useState(false);
+  const [showConversionDetails, setShowConversionDetails] = useState(false);
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -9,10 +13,29 @@ const Analytics = () => {
           <h1 className="text-2xl font-bold text-slate-800">Business Analytics</h1>
           <p className="text-slate-500 text-sm">Deep dive into your manufacturing performance metrics.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-2">
-            <FaCalendarAlt className="text-slate-400" /> Last 30 Days <FaChevronDown className="text-[10px]" />
+        <div className="flex items-center gap-3 relative">
+          <button 
+            onClick={() => setShowDateRange(!showDateRange)}
+            className="bg-white border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold text-slate-600 flex items-center gap-2"
+          >
+            <FaCalendarAlt className="text-slate-400" /> {dateRange} <FaChevronDown className="text-[10px]" />
           </button>
+          
+          {showDateRange && (
+            <div className="absolute top-12 right-0 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 p-2 animate-in fade-in slide-in-from-top-2">
+              {['Today', 'Last 7 Days', 'Last 30 Days', 'Last 90 Days', 'All Time'].map((range) => (
+                <button
+                  key={range}
+                  onClick={() => {setDateRange(range); setShowDateRange(false);}}
+                  className={`w-full text-left px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                    dateRange === range ? 'bg-green-50 text-[#14532D]' : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {range}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -83,7 +106,12 @@ const Analytics = () => {
               </div>
               <p className="text-xs font-bold text-slate-600">Overall conversion rate is up by 4% this month.</p>
             </div>
-            <button className="text-[10px] font-extrabold text-blue-600 uppercase tracking-wider">Details</button>
+            <button 
+              onClick={() => setShowConversionDetails(true)}
+              className="text-[10px] font-extrabold text-blue-600 uppercase tracking-wider"
+            >
+              Details
+            </button>
           </div>
         </div>
 
@@ -108,6 +136,41 @@ const Analytics = () => {
           </div>
         ))}
       </div>
+
+      {/* Conversion Details Modal */}
+      {showConversionDetails && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[32px] w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="bg-[#14532D] p-6 text-white flex items-center justify-between">
+              <h3 className="text-xl font-bold">Conversion Analysis</h3>
+              <button onClick={() => setShowConversionDetails(false)}><FaTimesCircle className="text-xl" /></button>
+            </div>
+            <div className="p-8 space-y-6">
+              <div className="space-y-4">
+                {[
+                  { label: 'Lead to Inquiry', rate: '85%', color: 'bg-blue-500' },
+                  { label: 'Inquiry to Negotiation', rate: '42%', color: 'bg-orange-500' },
+                  { label: 'Negotiation to Closed', rate: '18%', color: 'bg-green-500' },
+                ].map((item, i) => (
+                  <div key={i} className="space-y-2">
+                    <div className="flex justify-between text-sm font-bold text-slate-800">
+                      <span>{item.label}</span>
+                      <span>{item.rate}</span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden">
+                      <div style={{ width: item.rate }} className={`h-full ${item.color} rounded-full`}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-500 leading-relaxed italic">
+                * Based on data from {dateRange}. Conversions are tracked from initial lead assignment to final payment receipt.
+              </p>
+              <button onClick={() => setShowConversionDetails(false)} className="w-full py-3 bg-[#14532D] text-white rounded-xl font-bold">Close Analysis</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
