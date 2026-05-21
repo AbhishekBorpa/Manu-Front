@@ -36,6 +36,8 @@ const Navbar = ({
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const [categories, setCategories] = useState([]);
+
   const [category, setCategory] =
     useState("All Categories");
 
@@ -64,42 +66,27 @@ const Navbar = ({
 
 
 
-  /* 🔥 FETCH NAVBAR */
+  /* 🔥 FETCH NAVBAR & CATEGORIES */
   useEffect(() => {
 
-    const fetchNavbar =
+    const fetchData =
       async () => {
 
         try {
 
-          const res =
-            await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/navbar"
-            );
+          const [navbarRes, categoriesRes] = await Promise.all([
+            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/navbar"),
+            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories")
+          ]);
 
-          const data =
-            await res.json();
+          const navbarData = await navbarRes.json();
+          const categoriesData = await categoriesRes.json();
 
-          const navbarData =
-            data.navbar || data;
+          const nav = navbarData.navbar || navbarData;
+          setNavbar(nav);
 
-          setNavbar(
-            navbarData
-          );
-
-
-
-          /* 🔥 DEFAULT CATEGORY */
-          if (
-            navbarData?.categories
-              ?.length > 0
-          ) {
-
-            setCategory(
-              navbarData
-                .categories[0]
-            );
-          }
+          const cats = categoriesData.categories || categoriesData;
+          setCategories(cats);
 
         } catch (err) {
 
@@ -111,7 +98,7 @@ const Navbar = ({
         }
       };
 
-    fetchNavbar();
+    fetchData();
 
   }, []);
 
@@ -167,6 +154,19 @@ const Navbar = ({
 
 
 
+  /* 🔥 HANDLE SEARCH */
+  const handleSearch = () => {
+    let url = "/search";
+    const params = [];
+    if (search.trim()) params.push(`q=${encodeURIComponent(search)}`);
+    if (category !== "All Categories") params.push(`category=${encodeURIComponent(category)}`);
+    
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+    navigate(url);
+  };
+
   return (
     <>
       <div className="w-full bg-[#F3F4F6] fixed top-[40px] md:top-[44px] z-[999] border-b border-gray-200">
@@ -194,16 +194,25 @@ const Navbar = ({
 
               {openDropdown && (
                 <div className="absolute top-[50px] left-0 bg-white border border-gray-200 rounded-xl shadow-lg w-52 z-[3000]">
-                  {navbar.categories?.map((item) => (
+                  <div
+                    onClick={() => {
+                      setCategory("All Categories");
+                      setOpenDropdown(false);
+                    }}
+                    className="px-4 py-2 text-sm text-gray-700 hover:bg-[#14532D] hover:text-white cursor-pointer transition"
+                  >
+                    All Categories
+                  </div>
+                  {categories.map((item) => (
                     <div
-                      key={item}
+                      key={item._id}
                       onClick={() => {
-                        setCategory(item);
+                        setCategory(item.name);
                         setOpenDropdown(false);
                       }}
                       className="px-4 py-2 text-sm text-gray-700 hover:bg-[#14532D] hover:text-white cursor-pointer transition"
                     >
-                      {item}
+                      {item.name}
                     </div>
                   ))}
                 </div>
@@ -215,8 +224,8 @@ const Navbar = ({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && search.trim() !== "") {
-                  navigate(`/search?q=${search}`);
+                if (e.key === "Enter") {
+                  handleSearch();
                 }
               }}
               placeholder={navbar.placeholder}
@@ -224,11 +233,7 @@ const Navbar = ({
             />
 
             <button
-              onClick={() => {
-                if (search.trim() !== "") {
-                  navigate(`/search?q=${search}`);
-                }
-              }}
+              onClick={handleSearch}
               className="bg-[#14532D] hover:bg-[#166534] w-[60px] h-full flex items-center justify-center text-white rounded-r-full"
             >
               <FaSearch />

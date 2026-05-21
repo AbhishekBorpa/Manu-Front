@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaBoxOpen,
   FaShieldAlt,
@@ -53,6 +54,11 @@ const Hero = () => {
   const [step, setStep] = useState(0);
   const [pulse, setPulse] = useState(false);
   const [hovered, setHovered] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const navigate = useNavigate();
 
   const nextSlide = () => {
     setCurrent((prev) => (prev + 1) % slides.length);
@@ -62,6 +68,33 @@ const Hero = () => {
     setCurrent((prev) =>
       prev === 0 ? slides.length - 1 : prev - 1
     );
+  };
+
+  // 🔥 FETCH CATEGORIES
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories");
+        const data = await res.json();
+        setCategories(data.categories || data);
+      } catch (err) {
+        console.log("Error fetching categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // 🔥 HANDLE SEARCH
+  const handleSearch = () => {
+    let url = "/search";
+    const params = [];
+    if (searchQuery.trim()) params.push(`q=${encodeURIComponent(searchQuery)}`);
+    if (selectedCategory !== "All Categories") params.push(`category=${encodeURIComponent(selectedCategory)}`);
+    
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+    navigate(url);
   };
 
   // 🔥 AUTO SLIDE
@@ -229,19 +262,32 @@ const Hero = () => {
           {/* 🔥 SEARCH - Responsive stack */}
           <div className="flex flex-col sm:flex-row bg-white rounded-lg sm:rounded-xl overflow-hidden shadow-2xl max-w-xl mx-auto w-[90%] sm:w-full border border-gray-100 mt-4 md:mt-8">
 
-            <select className="px-3 md:px-4 py-2 md:py-3 bg-gray-50 text-black border-b sm:border-b-0 sm:border-r text-[11px] md:text-sm focus:outline-none">
+            <select 
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-3 md:px-4 py-2 md:py-3 bg-gray-50 text-black border-b sm:border-b-0 sm:border-r text-[11px] md:text-sm focus:outline-none"
+            >
               <option>All Categories</option>
-              <option>Manufacturing</option>
-              <option>Services</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat.name}>{cat.name}</option>
+              ))}
             </select>
 
             <input
               type="text"
               placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch();
+              }}
               className="flex-1 px-3 md:px-4 py-2 md:py-3 text-black outline-none text-[11px] md:text-sm"
             />
 
-            <button className="bg-[#14532D] hover:bg-[#166534] transition-colors px-4 md:px-8 py-2 md:py-3 text-white font-bold text-xs md:text-sm">
+            <button 
+              onClick={handleSearch}
+              className="bg-[#14532D] hover:bg-[#166534] transition-colors px-4 md:px-8 py-2 md:py-3 text-white font-bold text-xs md:text-sm"
+            >
               Search
             </button>
 

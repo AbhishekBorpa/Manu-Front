@@ -18,6 +18,7 @@ const iconMap = {
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
+  const [activeTab, setActiveTab] = useState("machine");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -36,6 +37,8 @@ const Categories = () => {
     };
     fetchCategories();
   }, []);
+
+  const filteredCategories = categories.filter(cat => (cat.type || "machine") === activeTab);
 
   if (loading) {
     return (
@@ -58,16 +61,36 @@ const Categories = () => {
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         {/* 🔥 HEADER */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-8 md:mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-6 mb-8 md:mb-16">
           <div>
             <span className="text-[#14532D] font-bold text-[10px] md:text-sm tracking-[0.2em] uppercase mb-1 md:mb-3 block">Marketplace</span>
             <h2 className="text-2xl md:text-5xl font-black text-slate-900 tracking-tight">
               Browse By <span className="text-[#14532D]">Categories</span>
             </h2>
+
+            {/* 🔥 TOGGLE BUTTON */}
+            <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit mt-6">
+              <button 
+                onClick={() => setActiveTab("machine")}
+                className={`px-4 md:px-6 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${
+                  activeTab === "machine" ? "bg-[#14532D] text-white shadow-md" : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                Manufacturing
+              </button>
+              <button 
+                onClick={() => setActiveTab("industry")}
+                className={`px-4 md:px-6 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${
+                  activeTab === "industry" ? "bg-[#14532D] text-white shadow-md" : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                Services
+              </button>
+            </div>
           </div>
           <button 
             onClick={() => navigate('/all-products')}
-            className="group self-start flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-slate-50 hover:bg-[#14532D] text-slate-700 hover:text-white rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all duration-300"
+            className="group flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-slate-50 hover:bg-[#14532D] text-slate-700 hover:text-white rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all duration-300"
           >
             View All
             <FaChevronRight className="text-[8px] md:text-[10px] group-hover:translate-x-1 transition-transform" />
@@ -76,7 +99,7 @@ const Categories = () => {
 
         {/* 🔥 GRID */}
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 md:gap-6">
-          {categories.slice(0, 8).map((cat) => (
+          {filteredCategories.slice(0, 8).map((cat) => (
             <div
               key={cat._id}
               onClick={() => navigate(`/all-products?category=${cat.name}`)}
