@@ -8,7 +8,7 @@ const ProfileTab = ({
   const API_URL = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
   
   const [passwordData, setPasswordData] = useState({
-    oldPassword: "",
+    currentPassword: "",
     newPassword: "",
     confirmPassword: ""
   });
@@ -55,7 +55,7 @@ const ProfileTab = ({
           "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({ 
-          oldPassword: passwordData.oldPassword, 
+          currentPassword: passwordData.currentPassword, 
           newPassword: passwordData.newPassword 
         })
       });
@@ -63,7 +63,7 @@ const ProfileTab = ({
       const data = await res.json();
       if (data.success) {
         alert("Password updated successfully!");
-        setPasswordData({ oldPassword: "", newPassword: "", confirmPassword: "" });
+        setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       } else {
         alert(data.msg || "Failed to update password.");
       }
@@ -187,8 +187,8 @@ const ProfileTab = ({
                   <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">Current Password</label>
                   <input 
                     type="password" 
-                    value={passwordData.oldPassword}
-                    onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
                     className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[48px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
                     required
                   />
