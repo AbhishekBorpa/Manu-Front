@@ -67,15 +67,25 @@ const VerificationsTab = ({
 
               <div className="flex items-center gap-2">
                 {profile.gstDoc ? (
-                  <a href={profile.gstDoc} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 p-1.5 bg-blue-500/10 text-blue-400 rounded-md hover:bg-blue-500 hover:text-white transition-all">
+                  <a href={profile.gstDoc} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 p-1.5 bg-blue-500/10 text-blue-400 rounded-md hover:bg-blue-500 hover:text-white transition-all" title={`GST: ${profile.gstNumber || 'N/A'}`}>
                      <FileText size={12} /> GST
                   </a>
                 ) : <span className="text-gray-600">-</span>}
                 {profile.businessRegDoc ? (
-                  <a href={profile.businessRegDoc} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 p-1.5 bg-purple-500/10 text-purple-400 rounded-md hover:bg-purple-500 hover:text-white transition-all">
+                  <a href={profile.businessRegDoc} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 p-1.5 bg-purple-500/10 text-purple-400 rounded-md hover:bg-purple-500 hover:text-white transition-all" title={`Reg: ${profile.businessRegistrationNumber || 'N/A'}`}>
                      <FileText size={12} /> Reg
                   </a>
                 ) : <span className="text-gray-600">-</span>}
+                {profile.aadharDoc ? (
+                  <a href={profile.aadharDoc} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 p-1.5 bg-green-500/10 text-green-400 rounded-md hover:bg-green-500 hover:text-white transition-all" title={`Aadhar: ${profile.aadharNumber || 'N/A'}`}>
+                     <FileText size={12} /> Aadhar
+                  </a>
+                ) : null}
+                {profile.panDoc ? (
+                  <a href={profile.panDoc} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 p-1.5 bg-orange-500/10 text-orange-400 rounded-md hover:bg-orange-500 hover:text-white transition-all" title={`PAN: ${profile.panNumber || 'N/A'}`}>
+                     <FileText size={12} /> PAN
+                  </a>
+                ) : null}
               </div>
 
               <span>

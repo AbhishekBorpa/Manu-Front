@@ -129,6 +129,11 @@ const TableTab = ({
                   {service.tag || 'Active'}
                 </span>
                 <div className="flex items-center justify-end gap-3 text-gray-400">
+                  {service.image && (
+                    <a href={service.image} target="_blank" rel="noreferrer" className="hover:text-green-400 transition-colors" title="View Image">
+                      <Eye size={14} />
+                    </a>
+                  )}
                   <button onClick={() => handleEditClick(service)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
                   <button onClick={() => handleDelete(service._id, "manufacturing")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                 </div>
@@ -209,6 +214,11 @@ const TableTab = ({
                   <span className="text-[8px] text-gray-400">{product.location || 'N/A'}</span>
                 </div>
                 <div className="flex items-center justify-end gap-3 text-gray-400">
+                  {product.image && (
+                    <a href={product.image} target="_blank" rel="noreferrer" className="hover:text-green-400 transition-colors" title="View Image">
+                      <Eye size={14} />
+                    </a>
+                  )}
                   <button onClick={() => handleEditClick(product)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
                   <button onClick={() => handleDelete(product._id, "products")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                 </div>

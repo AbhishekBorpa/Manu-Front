@@ -283,6 +283,50 @@ const PartnerDetails = () => {
                      </div>
                   </div>
 
+                  {/* Aadhar Doc */}
+                  {partner.aadharDoc && (
+                    <div className="bg-[#081120] border border-white/10 rounded-3xl p-6 hover:border-green-500/30 transition-all group">
+                       <div className="flex items-start justify-between mb-6">
+                          <div className="w-12 h-12 rounded-2xl bg-green-500/10 text-green-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <FileText size={24} />
+                          </div>
+                          <a href={partner.aadharDoc} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-colors">
+                            <ExternalLink size={16} />
+                          </a>
+                       </div>
+                       <h4 className="text-sm font-black text-white mb-1 uppercase tracking-wider">Aadhar Card</h4>
+                       <p className="text-[10px] text-gray-500 font-bold font-mono">ID: {partner.aadharNumber || 'NOT PROVIDED'}</p>
+                       
+                       <div className="mt-6">
+                          <a href={partner.aadharDoc} target="_blank" rel="noreferrer" className="w-full py-3 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center gap-2 text-xs font-bold transition-all">
+                             Preview Document <ChevronRight size={14} />
+                          </a>
+                       </div>
+                    </div>
+                  )}
+
+                  {/* PAN Doc */}
+                  {partner.panDoc && (
+                    <div className="bg-[#081120] border border-white/10 rounded-3xl p-6 hover:border-orange-500/30 transition-all group">
+                       <div className="flex items-start justify-between mb-6">
+                          <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <FileText size={24} />
+                          </div>
+                          <a href={partner.panDoc} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-colors">
+                            <ExternalLink size={16} />
+                          </a>
+                       </div>
+                       <h4 className="text-sm font-black text-white mb-1 uppercase tracking-wider">PAN Card</h4>
+                       <p className="text-[10px] text-gray-500 font-bold font-mono">ID: {partner.panNumber || 'NOT PROVIDED'}</p>
+                       
+                       <div className="mt-6">
+                          <a href={partner.panDoc} target="_blank" rel="noreferrer" className="w-full py-3 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center gap-2 text-xs font-bold transition-all">
+                             Preview Document <ChevronRight size={14} />
+                          </a>
+                       </div>
+                    </div>
+                  )}
+
                </div>
             </div>
 
