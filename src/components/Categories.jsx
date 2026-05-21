@@ -1,24 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaCogs, FaCar, FaBolt, FaTools, FaIndustry, FaBoxes, FaScrewdriver, FaFlask, FaChevronRight
+  FaCogs, FaChevronRight, FaStoreAlt
 } from "react-icons/fa";
 
-/* 🔥 ICON MAP */
-const iconMap = {
-  cogs: <FaCogs />,
-  car: <FaCar />,
-  bolt: <FaBolt />,
-  tools: <FaTools />,
-  industry: <FaIndustry />,
-  boxes: <FaBoxes />,
-  screwdriver: <FaScrewdriver />,
-  flask: <FaFlask />,
-};
-
 const Categories = () => {
-  const [categories, setCategories] = useState([]);
-  const [activeTab, setActiveTab] = useState("machine");
+  const [productCategories, setProductCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -26,9 +13,20 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories");
+        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/products");
         const data = await res.json();
-        setCategories(data.categories || data);
+        if (data.success) {
+          const seen = new Set();
+          const cats = [];
+          data.products.forEach(p => {
+            const name = p.category || 'Uncategorized';
+            if (!seen.has(name)) {
+              seen.add(name);
+              cats.push(name);
+            }
+          });
+          setProductCategories(cats);
+        }
       } catch (err) {
         console.log(err);
       } finally {
@@ -37,8 +35,6 @@ const Categories = () => {
     };
     fetchCategories();
   }, []);
-
-  const filteredCategories = categories.filter(cat => (cat.type || "machine") === activeTab);
 
   if (loading) {
     return (
@@ -51,7 +47,7 @@ const Categories = () => {
     );
   }
 
-  if (!categories || categories.length === 0) return null;
+  if (!productCategories || productCategories.length === 0) return null;
 
   return (
     <section className="bg-white py-12 md:py-24 relative overflow-hidden">
@@ -67,26 +63,6 @@ const Categories = () => {
             <h2 className="text-2xl md:text-5xl font-black text-slate-900 tracking-tight">
               Browse By <span className="text-[#14532D]">Categories</span>
             </h2>
-
-            {/* 🔥 TOGGLE BUTTON */}
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl w-fit mt-6">
-              <button 
-                onClick={() => setActiveTab("machine")}
-                className={`px-4 md:px-6 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${
-                  activeTab === "machine" ? "bg-[#14532D] text-white shadow-md" : "text-slate-500 hover:text-slate-700"
-                }`}
-              >
-                Manufacturing
-              </button>
-              <button 
-                onClick={() => setActiveTab("industry")}
-                className={`px-4 md:px-6 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${
-                  activeTab === "industry" ? "bg-[#14532D] text-white shadow-md" : "text-slate-500 hover:text-slate-700"
-                }`}
-              >
-                Services
-              </button>
-            </div>
           </div>
           <button 
             onClick={() => navigate('/all-products')}
@@ -99,10 +75,10 @@ const Categories = () => {
 
         {/* 🔥 GRID */}
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 md:gap-6">
-          {filteredCategories.slice(0, 8).map((cat) => (
+          {productCategories.slice(0, 8).map((name) => (
             <div
-              key={cat._id}
-              onClick={() => navigate(`/all-products?category=${cat.name}`)}
+              key={name}
+              onClick={() => navigate(`/all-products?category=${name}`)}
               className="group relative flex flex-col items-center justify-center p-4 md:p-8 bg-white border border-slate-100 rounded-2xl md:rounded-[32px] shadow-sm hover:shadow-2xl hover:shadow-green-900/10 hover:-translate-y-1 md:hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden"
             >
               {/* Background gradient on hover */}
@@ -110,12 +86,12 @@ const Categories = () => {
 
               {/* 🔥 ICON CONTAINER */}
               <div className="relative z-10 mb-2 md:mb-5 w-10 h-10 md:w-16 md:h-16 bg-slate-50 group-hover:bg-[#14532D] rounded-xl md:rounded-2xl flex items-center justify-center text-lg md:text-2xl text-slate-600 group-hover:text-white group-hover:rotate-[360deg] transition-all duration-700 shadow-inner group-hover:shadow-green-900/20">
-                {iconMap[cat.icon] || <FaCogs />}
+                <FaStoreAlt />
               </div>
 
               {/* 🔥 TEXT */}
               <p className="relative z-10 text-[10px] md:text-sm font-extrabold text-slate-700 group-hover:text-slate-900 text-center leading-tight">
-                {cat.name}
+                {name}
               </p>
 
               {/* Hover indicator */}
