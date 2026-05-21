@@ -557,6 +557,10 @@ const Dashboard = () => {
               getFilteredItems={getFilteredItems}
               handleVerification={handleVerification}
               navigate={navigate}
+              search={search}
+              setSearch={setSearch}
+              filter={filter}
+              setFilter={setFilter}
             />
           )}
           {/* PROFILE PAGE */}

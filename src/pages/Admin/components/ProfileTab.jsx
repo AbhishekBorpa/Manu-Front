@@ -1,11 +1,18 @@
-import React from "react";
-import { Edit2 } from "lucide-react";
+import React, { useState } from "react";
+import { Edit2, ShieldCheck, Lock, User as UserIcon } from "lucide-react";
 
 const ProfileTab = ({
   adminProfile,
   setAdminProfile,
 }) => {
   const API_URL = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
+  
+  const [passwordData, setPasswordData] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [activeSubTab, setActiveSubTab] = useState("general");
 
   const handleProfileSave = async () => {
     try {
@@ -33,72 +40,195 @@ const ProfileTab = ({
     }
   };
 
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      return alert("New passwords do not match!");
+    }
+    
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/auth/password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ 
+          oldPassword: passwordData.oldPassword, 
+          newPassword: passwordData.newPassword 
+        })
+      });
+      
+      const data = await res.json();
+      if (data.success) {
+        alert("Password updated successfully!");
+        setPasswordData({ oldPassword: "", newPassword: "", confirmPassword: "" });
+      } else {
+        alert(data.msg || "Failed to update password.");
+      }
+    } catch (err) {
+      console.error("Password update error:", err);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 flex-1 overflow-hidden p-4">
-      <div className="bg-[#081120] border border-white/10 rounded-2xl p-8 max-w-2xl w-full mx-auto animate-in fade-in zoom-in duration-300">
-        <div className="flex items-center gap-6 border-b border-white/10 pb-8 mb-8">
-          <div className="relative">
-            <img 
-              src="https://i.pravatar.cc/150" 
-              alt="admin profile" 
-              className="w-24 h-24 rounded-full border-4 border-green-500 object-cover shadow-lg shadow-green-500/20"
-            />
-            <div className="absolute bottom-0 right-0 bg-green-500 p-1.5 rounded-full border-2 border-[#081120] cursor-pointer hover:bg-green-400 transition-colors">
-              <Edit2 size={12} className="text-white" />
+      <div className="max-w-4xl w-full mx-auto flex flex-col gap-6">
+        
+        {/* HEADER CARD */}
+        <div className="bg-[#081120] border border-white/10 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="relative group">
+            <div className="w-24 h-24 rounded-full border-4 border-green-500/30 overflow-hidden group-hover:border-green-500 transition-all duration-300">
+              <img 
+                src={`https://ui-avatars.com/api/?name=${adminProfile.name}&background=10b981&color=fff&size=256`} 
+                alt="admin" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 rounded-full transition-opacity cursor-pointer">
+              <Edit2 size={16} className="text-white" />
             </div>
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-white">{adminProfile.name}</h2>
-            <p className="text-green-500 font-medium text-sm mt-1 uppercase tracking-widest">{adminProfile.role}</p>
-            <p className="text-gray-400 text-sm mt-1">{adminProfile.email}</p>
+          
+          <div className="text-center md:text-left flex-1">
+            <h2 className="text-2xl font-bold text-white tracking-tight">{adminProfile.name}</h2>
+            <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 mt-2">
+              <span className="bg-green-500/10 text-green-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-green-500/20">
+                {adminProfile.role}
+              </span>
+              <span className="text-gray-500 text-sm">{adminProfile.email}</span>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+             <button 
+               onClick={() => setActiveSubTab("general")}
+               className={`flex items-center gap-2 px-4 h-[40px] rounded-xl text-xs font-bold transition-all ${activeSubTab === 'general' ? 'bg-green-600 text-white' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}
+             >
+               <UserIcon size={14} /> Profile
+             </button>
+             <button 
+               onClick={() => setActiveSubTab("security")}
+               className={`flex items-center gap-2 px-4 h-[40px] rounded-xl text-xs font-bold transition-all ${activeSubTab === 'security' ? 'bg-green-600 text-white' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}
+             >
+               <Lock size={14} /> Security
+             </button>
           </div>
         </div>
 
-        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Full Name</label>
-              <input 
-                type="text" 
-                value={adminProfile.name}
-                onChange={(e) => setAdminProfile({...adminProfile, name: e.target.value})}
-                className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Email Address</label>
-              <input 
-                type="email" 
-                value={adminProfile.email}
-                onChange={(e) => setAdminProfile({...adminProfile, email: e.target.value})}
-                className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
-              />
-            </div>
-          </div>
+        {/* CONTENT AREA */}
+        <div className="grid grid-cols-1 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          
+          {activeSubTab === "general" && (
+            <div className="bg-[#081120] border border-white/10 rounded-2xl p-8 shadow-xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-green-500">
+                  <UserIcon size={18} />
+                </div>
+                <h3 className="text-lg font-bold text-white">General Information</h3>
+              </div>
+              
+              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">Full Name</label>
+                    <input 
+                      type="text" 
+                      value={adminProfile.name}
+                      onChange={(e) => setAdminProfile({...adminProfile, name: e.target.value})}
+                      className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[48px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all shadow-inner"
+                      placeholder="Your Name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">Email Address</label>
+                    <input 
+                      type="email" 
+                      value={adminProfile.email}
+                      onChange={(e) => setAdminProfile({...adminProfile, email: e.target.value})}
+                      className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[48px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all shadow-inner"
+                      placeholder="email@example.com"
+                    />
+                  </div>
+                </div>
 
-          <div className="space-y-2">
-            <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Role</label>
-            <input 
-              type="text" 
-              value={adminProfile.role}
-              disabled
-              className="w-full bg-[#0b1220]/50 border border-white/5 rounded-xl h-[45px] px-4 text-sm text-gray-500 outline-none cursor-not-allowed"
-            />
-          </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">Account Role</label>
+                  <div className="w-full bg-[#0b1220]/50 border border-white/5 rounded-xl h-[48px] px-4 text-sm text-gray-500 flex items-center cursor-not-allowed">
+                    {adminProfile.role.toUpperCase()}
+                  </div>
+                </div>
 
-          <div className="pt-4 flex items-center justify-end gap-3">
-            <button type="button" className="px-6 h-[45px] rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all">
-              Cancel
-            </button>
-            <button 
-              type="button" 
-              onClick={handleProfileSave}
-              className="px-6 h-[45px] rounded-xl text-sm font-medium bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-600/20 transition-all"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
+                <div className="pt-4 border-t border-white/5 flex items-center justify-end gap-3">
+                  <button 
+                    type="button" 
+                    onClick={handleProfileSave}
+                    className="px-8 h-[48px] rounded-xl text-sm font-bold bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-600/20 transition-all active:scale-95"
+                  >
+                    Save Profile Settings
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {activeSubTab === "security" && (
+            <div className="bg-[#081120] border border-white/10 rounded-2xl p-8 shadow-xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                  <ShieldCheck size={18} />
+                </div>
+                <h3 className="text-lg font-bold text-white">Security & Password</h3>
+              </div>
+              
+              <form className="space-y-6" onSubmit={handlePasswordChange}>
+                <div className="space-y-2">
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">Current Password</label>
+                  <input 
+                    type="password" 
+                    value={passwordData.oldPassword}
+                    onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
+                    className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[48px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                    required
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">New Password</label>
+                    <input 
+                      type="password" 
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                      className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[48px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">Confirm New Password</label>
+                    <input 
+                      type="password" 
+                      value={passwordData.confirmPassword}
+                      onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                      className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[48px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/5 flex items-center justify-end">
+                  <button 
+                    type="submit"
+                    className="px-8 h-[48px] rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20 transition-all active:scale-95"
+                  >
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

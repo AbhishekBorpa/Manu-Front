@@ -1,11 +1,15 @@
 import React from "react";
-import { FileText, Eye, CheckCircle, XCircle, ShieldCheck } from "lucide-react";
+import { FileText, Eye, CheckCircle, XCircle, ShieldCheck, Search } from "lucide-react";
 
 const VerificationsTab = ({
   partnerProfiles,
   getFilteredItems,
   handleVerification,
   navigate,
+  search,
+  setSearch,
+  filter,
+  setFilter,
 }) => {
   return (
     <div className="flex flex-col gap-3 flex-1 overflow-hidden">
@@ -13,6 +17,27 @@ const VerificationsTab = ({
         <div>
           <h2 className="text-[24px] font-bold leading-none">KYC & Verifications</h2>
           <p className="text-gray-400 mt-2 text-[11px]">Review legal documents and approve partner requests.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search partner..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-[220px] h-[38px] bg-[#0b1220] border border-white/10 rounded-lg pl-4 pr-10 text-[11px] text-white outline-none focus:border-green-500"
+            />
+            <Search size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          </div>
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="h-[38px] px-3 bg-[#0b1220] border border-white/10 rounded-lg text-[11px] text-white outline-none focus:border-green-500"
+          >
+            <option>ID</option>
+            <option>Name</option>
+            <option>Status</option>
+          </select>
         </div>
       </div>
 
