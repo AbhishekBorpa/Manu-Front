@@ -1,5 +1,4 @@
-VITE_API_URL="https://manu-back-bpob.onrender.com/api"
-export const API_BASE_URL = VITE_API_URL || "https://manu-back-bpob.onrender.com";
+export const API_BASE_URL = import.meta.env.VITE_API_URL   || "https://manu-back-bpob.onrender.com";
 
 export const getServerUrl = (path) => {
   if (!path) return "";
