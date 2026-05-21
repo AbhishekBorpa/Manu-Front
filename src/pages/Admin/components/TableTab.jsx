@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, Plus, Edit2, Trash2 } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, List } from "lucide-react";
 
 const TableTab = ({
   activeMenu,
@@ -55,6 +55,14 @@ const TableTab = ({
             <Plus size={14} />
             Add
           </button>
+          {activeMenu === "Categories" && (
+            <button 
+              className="h-[38px] px-4 rounded-lg bg-[#0b1220] border border-white/10 hover:border-green-500 transition-all duration-300 flex items-center gap-2 text-[11px] font-medium"
+            >
+              <List size={14} />
+              Subcategories
+            </button>
+          )}
         </div>
       </div>
 
@@ -199,8 +207,9 @@ const TableTab = ({
                 </span>
                 <span className="px-3 py-1 rounded-md bg-green-500/10 text-green-400 text-[9px] w-fit">Enabled</span>
                 <div className="flex items-center justify-end gap-3 text-gray-400">
-                  <button onClick={() => handleEditClick(cat)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
-                  <button onClick={() => handleDelete(cat._id, "categories")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                  <button onClick={() => handleEditClick(cat)} title="Subcategories" className="hover:text-green-400 transition-colors"><List size={14} /></button>
+                  <button onClick={() => handleEditClick(cat)} title="Edit Category" className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
+                  <button onClick={() => handleDelete(cat._id, "categories")} title="Delete Category" className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                 </div>
               </div>
             )) : <p className="p-10 text-center text-slate-500 text-xs">No categories found.</p>)}
