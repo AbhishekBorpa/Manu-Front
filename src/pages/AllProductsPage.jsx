@@ -9,8 +9,6 @@ import {
   FaStar,
   FaCheckCircle,
   FaTimes,
-  FaIndustry,
-  FaCog,
   FaRupeeSign,
   FaChevronDown,
   FaTimesCircle,
@@ -30,8 +28,7 @@ const AllProductsPage = () => {
   const [priceRange, setPriceRange] = useState(6000000);
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
-  const [categories, setCategories] = useState({ industry: [], machine: [] });
-  const [categoryCounts, setCategoryCounts] = useState({});
+  const [productCategoryList, setProductCategoryList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,27 +54,6 @@ const AllProductsPage = () => {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories");
-        const data = await res.json();
-        if (data.success) {
-          const grouped = data.categories.reduce((acc, cat) => {
-            const type = cat.type || 'machine';
-            if (!acc[type]) acc[type] = [];
-            acc[type].push(cat.name);
-            return acc;
-          }, { industry: [], machine: [] });
-          setCategories(grouped);
-        }
-      } catch (err) {
-        console.error("Categories Fetch Error:", err);
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
@@ -93,7 +69,11 @@ const AllProductsPage = () => {
             const cat = p.category || 'Uncategorized';
             counts[cat] = (counts[cat] || 0) + 1;
           });
-          setCategoryCounts(counts);
+          setProductCategoryList(
+            Object.entries(counts)
+              .sort((a, b) => b[1] - a[1])
+              .map(([name, count]) => ({ name, count }))
+          );
 
           let filtered = raw;
           
@@ -226,28 +206,27 @@ const AllProductsPage = () => {
                 )}
               </div>
 
-              {/* Industries */}
+              {/* Categories */}
               <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                 <button
                   onClick={() => setExpandedSections(s => ({ ...s, industry: !s.industry }))}
                   className="w-full flex items-center justify-between px-4 py-3.5 text-xs font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
-                    <FaIndustry className="text-slate-400" size={12} />
-                    <span>Industries</span>
+                    <FaStoreAlt className="text-slate-400" size={12} />
+                    <span>Categories</span>
                   </div>
                   <FaChevronDown size={10} className={`text-slate-400 transition-transform ${expandedSections.industry ? 'rotate-180' : ''}`} />
                 </button>
                 {expandedSections.industry && (
                   <div className="px-3 pb-3 space-y-0.5">
-                    {categories.industry.map(cat => {
-                      const count = categoryCounts[cat] || 0;
-                      const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+                    {productCategoryList.map(({ name, count }) => {
+                      const isActive = selectedCategory.toLowerCase() === name.toLowerCase();
                       return (
                         <button
-                          key={cat}
+                          key={name}
                           onClick={() => {
-                            handleCategorySelect(cat);
+                            handleCategorySelect(name);
                             setShowFilters(false);
                           }}
                           className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
@@ -256,50 +235,7 @@ const AllProductsPage = () => {
                               : 'text-slate-600 hover:bg-slate-100'
                           }`}
                         >
-                          <span className="truncate">{cat}</span>
-                          <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
-                            isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
-                          }`}>
-                            {count}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Machine Types */}
-              <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                <button
-                  onClick={() => setExpandedSections(s => ({ ...s, machine: !s.machine }))}
-                  className="w-full flex items-center justify-between px-4 py-3.5 text-xs font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <FaCog className="text-slate-400" size={12} />
-                    <span>Machine Types</span>
-                  </div>
-                  <FaChevronDown size={10} className={`text-slate-400 transition-transform ${expandedSections.machine ? 'rotate-180' : ''}`} />
-                </button>
-                {expandedSections.machine && (
-                  <div className="px-3 pb-3 space-y-0.5">
-                    {categories.machine.map(cat => {
-                      const count = categoryCounts[cat] || 0;
-                      const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
-                      return (
-                        <button
-                          key={cat}
-                          onClick={() => {
-                            handleCategorySelect(cat);
-                            setShowFilters(false);
-                          }}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                            isActive
-                              ? 'bg-[#14532D] text-white shadow-sm' 
-                              : 'text-slate-600 hover:bg-slate-100'
-                          }`}
-                        >
-                          <span className="truncate">{cat}</span>
+                          <span className="truncate">{name}</span>
                           <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
                             isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
                           }`}>
@@ -380,34 +316,33 @@ const AllProductsPage = () => {
               )}
             </div>
 
-            {/* Industry Filter */}
+            {/* Category Filter */}
             <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
               <button
                 onClick={() => setExpandedSections(s => ({ ...s, industry: !s.industry }))}
                 className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
-                  <FaIndustry className="text-slate-400" size={13} />
-                  <span>Industries</span>
+                  <FaStoreAlt className="text-slate-400" size={13} />
+                  <span>Categories</span>
                 </div>
                 <FaChevronDown size={11} className={`text-slate-400 transition-transform ${expandedSections.industry ? 'rotate-180' : ''}`} />
               </button>
               {expandedSections.industry && (
                 <div className="px-3 pb-3 space-y-0.5">
-                  {categories.industry.map(cat => {
-                    const count = categoryCounts[cat] || 0;
-                    const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+                  {productCategoryList.map(({ name, count }) => {
+                    const isActive = selectedCategory.toLowerCase() === name.toLowerCase();
                     return (
                       <button
-                        key={cat}
-                        onClick={() => handleCategorySelect(cat)}
+                        key={name}
+                        onClick={() => handleCategorySelect(name)}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-bold transition-all ${
                           isActive
                             ? 'bg-[#14532D] text-white shadow-sm' 
                             : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                         }`}
                       >
-                        <span className="truncate">{cat}</span>
+                        <span className="truncate">{name}</span>
                         <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
                           isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
                         }`}>
@@ -416,51 +351,8 @@ const AllProductsPage = () => {
                       </button>
                     );
                   })}
-                  {categories.industry.length === 0 && (
-                    <p className="px-3 py-2 text-xs text-slate-400 italic">No industry categories</p>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Machine Filter */}
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <button
-                onClick={() => setExpandedSections(s => ({ ...s, machine: !s.machine }))}
-                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <FaCog className="text-slate-400" size={13} />
-                  <span>Machine Types</span>
-                </div>
-                <FaChevronDown size={11} className={`text-slate-400 transition-transform ${expandedSections.machine ? 'rotate-180' : ''}`} />
-              </button>
-              {expandedSections.machine && (
-                <div className="px-3 pb-3 space-y-0.5">
-                  {categories.machine.map(cat => {
-                    const count = categoryCounts[cat] || 0;
-                    const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
-                    return (
-                      <button
-                        key={cat}
-                        onClick={() => handleCategorySelect(cat)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-bold transition-all ${
-                          isActive
-                            ? 'bg-[#14532D] text-white shadow-sm' 
-                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                        }`}
-                      >
-                        <span className="truncate">{cat}</span>
-                        <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
-                          isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
-                        }`}>
-                          {count}
-                        </span>
-                      </button>
-                    );
-                  })}
-                  {categories.machine.length === 0 && (
-                    <p className="px-3 py-2 text-xs text-slate-400 italic">No machine categories</p>
+                  {productCategoryList.length === 0 && (
+                    <p className="px-3 py-2 text-xs text-slate-400 italic">No products yet</p>
                   )}
                 </div>
               )}
