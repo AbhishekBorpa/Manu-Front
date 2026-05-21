@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, Plus, Edit2, Trash2, List, Eye } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, List, Eye, Building2 } from "lucide-react";
 
 const TableTab = ({
   activeMenu,
@@ -18,6 +18,8 @@ const TableTab = ({
   leads,
   products,
   categories,
+  partnerProfiles = [],
+  navigate,
 }) => {
   return (
     <div className="flex flex-col gap-3 flex-1 overflow-hidden">
@@ -79,7 +81,7 @@ const TableTab = ({
                activeMenu === "Categories" ? `${getFilteredItems(categories).length} of ${categories.length}` :
                activeMenu === "Services" ? `${getFilteredItems(services).length} of ${services.length}` :
                activeMenu === "Orders" ? `${getFilteredItems(orders).length} of ${orders.length}` :
-               activeMenu === "Subscribers" ? `${getFilteredItems(subscribers).length} of ${subscribers.length}` : 0}
+               activeMenu === "Subscribers" ? `${getFilteredItems(subscribers).length + partnerProfiles.length} total` : 0}
             </span>
           </div>
         </div>
@@ -87,8 +89,8 @@ const TableTab = ({
         <div className="overflow-hidden rounded-lg border border-white/10 flex-1 overflow-y-auto custom-scrollbar">
           <div className="grid grid-cols-7 bg-white/5 h-[40px] items-center px-4 text-[11px] font-semibold text-gray-300 sticky top-0 z-10">
             <span>ID</span>
-            <span className="col-span-2">{activeMenu === "Categories" ? "Name" : activeMenu === "Users" ? "Full Name" : activeMenu === "Orders" ? "Order ID" : activeMenu === "Subscribers" ? "Email" : "Title/Name"}</span>
-            <span className="col-span-2">{activeMenu === "Leads" ? "Project & Contact" : activeMenu === "Users" ? "Email & Phone" : activeMenu === "Orders" ? "Amount & Payment" : activeMenu === "Categories" ? "Subcategories" : "Category & Detail"}</span>
+            <span className="col-span-2">{activeMenu === "Categories" ? "Name" : activeMenu === "Users" ? "Full Name" : activeMenu === "Orders" ? "Order ID" : activeMenu === "Subscribers" ? "Email / Company" : "Title/Name"}</span>
+            <span className="col-span-2">{activeMenu === "Leads" ? "Project & Contact" : activeMenu === "Users" ? "Email & Phone" : activeMenu === "Orders" ? "Amount & Payment" : activeMenu === "Categories" ? "Subcategories" : activeMenu === "Subscribers" ? "Plan / Date" : "Category & Detail"}</span>
             <span>Status / Info</span>
             <span className="text-right">Actions</span>
           </div>
@@ -165,18 +167,59 @@ const TableTab = ({
               </div>
             )) : <p className="p-10 text-center text-slate-500 text-xs">No orders found.</p>)}
 
-            {activeMenu === "Subscribers" && (getFilteredItems(subscribers).length > 0 ? getFilteredItems(subscribers).map((sub) => (
-              <div key={sub._id} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
-                <span className="font-medium text-white">#{sub._id.slice(-6).toUpperCase()}</span>
-                <span className="text-gray-300 col-span-2">{sub.email}</span>
-                <span className="text-gray-400 col-span-2">{new Date(sub.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                <span className="px-3 py-1 rounded-md bg-green-500/10 text-green-400 text-[9px] w-fit">{sub.status}</span>
-                <div className="flex items-center justify-end gap-3 text-gray-400">
-                  <button onClick={() => handleEditClick(sub)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
-                  <button onClick={() => handleDelete(sub._id, "admin/subscribers")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
-                </div>
-              </div>
-            )) : <p className="p-10 text-center text-slate-500 text-xs">No subscribers found.</p>)}
+            {activeMenu === "Subscribers" && (
+              <>
+                {getFilteredItems(subscribers).length > 0 ? getFilteredItems(subscribers).map((sub) => (
+                  <div key={sub._id} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
+                    <span className="font-medium text-white">#{sub._id.slice(-6).toUpperCase()}</span>
+                    <span className="text-gray-300 col-span-2">{sub.email}</span>
+                    <span className="text-gray-400 col-span-2">{new Date(sub.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <span className="px-3 py-1 rounded-md bg-green-500/10 text-green-400 text-[9px] w-fit">{sub.status}</span>
+                    <div className="flex items-center justify-end gap-3 text-gray-400">
+                      <button onClick={() => handleEditClick(sub)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
+                      <button onClick={() => handleDelete(sub._id, "admin/subscribers")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                    </div>
+                  </div>
+                )) : <p className="p-10 text-center text-slate-500 text-xs">No subscribers found.</p>}
+
+                {partnerProfiles.map((profile) => (
+                  <div key={profile._id} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px] bg-orange-500/5">
+                    <span className="font-medium text-white">#{profile._id.slice(-6).toUpperCase()}</span>
+                    <div className="col-span-2 flex flex-col min-w-0">
+                      <span className="text-gray-300 truncate font-bold">{profile.companyName}</span>
+                      <span className="text-gray-500 truncate text-[9px]">{profile.userId?.name || 'N/A'} • {profile.userId?.email || ''}</span>
+                    </div>
+                    <div className="col-span-2 flex flex-col gap-0.5">
+                      <span className={`px-2 py-0.5 rounded text-[9px] font-bold w-fit ${
+                        profile.plan === "Elite" ? "bg-amber-500/10 text-amber-400" :
+                        profile.plan === "Premium" ? "bg-purple-500/10 text-purple-400" :
+                        profile.plan === "Basic" ? "bg-blue-500/10 text-blue-400" :
+                        "bg-gray-500/10 text-gray-400"
+                      }`}>{profile.plan || 'Free'}</span>
+                      <span className="text-gray-500 text-[9px]">{profile.createdAt ? new Date(profile.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}</span>
+                    </div>
+                    <span>
+                      <span className={`px-3 py-1 rounded-md text-[9px] font-bold ${
+                        profile.verificationStatus === "Verified" ? "bg-green-500/10 text-green-400" :
+                        profile.verificationStatus === "Rejected" ? "bg-red-500/10 text-red-400" :
+                        profile.verificationStatus === "Pending" ? "bg-orange-500/10 text-orange-400" :
+                        "bg-gray-500/10 text-gray-400"
+                      }`}>
+                        {profile.verificationStatus}
+                      </span>
+                    </span>
+                    <div className="flex items-center justify-end gap-3 text-gray-400">
+                      {navigate && (
+                        <button onClick={() => navigate(`/admin/partner/${profile._id}`)} className="hover:text-white transition-colors" title="View Details">
+                          <Eye size={14} />
+                        </button>
+                      )}
+                      <button onClick={() => handleDelete(profile._id, "admin/partner-profiles")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
 
             {activeMenu === "Leads" && (getFilteredItems(leads).length > 0 ? getFilteredItems(leads).map((lead) => (
               <div key={lead._id} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">

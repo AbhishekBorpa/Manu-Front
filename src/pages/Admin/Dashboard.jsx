@@ -560,6 +560,8 @@ const Dashboard = () => {
               leads={leads}
               products={products}
               categories={categories}
+              partnerProfiles={partnerProfiles}
+              navigate={navigate}
             />
           )}
           {/* PARTNERS PAGE */}
