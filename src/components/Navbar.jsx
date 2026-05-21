@@ -36,7 +36,7 @@ const Navbar = ({
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const [categories, setCategories] = useState([]);
+  const [productCategories, setProductCategories] = useState([]);
 
   const [category, setCategory] =
     useState("All Categories");
@@ -74,19 +74,29 @@ const Navbar = ({
 
         try {
 
-          const [navbarRes, categoriesRes] = await Promise.all([
+          const [navbarRes, productsRes] = await Promise.all([
             fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/navbar"),
-            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories")
+            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/products")
           ]);
 
           const navbarData = await navbarRes.json();
-          const categoriesData = await categoriesRes.json();
+          const productsData = await productsRes.json();
 
           const nav = navbarData.navbar || navbarData;
           setNavbar(nav);
 
-          const cats = categoriesData.categories || categoriesData;
-          setCategories(cats);
+          if (productsData.success) {
+            const seen = new Set();
+            const cats = [];
+            productsData.products.forEach(p => {
+              const name = p.category || 'Uncategorized';
+              if (!seen.has(name)) {
+                seen.add(name);
+                cats.push(name);
+              }
+            });
+            setProductCategories(cats);
+          }
 
         } catch (err) {
 
@@ -203,16 +213,16 @@ const Navbar = ({
                   >
                     All Categories
                   </div>
-                  {categories.map((item) => (
+                  {productCategories.map((name) => (
                     <div
-                      key={item._id}
+                      key={name}
                       onClick={() => {
-                        setCategory(item.name);
+                        setCategory(name);
                         setOpenDropdown(false);
                       }}
                       className="px-4 py-2 text-sm text-gray-700 hover:bg-[#14532D] hover:text-white cursor-pointer transition"
                     >
-                      {item.name}
+                      {name}
                     </div>
                   ))}
                 </div>
