@@ -63,6 +63,7 @@ const Dashboard = () => {
     title: "",
     name: "",
     email: "",
+    phone: "",
     category: "",
     subcategory: "",
     subcategories: "",
@@ -70,7 +71,13 @@ const Dashboard = () => {
     location: "Delhi",
     description: "",
     status: "Active",
-    role: "user"
+    role: "user",
+    project: "",
+    budget: "",
+    notes: "",
+    rating: "0",
+    tag: "",
+    paymentStatus: "Unpaid"
   });
   const [adminProfile, setAdminProfile] = useState({
     id: "",
@@ -265,17 +272,24 @@ const Dashboard = () => {
   const handleEditClick = (item) => {
     setEditingItem(item);
     setFormData({
-      title: item.title || "",
-      name: item.name || item.author || "",
-      email: item.email || "",
+      title: item.title || item.project || "",
+      name: item.name || item.author || item.customer?.name || "",
+      email: item.email || item.customer?.email || "",
+      phone: item.phone || "",
       category: item.category || "",
       subcategory: item.subcategory || "",
       subcategories: item.subcategories ? item.subcategories.join(", ") : "",
       price: item.price || "",
       location: item.location || "Delhi",
-      description: item.description || item.desc || item.message || item.review || "",
+      description: item.description || item.desc || item.message || item.review || item.notes || "",
       status: item.status || "Active",
-      role: item.role || "user"
+      role: item.role || "user",
+      project: item.project || "",
+      budget: item.budget || "",
+      notes: item.notes || "",
+      rating: item.rating || "0",
+      tag: item.tag || "",
+      paymentStatus: item.paymentStatus || "Unpaid"
     });
     setImageFile(null);
     setIsEditModalOpen(true);
@@ -374,6 +388,7 @@ const Dashboard = () => {
           title: "", 
           name: "", 
           email: "", 
+          phone: "",
           category: "", 
           subcategory: "", 
           subcategories: "", 
@@ -381,7 +396,13 @@ const Dashboard = () => {
           location: "Delhi", 
           description: "", 
           status: "Active", 
-          role: "user" 
+          role: "user",
+          project: "",
+          budget: "",
+          notes: "",
+          rating: "0",
+          tag: "",
+          paymentStatus: "Unpaid"
         });
         setImageFile(null);
         fetchData();

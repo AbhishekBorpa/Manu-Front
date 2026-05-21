@@ -55,41 +55,39 @@ const EditModal = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Category</label>
-                  <select 
-                    value={formData.category} 
-                    onChange={(e) => setFormData({...formData, category: e.target.value, subcategory: ""})} 
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
-                    required
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map(cat => (
-                      <option key={cat._id} value={cat.name}>{cat.name}</option>
-                    ))}
-                  </select>
+                  <input type="text" value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required={activeMenu === "Products"} />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Subcategory</label>
-                  <select 
-                    value={formData.subcategory} 
-                    onChange={(e) => setFormData({...formData, subcategory: e.target.value})} 
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
-                  >
-                    <option value="">Select Subcategory</option>
-                    {subcategoryOptions.map((sub, idx) => (
-                      <option key={idx} value={sub}>{sub}</option>
-                    ))}
-                  </select>
-                </div>
+                {activeMenu === "Products" && (
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Subcategory</label>
+                    <select 
+                      value={formData.subcategory} 
+                      onChange={(e) => setFormData({...formData, subcategory: e.target.value})} 
+                      className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                    >
+                      <option value="">Select Subcategory</option>
+                      {subcategoryOptions.map((sub, idx) => (
+                        <option key={idx} value={sub}>{sub}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                {activeMenu === "Services" && (
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Rating</label>
+                    <input type="text" value={formData.rating} onChange={(e) => setFormData({...formData, rating: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Price (₹)</label>
-                  <input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                  <input type="text" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Location</label>
-                  <input type="text" value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Products" ? "Location" : "Tag"}</label>
+                  <input type="text" value={activeMenu === "Products" ? formData.location : formData.tag} onChange={(e) => setFormData({...formData, [activeMenu === "Products" ? 'location' : 'tag']: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
                 </div>
               </div>
 
@@ -106,9 +104,15 @@ const EditModal = ({
                 <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Full Name</label>
                 <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
               </div>
-              <div className="space-y-2">
-                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Email</label>
-                <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Email</label>
+                  <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Phone</label>
+                  <input type="text" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                </div>
               </div>
               <div className="space-y-2">
                 <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Role</label>
@@ -121,24 +125,102 @@ const EditModal = ({
             </div>
           )}
 
-          {["Orders", "Subscribers", "Leads"].includes(activeMenu) && (
+          {activeMenu === "Leads" && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Name</label>
+                <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Email</label>
+                  <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Phone</label>
+                  <input type="text" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Project Description</label>
+                <input type="text" value={formData.project} onChange={(e) => setFormData({...formData, project: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Location</label>
+                  <input type="text" value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Budget</label>
+                  <input type="text" value={formData.budget} onChange={(e) => setFormData({...formData, budget: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Status</label>
+                <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all">
+                  <option value="New">New</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Negotiation">Negotiation</option>
+                  <option value="Converted">Converted</option>
+                  <option value="Lost">Lost</option>
+                  <option value="Nurturing">Nurturing</option>
+                </select>
+              </div>
+            </div>
+          )}
+
+          {activeMenu === "Orders" && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Order ID</label>
+                  <input type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Total Amount (₹)</label>
+                  <input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Customer Name</label>
+                <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Status</label>
+                  <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all">
+                    <option value="Pending">Pending</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Payment Status</label>
+                  <select value={formData.paymentStatus} onChange={(e) => setFormData({...formData, paymentStatus: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Refunded">Refunded</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeMenu === "Subscribers" && (
             <div className="space-y-2">
               <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Status</label>
               <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all">
                 <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Pending">Pending</option>
-                <option value="Completed">Completed</option>
-                <option value="New">New</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Converted">Converted</option>
+                <option value="Unsubscribed">Unsubscribed</option>
               </select>
             </div>
           )}
 
           {["Products", "Categories", "Services"].includes(activeMenu) && (
             <div className="space-y-2 pb-4">
-              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Categories" ? "Category Icon" : "Product Image"}</label>
+              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Categories" ? "Category Icon" : "Image"}</label>
               <input type="file" onChange={(e) => setImageFile(e.target.files[0])} className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" />
             </div>
           )}
