@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, Plus, Edit2, Trash2, List } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, List, Eye } from "lucide-react";
 
 const TableTab = ({
   activeMenu,
