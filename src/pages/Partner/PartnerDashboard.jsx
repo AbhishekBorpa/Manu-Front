@@ -12,6 +12,7 @@ import {
   FaTimesCircle
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../api/config';
 
 const StatCard = ({ title, value, icon: Icon, trend, color }) => (
   <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center justify-between hover:shadow-md transition-shadow">
@@ -70,11 +71,11 @@ const PartnerDashboard = () => {
         const headers = { 'Authorization': `Bearer ${token}` };
 
         // Fetch Stats
-        const statsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + '/partner/stats', { headers });
+        const statsRes = await fetch(`${API_BASE_URL}/partner/stats`, { headers });
         const statsData = await statsRes.json();
 
         // Fetch Leads
-        const leadsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + '/partner/leads', { headers });
+        const leadsRes = await fetch(`${API_BASE_URL}/partner/leads`, { headers });
         const leadsData = await leadsRes.json();
 
         if (statsRes.ok) setStats(statsData);

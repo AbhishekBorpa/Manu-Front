@@ -321,9 +321,12 @@ const Dashboard = () => {
       if (["Products", "Categories", "Services"].includes(activeMenu)) {
         const formDataObj = new FormData();
         Object.keys(formData).forEach(key => {
-          if (formData[key]) formDataObj.append(key, formData[key]);
+          if (formData[key] !== "" && formData[key] !== null && formData[key] !== undefined) {
+             formDataObj.append(key, formData[key]);
+          }
         });
         if (imageFile) {
+          // Both Products and Services expect 'image' in multer.single or multer.fields
           formDataObj.append("image", imageFile);
         }
         fetchOptions.body = formDataObj;
@@ -368,9 +371,12 @@ const Dashboard = () => {
       if (["Products", "Categories", "Services"].includes(activeMenu)) {
         const formDataObj = new FormData();
         Object.keys(formData).forEach(key => {
-          if (formData[key]) formDataObj.append(key, formData[key]);
+          if (formData[key] !== "" && formData[key] !== null && formData[key] !== undefined) {
+             formDataObj.append(key, formData[key]);
+          }
         });
         if (imageFile) {
+          // Both Products and Services expect 'image' in multer.single or multer.fields
           formDataObj.append("image", imageFile);
         }
         fetchOptions.body = formDataObj;

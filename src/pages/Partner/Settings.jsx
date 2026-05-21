@@ -57,30 +57,18 @@ const Settings = () => {
     }
   };
 
-  const uploadLogoToCloudinary = async (file) => {
-    if (!file) return;
-    setLogoUploading(true);
-    try {
-      const data = new FormData();
-      data.append("file", file);
-      data.append("upload_preset", "manu_uploads");
-      data.append("cloud_name", "djsxaigna");
+  const [selectedFile, setSelectedFile] = useState(null);
 
-      const res = await fetch("https://api.cloudinary.com/v1_1/djsxaigna/image/upload", {
-        method: "POST",
-        body: data,
-      });
-      const fileData = await res.json();
-      if (fileData.secure_url) {
-        setFormData(prev => ({ ...prev, logo: fileData.secure_url }));
-      } else {
-        alert("Upload failed. Please try again.");
-      }
-    } catch (err) {
-      console.error("Logo upload error:", err);
-      alert("Error uploading logo");
-    } finally {
-      setLogoUploading(false);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      // Create a local preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, logo: reader.result }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -89,15 +77,25 @@ const Settings = () => {
     setSaving(true);
     try {
       const token = localStorage.getItem('token');
+      const data = new FormData();
+      data.append('companyName', formData.companyName);
+      data.append('phone', formData.phone);
+      data.append('address', formData.address);
+      data.append('website', formData.website);
+      if (selectedFile) {
+        data.append('logo', selectedFile);
+      } else {
+        data.append('logo', formData.logo);
+      }
+
       const res = await fetch(`${API_BASE_URL}/partner/profile`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: data
       });
-      const data = await res.json();
+      const resData = await res.json();
       if (res.ok) {
         const userStr = localStorage.getItem('user');
         if (userStr) {
@@ -108,8 +106,9 @@ const Settings = () => {
         }
         alert("Profile updated successfully! 🎉");
         setInitialData(formData);
+        setSelectedFile(null);
       } else {
-        alert(data.msg || "Failed to update profile");
+        alert(resData.msg || "Failed to update profile");
       }
     } catch (err) {
       console.error("Save profile error:", err);
@@ -207,9 +206,9 @@ const Settings = () => {
                       )}
                     </div>
                     <label htmlFor="logo-up" className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 text-white rounded-xl flex items-center justify-center cursor-pointer border-2 border-white shadow-lg">
-                      {logoUploading ? <FaSpinner className="animate-spin text-[10px]" /> : <FaCloudUploadAlt size={12} />}
+                      <FaCloudUploadAlt size={12} />
                     </label>
-                    <input type="file" id="logo-up" hidden accept="image/*" onChange={(e) => uploadLogoToCloudinary(e.target.files[0])} />
+                    <input type="file" id="logo-up" hidden accept="image/*" onChange={handleFileChange} />
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-800 text-sm">Company Logo</h4>

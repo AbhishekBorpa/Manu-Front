@@ -10,6 +10,7 @@ import {
   FaIdCard,
   FaArrowRight
 } from 'react-icons/fa';
+import { API_BASE_URL } from '../../api/config';
 
 const KYCVerification = () => {
   const [kycStatus, setKycStatus] = useState('Not Submitted');
@@ -30,7 +31,7 @@ const KYCVerification = () => {
   const fetchStatus = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/partner/kyc-status", {
+      const res = await fetch(`${API_BASE_URL}/partner/kyc-status`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
@@ -57,50 +58,42 @@ const KYCVerification = () => {
     setFormData({ ...formData, [e.target.name]: e.target.files[0] });
   };
 
-  const uploadToCloudinary = async (file) => {
-    if (!file) return null;
-    const data = new FormData();
-    data.append("file", file);
-    data.append("upload_preset", "manu_uploads"); // Match backend folder
-    data.append("cloud_name", "djsxaigna"); // Match backend cloud_name
-
-    const res = await fetch("https://api.cloudinary.com/v1_1/djsxaigna/image/upload", {
-      method: "POST",
-      body: data,
-    });
-    const fileData = await res.json();
-    return fileData.secure_url;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
     try {
-      const gstUrl = formData.gstDoc ? await uploadToCloudinary(formData.gstDoc) : profile?.gstDoc;
-      const businessUrl = formData.businessRegDoc ? await uploadToCloudinary(formData.businessRegDoc) : profile?.businessRegDoc;
-
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/partner/kyc", {
+      const data = new FormData();
+      data.append('gstNumber', formData.gstNumber);
+      data.append('businessRegistrationNumber', formData.businessRegistrationNumber);
+      
+      if (formData.gstDoc) {
+        data.append('gstDoc', formData.gstDoc);
+      } else {
+        data.append('gstDoc', profile?.gstDoc || '');
+      }
+
+      if (formData.businessRegDoc) {
+        data.append('businessRegDoc', formData.businessRegDoc);
+      } else {
+        data.append('businessRegDoc', profile?.businessRegDoc || '');
+      }
+
+      const res = await fetch(`${API_BASE_URL}/partner/kyc`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({
-          gstNumber: formData.gstNumber,
-          businessRegistrationNumber: formData.businessRegistrationNumber,
-          gstDoc: gstUrl,
-          businessRegDoc: businessUrl
-        })
+        body: data
       });
 
-      const data = await res.json();
-      if (data.success) {
+      const resData = await res.json();
+      if (resData.success) {
         alert("KYC documents submitted successfully! 🚀");
         fetchStatus();
       } else {
-        alert(data.msg || "Submission failed");
+        alert(resData.msg || "Submission failed");
       }
     } catch (err) {
       console.error("KYC Submission error:", err);
