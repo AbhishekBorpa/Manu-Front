@@ -24,7 +24,6 @@ const PartnerLayout = () => {
     { name: 'My Leads', path: '/partner/leads', icon: FaUsers },
     { name: 'Inventory', path: '/partner/inventory', icon: FaBox },
     { name: 'KYC Verification', path: '/partner/kyc', icon: FaShieldAlt },
-    { name: 'Team Management', path: '/partner/team', icon: FaUserPlus },
     { name: 'Account Settings', path: '/partner/settings', icon: FaCog },
   ];
 
