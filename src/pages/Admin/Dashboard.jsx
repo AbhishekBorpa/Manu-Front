@@ -26,7 +26,8 @@ import {
   XCircle,
   ExternalLink,
   FileText,
-  Eye
+  Eye,
+  Handshake
 } from "lucide-react";
 import GlobalSearchModal from "./components/GlobalSearchModal";
 import NotificationsDropdown from "./components/NotificationsDropdown";
@@ -38,6 +39,7 @@ import OverviewTab from "./components/OverviewTab";
 import VerificationsTab from "./components/VerificationsTab";
 import ProfileTab from "./components/ProfileTab";
 import TableTab from "./components/TableTab";
+import PartnersTab from "./components/PartnersTab";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -430,6 +432,10 @@ const Dashboard = () => {
       icon: <Users size={16} />,
     },
     {
+      name: "Partners",
+      icon: <Handshake size={16} />,
+    },
+    {
       name: "Leads",
       icon: <Briefcase size={16} />,
     },
@@ -536,7 +542,7 @@ const Dashboard = () => {
           )}
 
           {/* OTHER PAGES */}
-          {activeMenu !== "Dashboard" && activeMenu !== "Profile" && activeMenu !== "Verifications" && (
+          {activeMenu !== "Dashboard" && activeMenu !== "Profile" && activeMenu !== "Verifications" && activeMenu !== "Partners" && (
             <TableTab
               activeMenu={activeMenu}
               search={search}
@@ -554,6 +560,19 @@ const Dashboard = () => {
               leads={leads}
               products={products}
               categories={categories}
+            />
+          )}
+          {/* PARTNERS PAGE */}
+          {activeMenu === "Partners" && (
+            <PartnersTab
+              partnerProfiles={partnerProfiles}
+              getFilteredItems={getFilteredItems}
+              navigate={navigate}
+              search={search}
+              setSearch={setSearch}
+              filter={filter}
+              setFilter={setFilter}
+              onRefresh={fetchData}
             />
           )}
           {/* VERIFICATIONS PAGE */}
