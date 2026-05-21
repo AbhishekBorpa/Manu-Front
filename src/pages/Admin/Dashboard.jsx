@@ -51,6 +51,7 @@ const Dashboard = () => {
   const [leads, setLeads] = useState([]);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [productCategoryNames, setProductCategoryNames] = useState([]);
   const [users, setUsers] = useState([]);
   const [services, setServices] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -215,7 +216,16 @@ const Dashboard = () => {
       if (ordersData.success) setOrders(ordersData.orders);
       if (subsData.success) setSubscribers(subsData.subscribers);
       if (leadsData.success) setLeads(leadsData.leads);
-      if (productsData.success) setProducts(productsData.products);
+      if (productsData.success) {
+        setProducts(productsData.products);
+        const seen = new Set();
+        const names = [];
+        productsData.products.forEach(p => {
+          const name = p.category || 'Uncategorized';
+          if (!seen.has(name)) { seen.add(name); names.push(name); }
+        });
+        setProductCategoryNames(names);
+      }
       if (catData.success) setCategories(catData.categories);
       if (partnersData.success) setPartnerProfiles(partnersData.profiles);
 
@@ -563,6 +573,7 @@ const Dashboard = () => {
               leads={leads}
               products={products}
               categories={categories}
+              productCategoryNames={productCategoryNames}
               partnerProfiles={partnerProfiles}
               navigate={navigate}
             />
