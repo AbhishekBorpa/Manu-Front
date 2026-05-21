@@ -81,7 +81,7 @@ const TableTab = ({
                activeMenu === "Categories" ? `${getFilteredItems(categories).length} of ${categories.length}` :
                activeMenu === "Services" ? `${getFilteredItems(services).length} of ${services.length}` :
                activeMenu === "Orders" ? `${getFilteredItems(orders).length} of ${orders.length}` :
-               activeMenu === "Subscribers" ? `${getFilteredItems(subscribers).length + partnerProfiles.length} total` : 0}
+               activeMenu === "Subscribers" ? `${getFilteredItems(subscribers).length + getFilteredItems(partnerProfiles).length} total` : 0}
             </span>
           </div>
         </div>
@@ -169,7 +169,7 @@ const TableTab = ({
 
             {activeMenu === "Subscribers" && (
               <>
-                {getFilteredItems(subscribers).length > 0 ? getFilteredItems(subscribers).map((sub) => (
+                {getFilteredItems(subscribers).length > 0 && getFilteredItems(subscribers).map((sub) => (
                   <div key={sub._id} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
                     <span className="font-medium text-white">#{sub._id.slice(-6).toUpperCase()}</span>
                     <span className="text-gray-300 col-span-2">{sub.email}</span>
@@ -180,9 +180,9 @@ const TableTab = ({
                       <button onClick={() => handleDelete(sub._id, "admin/subscribers")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                     </div>
                   </div>
-                )) : <p className="p-10 text-center text-slate-500 text-xs">No subscribers found.</p>}
+                ))}
 
-                {partnerProfiles.map((profile) => (
+                {getFilteredItems(partnerProfiles).map((profile) => (
                   <div key={profile._id} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px] bg-orange-500/5">
                     <span className="font-medium text-white">#{profile._id.slice(-6).toUpperCase()}</span>
                     <div className="col-span-2 flex flex-col min-w-0">
@@ -218,6 +218,10 @@ const TableTab = ({
                     </div>
                   </div>
                 ))}
+
+                {getFilteredItems(subscribers).length === 0 && getFilteredItems(partnerProfiles).length === 0 && (
+                  <p className="p-10 text-center text-slate-500 text-xs">No subscribers or partners found.</p>
+                )}
               </>
             )}
 

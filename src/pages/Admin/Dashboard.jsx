@@ -111,7 +111,7 @@ const Dashboard = () => {
         return id.toLowerCase().includes(query);
       }
       if (filter === "Name") {
-        const name = item.name || item.title || item.customer?.name || item.author || "";
+        const name = item.name || item.title || item.customer?.name || item.author || item.companyName || "";
         return name.toLowerCase().includes(query);
       }
       if (filter === "Category") {
@@ -131,6 +131,9 @@ const Dashboard = () => {
         item.name,
         item.title,
         item.email,
+        item.companyName,
+        item.userId?.name,
+        item.userId?.email,
         item.customer?.name,
         item.customer?.email,
         item.category,
