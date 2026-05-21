@@ -14,7 +14,6 @@ const TableTab = ({
   users,
   services,
   orders,
-  testimonials,
   subscribers,
   leads,
   products,
@@ -72,7 +71,6 @@ const TableTab = ({
                activeMenu === "Categories" ? `${getFilteredItems(categories).length} of ${categories.length}` :
                activeMenu === "Services" ? `${getFilteredItems(services).length} of ${services.length}` :
                activeMenu === "Orders" ? `${getFilteredItems(orders).length} of ${orders.length}` :
-               activeMenu === "Testimonials" ? `${getFilteredItems(testimonials).length} of ${testimonials.length}` :
                activeMenu === "Subscribers" ? `${getFilteredItems(subscribers).length} of ${subscribers.length}` : 0}
             </span>
           </div>
@@ -138,19 +136,6 @@ const TableTab = ({
                 </div>
               </div>
             )) : <p className="p-10 text-center text-slate-500 text-xs">No orders found.</p>)}
-
-            {activeMenu === "Testimonials" && (getFilteredItems(testimonials).length > 0 ? getFilteredItems(testimonials).map((test) => (
-              <div key={test._id} className="grid grid-cols-5 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
-                <span className="font-medium text-white">#{test._id.slice(-6).toUpperCase()}</span>
-                <span className="text-gray-300 truncate pr-4">{test.message || test.review}</span>
-                <span className="text-gray-400">{test.name || test.author}</span>
-                <span className="px-3 py-1 rounded-md bg-green-500/10 text-green-400 text-[9px] w-fit">Published</span>
-                <div className="flex items-center justify-end gap-3 text-gray-400">
-                  <button onClick={() => handleEditClick(test)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
-                  <button onClick={() => handleDelete(test._id, "testimonials")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
-                </div>
-              </div>
-            )) : <p className="p-10 text-center text-slate-500 text-xs">No testimonials found.</p>)}
 
             {activeMenu === "Subscribers" && (getFilteredItems(subscribers).length > 0 ? getFilteredItems(subscribers).map((sub) => (
               <div key={sub._id} className="grid grid-cols-5 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">

@@ -12,14 +12,14 @@ const Sidebar = ({
   return (
     <aside
       className={`${
-        sidebarOpen ? "w-[210px]" : "w-0"
+        sidebarOpen ? "w-[210px]" : "w-[70px]"
       } h-screen bg-black border-r border-white/10 flex flex-col overflow-hidden transition-all duration-300`}
     >
       {/* LOGO */}
       <div className="h-[58px] flex items-center px-4 border-b border-white/10 flex-shrink-0">
         <Link to="/" className="hover:opacity-80 transition-opacity">
-          <h1 className="text-[16px] font-extrabold tracking-wide text-green-500 whitespace-nowrap cursor-pointer">
-            ULTRACLAD
+          <h1 className={`${sidebarOpen ? "text-[16px]" : "text-[10px]"} font-extrabold tracking-wide text-green-500 whitespace-nowrap cursor-pointer transition-all duration-300`}>
+            {sidebarOpen ? "ULTRACLAD" : "UC"}
           </h1>
         </Link>
       </div>
@@ -39,16 +39,19 @@ const Sidebar = ({
                   setActiveMenu(item.name);
                 }
               }}
-              className={`w-full flex items-center gap-3 px-3 h-[40px] rounded-xl transition-all duration-300 whitespace-nowrap ${
+              className={`w-full flex items-center ${sidebarOpen ? "gap-3 px-3" : "justify-center px-0"} h-[40px] rounded-xl transition-all duration-300 whitespace-nowrap ${
                 activeMenu === item.name
                   ? "bg-green-600 text-white"
                   : "text-gray-300 hover:bg-white/5 hover:text-white"
               }`}
+              title={!sidebarOpen ? item.name : ""}
             >
               {item.icon}
-              <span className="text-[13px] font-medium">
-                {item.name}
-              </span>
+              {sidebarOpen && (
+                <span className="text-[13px] font-medium transition-opacity duration-300">
+                  {item.name}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -58,7 +61,7 @@ const Sidebar = ({
       <div className="p-2 pb-3 flex-shrink-0">
         <div 
           onClick={() => setActiveMenu("Profile")}
-          className="bg-[#0b1220] border border-white/10 rounded-xl px-3 py-3 flex items-center justify-between cursor-pointer hover:border-green-500/50 transition-colors"
+          className={`bg-[#0b1220] border border-white/10 rounded-xl ${sidebarOpen ? "px-3" : "px-0 justify-center"} py-3 flex items-center justify-between cursor-pointer hover:border-green-500/50 transition-colors`}
         >
           <div className="flex items-center gap-2">
             <img
@@ -66,18 +69,22 @@ const Sidebar = ({
               alt="admin"
               className="w-9 h-9 rounded-full object-cover border border-green-500"
             />
-            <div>
-              <h3 className="text-white text-[12px] font-semibold leading-none whitespace-nowrap">
-                {adminProfile.name}
-              </h3>
-              <p className="text-gray-400 text-[10px] mt-1 whitespace-nowrap uppercase">
-                {adminProfile.role}
-              </p>
-            </div>
+            {sidebarOpen && (
+              <div>
+                <h3 className="text-white text-[12px] font-semibold leading-none whitespace-nowrap">
+                  {adminProfile.name}
+                </h3>
+                <p className="text-gray-400 text-[10px] mt-1 whitespace-nowrap uppercase">
+                  {adminProfile.role}
+                </p>
+              </div>
+            )}
           </div>
-          <button className="text-gray-400 hover:text-white">
-            <Settings size={14} />
-          </button>
+          {sidebarOpen && (
+            <button className="text-gray-400 hover:text-white">
+              <Settings size={14} />
+            </button>
+          )}
         </div>
       </div>
     </aside>

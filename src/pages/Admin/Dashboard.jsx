@@ -52,7 +52,6 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [services, setServices] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
   const [partnerProfiles, setPartnerProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -156,7 +155,6 @@ const Dashboard = () => {
         usersRes,
         servicesRes,
         ordersRes,
-        testimonialsRes,
         subsRes,
         leadsRes,
         productsRes,
@@ -167,7 +165,6 @@ const Dashboard = () => {
         fetch(`${API_URL}/admin/users`, { headers }),
         fetch(`${API_URL}/admin/services`, { headers }),
         fetch(`${API_URL}/admin/orders`, { headers }),
-        fetch(`${API_URL}/admin/testimonials`, { headers }),
         fetch(`${API_URL}/admin/subscribers`, { headers }),
         fetch(`${API_URL}/leads`, { headers }),
         fetch(`${API_URL}/products`),
@@ -180,7 +177,6 @@ const Dashboard = () => {
         usersData,
         servicesData,
         ordersData,
-        testimonialsData,
         subsData,
         leadsData,
         productsData,
@@ -191,7 +187,6 @@ const Dashboard = () => {
         usersRes.json(),
         servicesRes.json(),
         ordersRes.json(),
-        testimonialsRes.json(),
         subsRes.json(),
         leadsRes.json(),
         productsRes.json(),
@@ -203,7 +198,6 @@ const Dashboard = () => {
       if (usersData.success) setUsers(usersData.users);
       if (servicesData.success) setServices(servicesData.services);
       if (ordersData.success) setOrders(ordersData.orders);
-      if (testimonialsData.success) setTestimonials(testimonialsData.testimonials);
       if (subsData.success) setSubscribers(subsData.subscribers);
       if (leadsData.success) setLeads(leadsData.leads);
       if (productsData.success) setProducts(productsData.products);
@@ -292,7 +286,6 @@ const Dashboard = () => {
                       activeMenu === "Services" ? "manufacturing" :
                       activeMenu === "Users" ? "admin/users" :
                       activeMenu === "Orders" ? "admin/orders" :
-                      activeMenu === "Testimonials" ? "testimonials" :
                       activeMenu === "Subscribers" ? "admin/subscribers" :
                       activeMenu === "Leads" ? "leads" : "";
       
@@ -412,10 +405,6 @@ const Dashboard = () => {
       icon: <ShoppingCart size={16} />,
     },
     {
-      name: "Testimonials",
-      icon: <MessageSquare size={16} />,
-    },
-    {
       name: "Subscribers",
       icon: <Mail size={16} />,
     },
@@ -496,6 +485,8 @@ const Dashboard = () => {
             <OverviewTab
               stats={stats}
               setActiveMenu={setActiveMenu}
+              leads={leads}
+              orders={orders}
             />
           )}
 
@@ -514,7 +505,6 @@ const Dashboard = () => {
               users={users}
               services={services}
               orders={orders}
-              testimonials={testimonials}
               subscribers={subscribers}
               leads={leads}
               products={products}
