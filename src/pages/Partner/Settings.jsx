@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaUser, FaLock, FaBell, FaGlobe, FaCreditCard, FaCloudUploadAlt, FaSpinner, FaCheckCircle, FaTrashAlt } from 'react-icons/fa';
+import { FaUser, FaLock, FaCloudUploadAlt, FaSpinner, FaTrashAlt, FaShieldAlt } from 'react-icons/fa';
 import { API_BASE_URL } from '../../api/config';
 
 const Settings = () => {
@@ -14,6 +14,12 @@ const Settings = () => {
     address: '',
     website: '',
     logo: ''
+  });
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
   });
 
   const [initialData, setInitialData] = useState({});
@@ -51,10 +57,6 @@ const Settings = () => {
     }
   };
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const uploadLogoToCloudinary = async (file) => {
     if (!file) return;
     setLogoUploading(true);
@@ -82,14 +84,7 @@ const Settings = () => {
     }
   };
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      uploadLogoToCloudinary(file);
-    }
-  };
-
-  const handleSubmit = async (e) => {
+  const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
@@ -104,7 +99,6 @@ const Settings = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        // Update user state local storage phone
         const userStr = localStorage.getItem('user');
         if (userStr) {
           const user = JSON.parse(userStr);
@@ -112,15 +106,46 @@ const Settings = () => {
           user.name = formData.companyName;
           localStorage.setItem('user', JSON.stringify(user));
         }
-
-        alert("Profile settings updated successfully! 🎉");
+        alert("Profile updated successfully! 🎉");
         setInitialData(formData);
       } else {
         alert(data.msg || "Failed to update profile");
       }
     } catch (err) {
       console.error("Save profile error:", err);
-      alert("Error saving changes");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      return alert("New passwords do not match!");
+    }
+    setSaving(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/auth/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert("Password updated successfully! 🔐");
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      } else {
+        alert(data.msg || "Failed to update password");
+      }
+    } catch (err) {
+      console.error("Password update error:", err);
     } finally {
       setSaving(false);
     }
@@ -134,231 +159,126 @@ const Settings = () => {
     );
   }
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'Profile':
-        return (
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <section className="space-y-6">
-              <div className="flex items-center gap-6">
-                <div className="relative group">
-                  <div className="w-24 h-24 bg-slate-100 rounded-3xl flex items-center justify-center text-slate-300 text-3xl font-bold overflow-hidden border-4 border-white shadow-sm">
-                    {formData.logo ? (
-                      <img src={formData.logo} alt="Company Logo" className="w-full h-full object-cover" />
-                    ) : (
-                      formData.companyName ? formData.companyName[0].toUpperCase() : 'UP'
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    id="logo-upload"
-                    accept="image/*"
-                    onChange={handleLogoChange}
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="logo-upload"
-                    className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 text-white rounded-xl flex items-center justify-center shadow-lg border-2 border-white hover:bg-green-600 transition-all cursor-pointer"
-                  >
-                    {logoUploading ? <FaSpinner className="animate-spin text-xs" /> : <FaCloudUploadAlt />}
-                  </label>
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-800 text-sm">Company Logo</h4>
-                  <p className="text-xs text-slate-400 mt-1">PNG or JPG. Max 5MB.</p>
-                  {formData.logo && (
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, logo: '' })}
-                      className="text-xs text-red-500 font-bold hover:underline flex items-center gap-1 mt-1.5"
-                    >
-                      <FaTrashAlt className="text-[10px]" /> Remove Logo
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Company Name</label>
-                  <input
-                    type="text"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Contact Number</label>
-                  <input
-                    type="text"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="+91 99999 99999"
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20"
-                  />
-                </div>
-                <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Website URL</label>
-                  <input
-                    type="url"
-                    name="website"
-                    value={formData.website}
-                    onChange={handleInputChange}
-                    placeholder="https://yourfactory.com"
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20"
-                  />
-                </div>
-                <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Business Address</label>
-                  <textarea
-                    rows="3"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20 resize-none"
-                  ></textarea>
-                </div>
-              </div>
-            </section>
-
-            <div className="pt-8 border-t border-slate-50 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setFormData(initialData)}
-                className="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all"
-              >
-                Reset
-              </button>
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-6 py-2.5 bg-[#14532D] text-white rounded-xl text-sm font-bold hover:bg-[#166534] shadow-lg shadow-green-900/10 transition-all flex items-center gap-2"
-              >
-                {saving && <FaSpinner className="animate-spin text-xs" />}
-                Save Changes
-              </button>
-            </div>
-          </form>
-        );
-
-      case 'Security':
-        return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-bold text-slate-800">Security Credentials</h3>
-            <p className="text-slate-400 text-xs font-medium">To update your password, email, or credentials, please open the general user Profile screen via your account dropdown settings.</p>
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-bold text-slate-800">Two-Factor Authentication</p>
-                <p className="text-slate-400 text-xs mt-1">Add an extra layer of protection to your partner profile.</p>
-              </div>
-              <span className="px-3 py-1 bg-slate-200 text-slate-700 text-[10px] font-bold uppercase rounded-full">Inactive</span>
-            </div>
-          </div>
-        );
-
-      case 'Notifications':
-        return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-bold text-slate-800">Notification Preferences</h3>
-            <div className="space-y-4">
-              {[
-                { title: 'Email Alerts on New Leads', desc: 'Get immediately notified when a new machinery tender matches your categories.', val: true },
-                { title: 'KYC Status Updates', desc: 'Receive instant notifications regarding verification approval or rejection.', val: true },
-                { title: 'Weekly Performance Summaries', desc: 'Receive weekly analysis summaries of active negotiations and closed sales.', val: false }
-              ].map((pref, i) => (
-                <div key={i} className="flex items-start justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-800">{pref.title}</h4>
-                    <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">{pref.desc}</p>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      defaultChecked={pref.val}
-                      className="w-4 h-4 text-green-600 border-slate-300 rounded focus:ring-green-500"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-
-      default:
-        return (
-          <div className="text-center py-12">
-            <FaGlobe className="text-4xl text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-slate-800 mb-1">{activeTab} tab configuration</h3>
-            <p className="text-slate-400 text-xs">Standard parameters for corporate billing and custom domain routing.</p>
-          </div>
-        );
-    }
-  };
-
   return (
     <div className="max-w-4xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">Account Settings</h1>
-        <p className="text-slate-500 text-sm">Update your company profile and portal preferences.</p>
+        <h1 className="text-3xl font-black text-slate-800 tracking-tight">Account Settings</h1>
+        <p className="text-slate-500 font-medium">Manage your company profile and security</p>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
         <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-slate-50">
           
-          {/* Left Navigation */}
-          <div className="w-full md:w-64 p-4 bg-slate-50/50">
-            <nav className="space-y-1">
-              {[
-                { name: 'Profile', icon: FaUser },
-                { name: 'Security', icon: FaLock },
-                { name: 'Notifications', icon: FaBell },
-                { name: 'Branding', icon: FaGlobe },
-                { name: 'Billing', icon: FaCreditCard },
-              ].map((tab) => (
-                <button
-                  type="button"
-                  key={tab.name}
-                  onClick={() => setActiveTab(tab.name)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                    activeTab === tab.name ? 'bg-white text-green-600 shadow-sm border border-slate-100/80' : 'text-slate-500 hover:bg-white/50 hover:text-slate-800'
-                  }`}
-                >
-                  <tab.icon className={activeTab === tab.name ? 'text-green-500' : 'text-slate-400'} />
-                  {tab.name}
-                </button>
-              ))}
+          {/* Tabs */}
+          <div className="w-full md:w-64 p-6 bg-slate-50/30">
+            <nav className="space-y-2">
+              <button
+                onClick={() => setActiveTab('Profile')}
+                className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all ${
+                  activeTab === 'Profile' ? 'bg-white text-green-600 shadow-sm border border-slate-100' : 'text-slate-500 hover:bg-white/50'
+                }`}
+              >
+                <FaUser className={activeTab === 'Profile' ? 'text-green-500' : 'text-slate-400'} />
+                Profile Info
+              </button>
+              <button
+                onClick={() => setActiveTab('Security')}
+                className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all ${
+                  activeTab === 'Security' ? 'bg-white text-green-600 shadow-sm border border-slate-100' : 'text-slate-500 hover:bg-white/50'
+                }`}
+              >
+                <FaLock className={activeTab === 'Security' ? 'text-green-500' : 'text-slate-400'} />
+                Security
+              </button>
             </nav>
           </div>
 
-          {/* Content Area */}
-          <div className="flex-1 p-8">
-            {renderTabContent()}
+          {/* Content */}
+          <div className="flex-1 p-8 md:p-10">
+            {activeTab === 'Profile' ? (
+              <form onSubmit={handleProfileSubmit} className="space-y-8">
+                <div className="flex items-center gap-6">
+                  <div className="relative">
+                    <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center overflow-hidden border-4 border-white shadow-sm">
+                      {formData.logo ? (
+                        <img src={formData.logo} alt="Logo" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-2xl font-black text-slate-300">{formData.companyName[0]}</span>
+                      )}
+                    </div>
+                    <label htmlFor="logo-up" className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 text-white rounded-xl flex items-center justify-center cursor-pointer border-2 border-white shadow-lg">
+                      {logoUploading ? <FaSpinner className="animate-spin text-[10px]" /> : <FaCloudUploadAlt size={12} />}
+                    </label>
+                    <input type="file" id="logo-up" hidden accept="image/*" onChange={(e) => uploadLogoToCloudinary(e.target.files[0])} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm">Company Logo</h4>
+                    <button type="button" onClick={() => setFormData({...formData, logo: ''})} className="text-[10px] text-red-500 font-bold uppercase mt-1 flex items-center gap-1 hover:underline">
+                      <FaTrashAlt /> Remove
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Company Name</label>
+                    <input type="text" value={formData.companyName} onChange={(e) => setFormData({...formData, companyName: e.target.value})} required className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
+                    <input type="text" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" />
+                  </div>
+                  <div className="md:col-span-2 space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Website</label>
+                    <input type="url" value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" placeholder="https://" />
+                  </div>
+                  <div className="md:col-span-2 space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Address</label>
+                    <textarea rows="3" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20 resize-none" />
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-slate-50 flex justify-end">
+                  <button type="submit" disabled={saving} className="px-8 py-3 bg-[#14532D] text-white rounded-xl text-sm font-bold hover:bg-black transition-all flex items-center gap-2">
+                    {saving && <FaSpinner className="animate-spin" />} Save Profile
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handlePasswordSubmit} className="space-y-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center">
+                    <FaShieldAlt />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-800">Update Password</h3>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Current Password</label>
+                    <input type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})} required className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">New Password</label>
+                      <input type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})} required className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Confirm New Password</label>
+                      <input type="password" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})} required className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-green-500/20" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-slate-50 flex justify-end">
+                  <button type="submit" disabled={saving} className="px-8 py-3 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-black transition-all flex items-center gap-2">
+                    {saving && <FaSpinner className="animate-spin" />} Update Password
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
-
         </div>
-      </div>
-
-      {/* Danger Zone */}
-      <div className="bg-red-50/50 p-6 rounded-3xl border border-red-100 flex items-center justify-between">
-        <div>
-          <h4 className="font-bold text-red-800 text-sm">Deactivate Account</h4>
-          <p className="text-xs text-red-600/70">Once you deactivate, all your data will be archived.</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => {
-            if (window.confirm("Are you sure you want to deactivate your partner account?")) {
-              alert("Deactivation request submitted.");
-            }
-          }}
-          className="px-4 py-2 bg-white text-red-600 border border-red-200 rounded-xl text-xs font-bold hover:bg-red-50 transition-all"
-        >
-          Deactivate
-        </button>
       </div>
     </div>
   );
