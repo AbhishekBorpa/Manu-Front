@@ -55,7 +55,7 @@ const PartnerLayout = () => {
         <div className="h-full flex flex-col p-6">
           
           {/* Logo Area */}
-          <div className="flex items-center gap-3 mb-12 px-2">
+          <Link to="/" className="flex items-center gap-3 mb-12 px-2 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20">
               <FaHandshake className="text-white text-xl" />
             </div>
@@ -63,7 +63,7 @@ const PartnerLayout = () => {
               <h2 className="text-lg font-extrabold tracking-tighter">ULTRA CLAP</h2>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[2px]">Partner Portal</p>
             </div>
-          </div>
+          </Link>
 
           {/* Navigation */}
           <nav className="flex-grow space-y-1">

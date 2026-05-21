@@ -1,5 +1,6 @@
 import React from "react";
 import { Settings } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Sidebar = ({
   sidebarOpen,
@@ -16,9 +17,11 @@ const Sidebar = ({
     >
       {/* LOGO */}
       <div className="h-[58px] flex items-center px-4 border-b border-white/10 flex-shrink-0">
-        <h1 className="text-[16px] font-extrabold tracking-wide text-green-500 whitespace-nowrap">
-          ULTRACLAD
-        </h1>
+        <Link to="/" className="hover:opacity-80 transition-opacity">
+          <h1 className="text-[16px] font-extrabold tracking-wide text-green-500 whitespace-nowrap cursor-pointer">
+            ULTRACLAD
+          </h1>
+        </Link>
       </div>
 
       {/* MENU */}
