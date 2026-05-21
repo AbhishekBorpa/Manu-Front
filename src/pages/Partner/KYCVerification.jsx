@@ -19,8 +19,12 @@ const KYCVerification = () => {
   const [formData, setFormData] = useState({
     gstNumber: '',
     businessRegistrationNumber: '',
+    aadharNumber: '',
+    panNumber: '',
     gstDoc: null,
-    businessRegDoc: null
+    businessRegDoc: null,
+    aadharDoc: null,
+    panDoc: null
   });
   const [profile, setProfile] = useState(null);
 
@@ -42,8 +46,12 @@ const KYCVerification = () => {
            setFormData({
              gstNumber: data.profile.gstNumber || '',
              businessRegistrationNumber: data.profile.businessRegistrationNumber || '',
+             aadharNumber: data.profile.aadharNumber || '',
+             panNumber: data.profile.panNumber || '',
              gstDoc: null,
-             businessRegDoc: null
+             businessRegDoc: null,
+             aadharDoc: null,
+             panDoc: null
            });
         }
       }
@@ -67,6 +75,8 @@ const KYCVerification = () => {
       const data = new FormData();
       data.append('gstNumber', formData.gstNumber);
       data.append('businessRegistrationNumber', formData.businessRegistrationNumber);
+      data.append('aadharNumber', formData.aadharNumber);
+      data.append('panNumber', formData.panNumber);
       
       if (formData.gstDoc) {
         data.append('gstDoc', formData.gstDoc);
@@ -78,6 +88,18 @@ const KYCVerification = () => {
         data.append('businessRegDoc', formData.businessRegDoc);
       } else {
         data.append('businessRegDoc', profile?.businessRegDoc || '');
+      }
+
+      if (formData.aadharDoc) {
+        data.append('aadharDoc', formData.aadharDoc);
+      } else {
+        data.append('aadharDoc', profile?.aadharDoc || '');
+      }
+
+      if (formData.panDoc) {
+        data.append('panDoc', formData.panDoc);
+      } else {
+        data.append('panDoc', profile?.panDoc || '');
       }
 
       const res = await fetch(`${API_BASE_URL}/partner/kyc`, {
@@ -248,6 +270,38 @@ const KYCVerification = () => {
                 </div>
               </div>
 
+              {/* Aadhar Field */}
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-[2px] ml-1">Aadhar Number</label>
+                <div className="relative group">
+                  <FaIdCard className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-300 transition-colors group-focus-within:text-[#14532D]" />
+                  <input 
+                    type="text" 
+                    placeholder="1234 5678 9012"
+                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all font-bold text-slate-800"
+                    value={formData.aadharNumber}
+                    onChange={(e) => setFormData({...formData, aadharNumber: e.target.value})}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* PAN Field */}
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-[2px] ml-1">PAN Number</label>
+                <div className="relative group">
+                  <FaIdCard className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-300 transition-colors group-focus-within:text-[#14532D]" />
+                  <input 
+                    type="text" 
+                    placeholder="ABCDE1234F"
+                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-[#14532D] transition-all font-bold text-slate-800"
+                    value={formData.panNumber}
+                    onChange={(e) => setFormData({...formData, panNumber: e.target.value.toUpperCase()})}
+                    required
+                  />
+                </div>
+              </div>
+
               {/* File Upload 1 */}
               <div className="space-y-2">
                 <label className="text-xs font-black text-slate-400 uppercase tracking-[2px] ml-1">GST Certificate</label>
@@ -292,6 +346,56 @@ const KYCVerification = () => {
                     </div>
                     <div className="text-center">
                       <p className="text-xs font-bold text-slate-700">{formData.businessRegDoc ? formData.businessRegDoc.name : profile?.businessRegDoc ? 'Reg. Document Uploaded' : 'Upload Reg. PDF'}</p>
+                      <p className="text-[10px] text-slate-400 mt-1">Click to browse files</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* File Upload 3 (Aadhar) */}
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-[2px] ml-1">Aadhar Card</label>
+                <div className="relative">
+                  <input 
+                    type="file" 
+                    id="aadharDoc"
+                    name="aadharDoc"
+                    onChange={handleFileChange}
+                    className="hidden" 
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    required={!profile?.aadharDoc}
+                  />
+                  <label htmlFor="aadharDoc" className="flex flex-col items-center justify-center gap-3 w-full p-8 border-2 border-dashed border-slate-200 rounded-[28px] hover:border-[#14532D] hover:bg-green-50/30 transition-all cursor-pointer group">
+                    <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center group-hover:bg-[#14532D] group-hover:text-white transition-all">
+                      <FaFileUpload />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs font-bold text-slate-700">{formData.aadharDoc ? formData.aadharDoc.name : profile?.aadharDoc ? 'Aadhar Uploaded' : 'Upload Aadhar PDF'}</p>
+                      <p className="text-[10px] text-slate-400 mt-1">Click to browse files</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* File Upload 4 (PAN) */}
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-[2px] ml-1">PAN Card</label>
+                <div className="relative">
+                  <input 
+                    type="file" 
+                    id="panDoc"
+                    name="panDoc"
+                    onChange={handleFileChange}
+                    className="hidden" 
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    required={!profile?.panDoc}
+                  />
+                  <label htmlFor="panDoc" className="flex flex-col items-center justify-center gap-3 w-full p-8 border-2 border-dashed border-slate-200 rounded-[28px] hover:border-[#14532D] hover:bg-green-50/30 transition-all cursor-pointer group">
+                    <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center group-hover:bg-[#14532D] group-hover:text-white transition-all">
+                      <FaFileUpload />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs font-bold text-slate-700">{formData.panDoc ? formData.panDoc.name : profile?.panDoc ? 'PAN Uploaded' : 'Upload PAN PDF'}</p>
                       <p className="text-[10px] text-slate-400 mt-1">Click to browse files</p>
                     </div>
                   </label>
