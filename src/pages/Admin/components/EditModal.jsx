@@ -55,7 +55,19 @@ const EditModal = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Category</label>
-                  <input type="text" value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required={activeMenu === "Products"} />
+                  <select 
+                    value={formData.category} 
+                    onChange={(e) => {
+                      setFormData({...formData, category: e.target.value, subcategory: ""});
+                    }} 
+                    className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                    required={activeMenu === "Products"}
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat.name}>{cat.name}</option>
+                    ))}
+                  </select>
                 </div>
                 {activeMenu === "Products" && (
                   <div className="space-y-2">
