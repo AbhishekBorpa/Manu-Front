@@ -64,7 +64,10 @@ const Dashboard = () => {
     name: "",
     email: "",
     category: "",
+    subcategory: "",
+    subcategories: "",
     price: "",
+    location: "Delhi",
     description: "",
     status: "Active",
     role: "user"
@@ -266,7 +269,10 @@ const Dashboard = () => {
       name: item.name || item.author || "",
       email: item.email || "",
       category: item.category || "",
+      subcategory: item.subcategory || "",
+      subcategories: item.subcategories ? item.subcategories.join(", ") : "",
       price: item.price || "",
+      location: item.location || "Delhi",
       description: item.description || item.desc || item.message || item.review || "",
       status: item.status || "Active",
       role: item.role || "user"
@@ -364,7 +370,19 @@ const Dashboard = () => {
       const data = await res.json();
       if (data.success) {
         setIsAddModalOpen(false);
-        setFormData({ title: "", name: "", email: "", category: "", price: "", description: "", status: "Active", role: "user" });
+        setFormData({ 
+          title: "", 
+          name: "", 
+          email: "", 
+          category: "", 
+          subcategory: "", 
+          subcategories: "", 
+          price: "", 
+          location: "Delhi", 
+          description: "", 
+          status: "Active", 
+          role: "user" 
+        });
         setImageFile(null);
         fetchData();
       } else {
@@ -539,6 +557,7 @@ const Dashboard = () => {
         setFormData={setFormData}
         setImageFile={setImageFile}
         onSubmit={handleEditSubmit}
+        categories={categories}
       />
 
       {/* ADD MODAL */}
@@ -550,6 +569,7 @@ const Dashboard = () => {
         setFormData={setFormData}
         setImageFile={setImageFile}
         onSubmit={handleAddSubmit}
+        categories={categories}
       />
 
       {/* GLOBAL SEARCH DIALOG (COMMAND+K) */}
