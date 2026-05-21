@@ -160,10 +160,10 @@ const PartnerDashboard = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8">
         
         {/* Recent Leads Table */}
-        <div className="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
           <div className="p-6 border-b border-slate-50 flex items-center justify-between">
             <h3 className="font-bold text-slate-800">Recent Manufacturing Leads</h3>
             <button 
@@ -237,43 +237,6 @@ const PartnerDashboard = () => {
             </table>
           </div>
         </div>
-
-        {/* Quick Actions / Activity */}
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
-          <h3 className="font-bold text-slate-800 mb-6">Partner Updates</h3>
-          <div className="space-y-6">
-            {[
-              { icon: FaCheckCircle, color: 'text-green-500', bg: 'bg-green-50', title: 'Payment Received', desc: '₹45,000 processed for Order #234', time: '2h ago' },
-              { icon: FaClock, color: 'text-blue-500', bg: 'bg-blue-50', title: 'New Lead Assigned', desc: 'Custom Paper Bag machine inquiry', time: '4h ago' },
-              { icon: FaTimesCircle, color: 'text-red-500', bg: 'bg-red-50', title: 'Lead Rejected', desc: 'Client budget mismatch for Project #88', time: 'Yesterday' },
-            ].map((item, index) => (
-              <div key={index} className="flex gap-4">
-                <div className={`w-10 h-10 ${item.bg} ${item.color} rounded-xl flex-shrink-0 flex items-center justify-center text-lg`}>
-                  <item.icon />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-800">{item.title}</h4>
-                  <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
-                  <p className="text-[10px] text-slate-400 mt-1 font-medium">{item.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="mt-8 pt-8 border-t border-slate-100">
-            <div className="bg-[#14532D]/5 rounded-2xl p-4 border border-[#14532D]/10 text-center">
-              <h4 className="text-[#14532D] font-extrabold text-sm mb-1">Upgrade Your Reach</h4>
-              <p className="text-[#14532D]/70 text-[11px] mb-3 leading-tight">Get 3x more premium leads with our Featured Partner plan.</p>
-              <button 
-                onClick={() => setShowPlans(true)}
-                className="w-full bg-[#14532D] text-white py-2 rounded-lg text-xs font-bold hover:bg-[#166534] transition-all"
-              >
-                Explore Plans
-              </button>
-            </div>
-          </div>
-        </div>
-
       </div>
 
       {/* Plans Modal */}
