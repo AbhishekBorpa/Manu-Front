@@ -8,7 +8,13 @@ import {
   FaList, 
   FaStar,
   FaCheckCircle,
-  FaTimes
+  FaTimes,
+  FaIndustry,
+  FaCog,
+  FaRupeeSign,
+  FaChevronDown,
+  FaTimesCircle,
+  FaStoreAlt
 } from "react-icons/fa";
 import LeadModal from "../components/LeadModal";
 import { getServerUrl, getLocalFallback } from "../api/config";
@@ -23,11 +29,14 @@ const AllProductsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(urlCategory || "All Categories");
   const [priceRange, setPriceRange] = useState(6000000);
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [categories, setCategories] = useState({ industry: [], machine: [] });
+  const [categoryCounts, setCategoryCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [expandedSections, setExpandedSections] = useState({ industry: true, machine: true, price: true });
 
   // Sync state with URL
   useEffect(() => {
@@ -76,8 +85,17 @@ const AllProductsPage = () => {
         const data = await res.json();
         
         if (data.success) {
-          console.log("FETCHED PRODUCTS:", data.products);
-          let filtered = data.products;
+          const raw = data.products;
+          setAllProducts(raw);
+
+          const counts = {};
+          raw.forEach(p => {
+            const cat = p.category || 'Uncategorized';
+            counts[cat] = (counts[cat] || 0) + 1;
+          });
+          setCategoryCounts(counts);
+
+          let filtered = raw;
           
           // Apply Category Filter from State
           const catToFilter = selectedCategory;
@@ -116,23 +134,15 @@ const AllProductsPage = () => {
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
       
-      {/* 🔥 PREMIUM HERO HEADER */}
-      <div className="bg-[#14532D] pt-12 md:pt-24 pb-6 md:pb-12 px-4 md:px-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 md:w-96 h-64 md:h-96 bg-white/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
-            <div>
-              <h1 className="text-2xl md:text-5xl font-black text-white tracking-tight mb-1 md:mb-4">
-                Industrial <span className="text-green-400">Marketplace</span>
-              </h1>
-              <p className="text-green-100/70 font-medium max-w-xl text-xs md:text-base">
-                Explore the world's largest collection of manufacturing machinery and industrial supplies.
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-2 md:gap-4 text-white/60 text-[10px] md:text-sm font-bold bg-black/20 backdrop-blur-md px-3 md:px-6 py-1.5 md:py-3 rounded-xl md:rounded-2xl border border-white/10 w-fit">
-              <span>{products.length} Products Found</span>
-            </div>
-          </div>
+      {/* 🔥 TOP BAR */}
+      <div className="bg-[#14532D] px-4 md:px-6 py-3 md:py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <h1 className="text-lg md:text-2xl font-black text-white tracking-tight">
+            Products <span className="text-green-400">Marketplace</span>
+          </h1>
+          <span className="text-white/60 text-[10px] md:text-sm font-bold bg-black/20 backdrop-blur-md px-3 md:px-5 py-1.5 md:py-2 rounded-xl border border-white/10">
+            {products.length} Products
+          </span>
         </div>
       </div>
 
@@ -174,93 +184,164 @@ const AllProductsPage = () => {
       {showFilters && (
         <div className="fixed inset-0 z-[2000]">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowFilters(false)}></div>
-          <div className="absolute right-0 top-0 bottom-0 w-[80%] max-w-[300px] bg-white p-6 md:p-8 shadow-2xl overflow-y-auto animate-slide-in-right">
-            <div className="flex items-center justify-between mb-8 md:mb-10">
-              <h3 className="text-xl font-black text-slate-900">Filters</h3>
-              <button onClick={() => setShowFilters(false)} className="p-2 bg-slate-100 rounded-full">
-                <FaTimes />
+          <div className="absolute right-0 top-0 bottom-0 w-[80%] max-w-[320px] bg-white shadow-2xl overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-5 py-4 flex items-center justify-between z-10">
+              <div className="flex items-center gap-2.5">
+                <h3 className="text-lg font-black text-slate-900">Filters</h3>
+                {selectedCategory !== "All Categories" && (
+                  <span className="px-2 py-0.5 bg-[#14532D]/10 text-[#14532D] text-[9px] font-black rounded-full">1 active</span>
+                )}
+              </div>
+              <button onClick={() => setShowFilters(false)} className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors">
+                <FaTimes size={14} />
               </button>
             </div>
             
-            <div className="space-y-8">
+            <div className="p-5 space-y-5">
               {/* All Categories Reset */}
-              <button
-                onClick={() => {
-                  handleCategorySelect("All Categories");
-                  setShowFilters(false);
-                }}
-                className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-                  selectedCategory === "All Categories" 
-                    ? 'bg-[#14532D] text-white shadow-lg' 
-                    : 'bg-slate-50 text-slate-500'
-                }`}
-              >
-                All Categories
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    handleCategorySelect("All Categories");
+                    setShowFilters(false);
+                  }}
+                  className={`flex-1 text-left px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                    selectedCategory === "All Categories" 
+                      ? 'bg-[#14532D] text-white shadow-lg' 
+                      : 'bg-white border border-slate-200 text-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <FaStoreAlt size={13} />
+                    <span>All Categories</span>
+                  </div>
+                </button>
+                {selectedCategory !== "All Categories" && (
+                  <button
+                    onClick={() => handleCategorySelect("All Categories")}
+                    className="p-3 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-red-500 transition-all"
+                  >
+                    <FaTimesCircle size={14} />
+                  </button>
+                )}
+              </div>
 
               {/* Industries */}
-              <div>
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Industries & Materials</h4>
-                <div className="space-y-2">
-                  {categories.industry.map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => {
-                        handleCategorySelect(cat);
-                        setShowFilters(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-                        selectedCategory.toLowerCase() === cat.toLowerCase()
-                          ? 'bg-[#14532D] text-white shadow-lg' 
-                          : 'bg-slate-50 text-slate-500'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
+              <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                <button
+                  onClick={() => setExpandedSections(s => ({ ...s, industry: !s.industry }))}
+                  className="w-full flex items-center justify-between px-4 py-3.5 text-xs font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <FaIndustry className="text-slate-400" size={12} />
+                    <span>Industries</span>
+                  </div>
+                  <FaChevronDown size={10} className={`text-slate-400 transition-transform ${expandedSections.industry ? 'rotate-180' : ''}`} />
+                </button>
+                {expandedSections.industry && (
+                  <div className="px-3 pb-3 space-y-0.5">
+                    {categories.industry.map(cat => {
+                      const count = categoryCounts[cat] || 0;
+                      const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+                      return (
+                        <button
+                          key={cat}
+                          onClick={() => {
+                            handleCategorySelect(cat);
+                            setShowFilters(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                            isActive
+                              ? 'bg-[#14532D] text-white shadow-sm' 
+                              : 'text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="truncate">{cat}</span>
+                          <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
+                            isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
+                          }`}>
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Machine Types */}
-              <div>
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Machine Types</h4>
-                <div className="space-y-2">
-                  {categories.machine.map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => {
-                        handleCategorySelect(cat);
-                        setShowFilters(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-                        selectedCategory.toLowerCase() === cat.toLowerCase()
-                          ? 'bg-[#14532D] text-white shadow-lg' 
-                          : 'bg-slate-50 text-slate-500'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
+              <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                <button
+                  onClick={() => setExpandedSections(s => ({ ...s, machine: !s.machine }))}
+                  className="w-full flex items-center justify-between px-4 py-3.5 text-xs font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <FaCog className="text-slate-400" size={12} />
+                    <span>Machine Types</span>
+                  </div>
+                  <FaChevronDown size={10} className={`text-slate-400 transition-transform ${expandedSections.machine ? 'rotate-180' : ''}`} />
+                </button>
+                {expandedSections.machine && (
+                  <div className="px-3 pb-3 space-y-0.5">
+                    {categories.machine.map(cat => {
+                      const count = categoryCounts[cat] || 0;
+                      const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+                      return (
+                        <button
+                          key={cat}
+                          onClick={() => {
+                            handleCategorySelect(cat);
+                            setShowFilters(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                            isActive
+                              ? 'bg-[#14532D] text-white shadow-sm' 
+                              : 'text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="truncate">{cat}</span>
+                          <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
+                            isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
+                          }`}>
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
-              <div>
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Price Range</h4>
-                <div className="px-2">
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="6000000" 
-                    step="50000"
-                    value={priceRange}
-                    onChange={(e) => setPriceRange(parseInt(e.target.value))}
-                    className="w-full accent-[#14532D]" 
-                  />
-                  <div className="flex justify-between mt-2 text-[10px] font-black text-slate-400 uppercase">
-                    <span>₹0</span>
-                    <span>Up to ₹{(priceRange/100000).toFixed(1)}L</span>
+              {/* Price Range */}
+              <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                <button
+                  onClick={() => setExpandedSections(s => ({ ...s, price: !s.price }))}
+                  className="w-full flex items-center justify-between px-4 py-3.5 text-xs font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <FaRupeeSign className="text-slate-400" size={12} />
+                    <span>Price Range</span>
                   </div>
-                </div>
+                  <FaChevronDown size={10} className={`text-slate-400 transition-transform ${expandedSections.price ? 'rotate-180' : ''}`} />
+                </button>
+                {expandedSections.price && (
+                  <div className="px-5 pb-5 pt-2">
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="6000000" 
+                      step="50000"
+                      value={priceRange}
+                      onChange={(e) => setPriceRange(parseInt(e.target.value))}
+                      className="w-full accent-[#14532D] cursor-pointer" 
+                    />
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="text-xs font-bold text-slate-400">₹0</span>
+                      <span className="text-sm font-black text-slate-900">₹{(priceRange/100000).toFixed(1)}L</span>
+                      <span className="text-xs font-bold text-slate-400">₹60L</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -271,88 +352,160 @@ const AllProductsPage = () => {
         
         {/* 🔥 SIDEBAR FILTERS (Desktop Only) */}
         <aside className="hidden lg:block w-72 flex-shrink-0">
-          <div className="sticky top-[180px] space-y-10">
-            
-            {/* All Categories Reset */}
-            <button
-              onClick={() => handleCategorySelect("All Categories")}
-              className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                selectedCategory === "All Categories" 
-                  ? 'bg-[#14532D] text-white shadow-lg shadow-green-900/20' 
-                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
-              }`}
-            >
-              All Categories
-            </button>
+          <div className="sticky top-[140px] space-y-6">
+
+            {/* All Categories & Clear */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleCategorySelect("All Categories")}
+                className={`flex-1 text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  selectedCategory === "All Categories" 
+                    ? 'bg-[#14532D] text-white shadow-lg shadow-green-900/20' 
+                    : 'bg-white border border-slate-200 text-slate-700 hover:border-slate-300 hover:shadow-sm'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <FaStoreAlt className={selectedCategory === "All Categories" ? 'text-green-300' : 'text-slate-400'} size={13} />
+                  <span>All Categories</span>
+                </div>
+              </button>
+              {selectedCategory !== "All Categories" && (
+                <button
+                  onClick={() => handleCategorySelect("All Categories")}
+                  className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all"
+                  title="Clear filters"
+                >
+                  <FaTimesCircle size={14} />
+                </button>
+              )}
+            </div>
 
             {/* Industry Filter */}
-            <div>
-              <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Industries</h4>
-              <div className="space-y-2">
-                {categories.industry.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => handleCategorySelect(cat)}
-                    className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                      selectedCategory.toLowerCase() === cat.toLowerCase()
-                        ? 'bg-[#14532D] text-white shadow-lg shadow-green-900/20' 
-                        : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <button
+                onClick={() => setExpandedSections(s => ({ ...s, industry: !s.industry }))}
+                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <FaIndustry className="text-slate-400" size={13} />
+                  <span>Industries</span>
+                </div>
+                <FaChevronDown size={11} className={`text-slate-400 transition-transform ${expandedSections.industry ? 'rotate-180' : ''}`} />
+              </button>
+              {expandedSections.industry && (
+                <div className="px-3 pb-3 space-y-0.5">
+                  {categories.industry.map(cat => {
+                    const count = categoryCounts[cat] || 0;
+                    const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => handleCategorySelect(cat)}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-bold transition-all ${
+                          isActive
+                            ? 'bg-[#14532D] text-white shadow-sm' 
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                        }`}
+                      >
+                        <span className="truncate">{cat}</span>
+                        <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
+                          isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
+                        }`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                  {categories.industry.length === 0 && (
+                    <p className="px-3 py-2 text-xs text-slate-400 italic">No industry categories</p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Machine Filter */}
-            <div>
-              <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Machine Types</h4>
-              <div className="space-y-2">
-                {categories.machine.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => handleCategorySelect(cat)}
-                    className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                      selectedCategory.toLowerCase() === cat.toLowerCase()
-                        ? 'bg-[#14532D] text-white shadow-lg shadow-green-900/20' 
-                        : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <button
+                onClick={() => setExpandedSections(s => ({ ...s, machine: !s.machine }))}
+                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <FaCog className="text-slate-400" size={13} />
+                  <span>Machine Types</span>
+                </div>
+                <FaChevronDown size={11} className={`text-slate-400 transition-transform ${expandedSections.machine ? 'rotate-180' : ''}`} />
+              </button>
+              {expandedSections.machine && (
+                <div className="px-3 pb-3 space-y-0.5">
+                  {categories.machine.map(cat => {
+                    const count = categoryCounts[cat] || 0;
+                    const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => handleCategorySelect(cat)}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-bold transition-all ${
+                          isActive
+                            ? 'bg-[#14532D] text-white shadow-sm' 
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                        }`}
+                      >
+                        <span className="truncate">{cat}</span>
+                        <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
+                          isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
+                        }`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                  {categories.machine.length === 0 && (
+                    <p className="px-3 py-2 text-xs text-slate-400 italic">No machine categories</p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Price Range */}
-            <div>
-              <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Price Range</h4>
-              <div className="px-2">
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="6000000" 
-                  step="50000"
-                  value={priceRange}
-                  onChange={(e) => setPriceRange(parseInt(e.target.value))}
-                  className="w-full accent-[#14532D]" 
-                />
-                <div className="flex justify-between mt-2 text-[10px] font-black text-slate-400 uppercase">
-                  <span>₹0</span>
-                  <span>Up to ₹{(priceRange/100000).toFixed(1)}L</span>
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <button
+                onClick={() => setExpandedSections(s => ({ ...s, price: !s.price }))}
+                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <FaRupeeSign className="text-slate-400" size={13} />
+                  <span>Price Range</span>
                 </div>
-              </div>
+                <FaChevronDown size={11} className={`text-slate-400 transition-transform ${expandedSections.price ? 'rotate-180' : ''}`} />
+              </button>
+              {expandedSections.price && (
+                <div className="px-5 pb-5 pt-2">
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="6000000" 
+                    step="50000"
+                    value={priceRange}
+                    onChange={(e) => setPriceRange(parseInt(e.target.value))}
+                    className="w-full accent-[#14532D] cursor-pointer" 
+                  />
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-xs font-bold text-slate-400">₹0</span>
+                    <span className="text-sm font-black text-slate-900">₹{(priceRange/100000).toFixed(1)}L</span>
+                    <span className="text-xs font-bold text-slate-400">₹60L</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Badge */}
-            <div className="bg-gradient-to-br from-slate-900 to-black rounded-3xl p-6 text-white text-center">
-              <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10">
-                <FaStar className="text-yellow-400" />
+            <div className="bg-gradient-to-br from-slate-900 to-black rounded-2xl p-5 text-white text-center border border-slate-700/50">
+              <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <FaStar className="text-yellow-400" size={14} />
               </div>
-              <h5 className="font-bold mb-2 text-sm">Partner with Experts</h5>
-              <p className="text-[10px] text-white/50 leading-relaxed mb-4">Connect with verified manufacturers for custom engineering solutions.</p>
-              <button className="w-full py-2.5 bg-green-500 text-[#14532D] rounded-xl text-xs font-black hover:bg-green-400 transition-colors">Apply as Partner</button>
+              <h5 className="font-bold mb-1 text-sm">Partner with Experts</h5>
+              <p className="text-[10px] text-white/40 leading-relaxed mb-4">Connect with verified manufacturers for custom solutions.</p>
+              <button className="w-full py-2.5 bg-green-500 text-[#14532D] rounded-xl text-xs font-black hover:bg-green-400 transition-colors active:scale-95">Apply as Partner</button>
             </div>
           </div>
         </aside>
