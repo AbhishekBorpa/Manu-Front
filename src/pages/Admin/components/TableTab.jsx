@@ -175,7 +175,7 @@ const TableTab = ({
                 <span className="text-gray-300">{product.title}</span>
                 <span className="text-gray-400 col-span-2 truncate pr-2">
                   <span className="text-green-500/80 font-medium">{product.category}</span>
-                  {product.subcategory && <span className="text-white/40"> > {product.subcategory}</span>}
+                  {product.subcategory && <span className="text-white/40"> &gt; {product.subcategory}</span>}
                 </span>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-white font-medium">₹{product.price || 0}</span>
