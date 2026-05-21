@@ -42,7 +42,7 @@ const Stats = () => {
 
           const res =
             await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/stats"
+               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/stats"
             );
 
           const data =

@@ -25,7 +25,7 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/categories");
+        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories");
         const data = await res.json();
         setCategories(data.categories || data);
       } catch (err) {

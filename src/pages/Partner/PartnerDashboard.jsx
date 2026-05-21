@@ -70,11 +70,11 @@ const PartnerDashboard = () => {
         const headers = { 'Authorization': `Bearer ${token}` };
 
         // Fetch Stats
-        const statsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + '/partner/stats', { headers });
+        const statsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + '/partner/stats', { headers });
         const statsData = await statsRes.json();
 
         // Fetch Leads
-        const leadsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + '/partner/leads', { headers });
+        const leadsRes = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + '/partner/leads', { headers });
         const leadsData = await leadsRes.json();
 
         if (statsRes.ok) setStats(statsData);

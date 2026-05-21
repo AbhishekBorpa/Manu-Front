@@ -72,7 +72,7 @@ const IndustriesCards = () => {
 
           const res =
             await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/industries"
+               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/industries"
             );
 
           const result =

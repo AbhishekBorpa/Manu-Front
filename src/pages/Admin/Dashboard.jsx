@@ -86,7 +86,7 @@ const Dashboard = () => {
     { id: 3, title: "Partner Verification Request", message: "Vikram Joshi requested seller verification", time: "2 hours ago", read: true, type: "Verifications" },
   ]);
 
-  const API_URL = import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api";
+  const API_URL = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
 
   const getFilteredItems = useCallback((items) => {
     if (!items || items.length === 0) return [];

@@ -46,7 +46,7 @@ const Profile = () => {
     try {
       setSubmitLoading(true);
       const token = localStorage.getItem('token');
-      const baseUrl = import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api";
+      const baseUrl = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
       const response = await fetch(`${baseUrl}/auth/profile`, {
         method: 'PUT',
         headers: {
@@ -102,7 +102,7 @@ const Profile = () => {
     try {
       setSubmitLoading(true);
       const token = localStorage.getItem('token');
-      const baseUrl = import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api";
+      const baseUrl = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
       const response = await fetch(`${baseUrl}/auth/password`, {
         method: 'PUT',
         headers: {
@@ -137,7 +137,7 @@ const Profile = () => {
     try {
       setOrdersLoading(true);
       const token = localStorage.getItem('token');
-      const baseUrl = import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api";
+      const baseUrl = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
       const response = await fetch(`${baseUrl}/auth/orders`, {
         method: 'GET',
         headers: {

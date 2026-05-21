@@ -50,7 +50,7 @@ const AllProductsPage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/categories");
+        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories");
         const data = await res.json();
         if (data.success) {
           const grouped = data.categories.reduce((acc, cat) => {
@@ -72,7 +72,7 @@ const AllProductsPage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/products");
+        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/products");
         const data = await res.json();
         
         if (data.success) {

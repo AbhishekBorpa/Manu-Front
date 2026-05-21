@@ -20,7 +20,7 @@ const PartnerLogin = () => {
     setLoading(true);
     
     try {
-      const response = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + '/auth/login', {
+      const response = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + '/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -5,7 +5,7 @@ const ProfileTab = ({
   adminProfile,
   setAdminProfile,
 }) => {
-  const API_URL = import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api";
+  const API_URL = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
 
   const handleProfileSave = async () => {
     try {

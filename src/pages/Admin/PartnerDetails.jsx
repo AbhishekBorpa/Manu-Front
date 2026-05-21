@@ -34,7 +34,7 @@ const PartnerDetails = () => {
   const fetchPartnerDetails = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/admin/partner-profiles/${id}`, {
+      const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api")}/admin/partner-profiles/${id}`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
@@ -56,7 +56,7 @@ const PartnerDetails = () => {
       setActioning(true);
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api")}/admin/partner-profiles/${id}/verify`, {
+        const res = await fetch(`${ (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api")}/admin/partner-profiles/${id}/verify`, {
           method: "PUT",
           headers: { 
             "Content-Type": "application/json",

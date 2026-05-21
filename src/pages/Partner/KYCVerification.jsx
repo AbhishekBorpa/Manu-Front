@@ -30,7 +30,7 @@ const KYCVerification = () => {
   const fetchStatus = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/partner/kyc-status", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/partner/kyc-status", {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
@@ -81,7 +81,7 @@ const KYCVerification = () => {
       const businessUrl = formData.businessRegDoc ? await uploadToCloudinary(formData.businessRegDoc) : profile?.businessRegDoc;
 
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/partner/kyc", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/partner/kyc", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

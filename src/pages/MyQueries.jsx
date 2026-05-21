@@ -10,7 +10,7 @@ const MyQueries = () => {
     const fetchMyQueries = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/leads/my-queries", {
+        const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/leads/my-queries", {
           headers: {
             "Authorization": `Bearer ${token}`
           }

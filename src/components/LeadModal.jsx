@@ -49,7 +49,7 @@ const LeadModal = ({ isOpen, onClose, product, partnerId }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-1.onrender.com/api") + "/leads", {
+      const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/leads", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
