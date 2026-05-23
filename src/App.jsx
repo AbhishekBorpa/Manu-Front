@@ -8,6 +8,7 @@ import ProductDetails from "./pages/ProductDetails";
 
 import Navbar from "./components/Navbar";
 import TopBar from "./components/Topbar";
+import BottomBar from "./components/BottomBar";
 import LocationModal from "./components/LocationModel";
 import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
@@ -70,7 +71,7 @@ const App = () => {
         className={
           isSpecialRoute
             ? ""
-            : "flex flex-col min-h-screen pt-[135px] lg:pt-[110px]"
+            : "flex flex-col min-h-screen pt-[135px] lg:pt-[110px] pb-16 lg:pb-0"
         }
       >
         <div className="flex-grow">
@@ -123,6 +124,8 @@ const App = () => {
         {/* WEBSITE FOOTER ONLY */}
         {!isSpecialRoute && <Footer />}
       </div>
+
+      {!isSpecialRoute && <BottomBar />}
 
       {/* LOCATION MODAL */}
       {!isSpecialRoute && showLocationModal && (
