@@ -23,6 +23,15 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import { API_BASE_URL } from "../api/config";
+
+const DEFAULT_NAVBAR = {
+  categories: ["Manufacturing", "Packaging", "Machinery"],
+  placeholder: "Search machines, products, suppliers...",
+  signInButton: "Sign In",
+  defaultCity: "Select City",
+};
+
 const Navbar = ({
   city,
   onOpenLocation,
@@ -74,17 +83,22 @@ const Navbar = ({
         try {
 
           const [navbarRes, productsRes, manufacturingRes] = await Promise.all([
-            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/navbar"),
-            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/products"),
-            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/manufacturing")
+            fetch(`${API_BASE_URL}/navbar`),
+            fetch(`${API_BASE_URL}/products`),
+            fetch(`${API_BASE_URL}/manufacturing`)
           ]);
 
           const navbarData = await navbarRes.json();
           const productsData = await productsRes.json();
           const manufacturingData = await manufacturingRes.json();
 
-          const nav = navbarData.navbar || navbarData;
-          setNavbar(nav);
+          if (navbarRes.ok && navbarData.navbar) {
+            setNavbar(navbarData.navbar);
+          } else if (navbarRes.ok && navbarData.placeholder) {
+            setNavbar(navbarData);
+          } else {
+            setNavbar(DEFAULT_NAVBAR);
+          }
 
           const seen = new Set();
           const cats = [];
@@ -112,9 +126,8 @@ const Navbar = ({
           setProductCategories(cats);
 
         } catch (err) {
-
-          console.log(err);
-
+          console.error("Navbar fetch error:", err);
+          setNavbar(DEFAULT_NAVBAR);
         } finally {
 
           setLoading(false);
@@ -169,10 +182,7 @@ const Navbar = ({
 
 
 
-  /* ❌ NO DATA */
-  if (!navbar) {
-    return null;
-  }
+  const nav = navbar || DEFAULT_NAVBAR;
 
 
 
@@ -251,7 +261,7 @@ const Navbar = ({
                   handleSearch();
                 }
               }}
-              placeholder={navbar.placeholder}
+              placeholder={nav.placeholder}
               className="flex-1 px-4 text-sm outline-none text-gray-700 h-full"
             />
 
@@ -270,7 +280,7 @@ const Navbar = ({
               className="flex items-center gap-2 px-4 h-[46px] bg-white border border-gray-300 rounded-full shadow-sm cursor-pointer hover:bg-gray-50"
             >
               <FaMapMarkerAlt className="text-[#14532D]" />
-              <span className="text-sm text-gray-700 whitespace-nowrap">{city || navbar.defaultCity}</span>
+              <span className="text-sm text-gray-700 whitespace-nowrap">{city || nav.defaultCity}</span>
             </div>
 
             {user ? (
@@ -359,7 +369,7 @@ const Navbar = ({
               className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-gray-300 rounded-full shadow-sm text-[10px] text-gray-700"
             >
               <FaMapMarkerAlt className="text-[#14532D]" />
-              <span className="max-w-[70px] sm:max-w-[120px] truncate">{city || navbar.defaultCity}</span>
+              <span className="max-w-[70px] sm:max-w-[120px] truncate">{city || nav.defaultCity}</span>
             </div>
             
             <button 
@@ -383,7 +393,7 @@ const Navbar = ({
                   navigate(`/search?q=${search}`);
                 }
               }}
-              placeholder={navbar.placeholder}
+              placeholder={nav.placeholder}
               className="flex-1 px-4 text-[11px] outline-none text-gray-700 h-full"
             />
             <button

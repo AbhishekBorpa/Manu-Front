@@ -11,7 +11,6 @@ const ProductDetails = () => {
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(true);
-  const [activeTab, setActiveTab] = useState("short");
   const product = state;
 
   useEffect(() => {
@@ -105,24 +104,27 @@ const ProductDetails = () => {
               <div className="text-green-600 font-bold text-xs md:text-sm">In Stock</div>
             </div>
 
-            <div className="flex gap-4 border-b border-gray-100 mb-6">
-              <button 
-                onClick={() => setActiveTab("short")}
-                className={`pb-2 text-xs md:text-sm font-bold transition-all ${activeTab === 'short' ? 'text-[#14532D] border-b-2 border-[#14532D]' : 'text-gray-400'}`}
-              >
-                Short Description
-              </button>
-              <button 
-                onClick={() => setActiveTab("long")}
-                className={`pb-2 text-xs md:text-sm font-bold transition-all ${activeTab === 'long' ? 'text-[#14532D] border-b-2 border-[#14532D]' : 'text-gray-400'}`}
-              >
-                Long Description
-              </button>
-            </div>
+            <div className="space-y-5 md:space-y-6 mb-6 md:mb-8">
+              <div>
+                <h3 className="text-[10px] md:text-xs font-black text-[#14532D] uppercase tracking-widest mb-2">
+                  Short Description
+                </h3>
+                <p className="text-gray-600 leading-relaxed text-xs md:text-base">
+                  {product.shortDescription ||
+                    "Experience top-tier industrial performance with this advanced machinery."}
+                </p>
+              </div>
 
-            <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-xs md:text-base animate-in fade-in duration-300">
-              {activeTab === "short" ? (product.shortDescription || "Experience top-tier industrial performance with this advanced machinery.") : (product.longDescription || "Engineered for precision, high output, and long-term durability in demanding manufacturing environments.")}
-            </p>
+              <div className="border-t border-gray-100 pt-5 md:pt-6">
+                <h3 className="text-[10px] md:text-xs font-black text-[#14532D] uppercase tracking-widest mb-2">
+                  Long Description
+                </h3>
+                <p className="text-gray-600 leading-relaxed text-xs md:text-base whitespace-pre-line">
+                  {product.longDescription ||
+                    "Engineered for precision, high output, and long-term durability in demanding manufacturing environments."}
+                </p>
+              </div>
+            </div>
 
             <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6 mb-6 md:mb-8 border border-slate-100">
               <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Direct Contact</p>

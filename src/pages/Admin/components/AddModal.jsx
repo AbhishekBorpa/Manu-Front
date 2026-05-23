@@ -10,7 +10,8 @@ const AddModal = ({
   setImageFile,
   onSubmit,
   categories = [],
-  mainCategories = []
+  mainCategories = [],
+  partnerProfiles = []
 }) => {
   const [descTab, setDescTab] = useState("short");
   if (!isOpen) return null;
@@ -114,6 +115,27 @@ const AddModal = ({
                     </div>
                   </div>
 
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Assigned Partner (Supplier)</label>
+                    <select
+                      value={formData.partnerId || ""}
+                      onChange={(e) => setFormData({ ...formData, partnerId: e.target.value })}
+                      className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                      required
+                    >
+                      <option value="">Select Partner</option>
+                      {partnerProfiles.map((p) => {
+                        const userId = p.userId?._id || p.userId;
+                        if (!userId) return null;
+                        return (
+                          <option key={userId} value={userId}>
+                            {p.companyName || p.userId?.name || "Partner"} ({p.userId?.email || ""})
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+
                   <div className="space-y-3">
                     <div className="flex gap-2 p-1 bg-white/5 rounded-lg w-fit">
                       <button 
@@ -134,13 +156,19 @@ const AddModal = ({
 
                     {descTab === "short" ? (
                       <div className="space-y-2 animate-in fade-in duration-300">
-                        <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Short Description</label>
-                        <textarea value={formData.shortDescription} onChange={(e) => setFormData({...formData, shortDescription: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-green-500 outline-none transition-all min-h-[100px]" required />
+                        <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Short Description (min 10 characters)</label>
+                        <textarea value={formData.shortDescription} onChange={(e) => setFormData({...formData, shortDescription: e.target.value})} minLength={10} className="w-full bg-[#0b1220] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-green-500 outline-none transition-all min-h-[100px]" required />
+                        <p className={`text-[10px] ${(formData.shortDescription?.length || 0) < 10 ? "text-amber-400" : "text-gray-500"}`}>
+                          {(formData.shortDescription?.length || 0)} / 10 characters
+                        </p>
                       </div>
                     ) : (
                       <div className="space-y-2 animate-in fade-in duration-300">
-                        <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Long Description</label>
-                        <textarea value={formData.longDescription} onChange={(e) => setFormData({...formData, longDescription: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-green-500 outline-none transition-all min-h-[150px]" required />
+                        <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Long Description (min 10 characters)</label>
+                        <textarea value={formData.longDescription} onChange={(e) => setFormData({...formData, longDescription: e.target.value})} minLength={10} className="w-full bg-[#0b1220] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-green-500 outline-none transition-all min-h-[150px]" required />
+                        <p className={`text-[10px] ${(formData.longDescription?.length || 0) < 10 ? "text-amber-400" : "text-gray-500"}`}>
+                          {(formData.longDescription?.length || 0)} / 10 characters
+                        </p>
                       </div>
                     )}
                   </div>

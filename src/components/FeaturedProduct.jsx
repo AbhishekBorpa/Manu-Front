@@ -14,7 +14,7 @@ import {
   FaTools,
 } from "react-icons/fa";
 import LeadModal from "./LeadModal";
-import { getServerUrl, getLocalFallback } from "../api/config";
+import { getServerUrl, getLocalFallback, API_BASE_URL } from "../api/config";
 
 
 /* 🔥 ICON MAP */
@@ -55,9 +55,7 @@ const FeaturedProducts = () => {
         try {
 
           const res =
-            await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/products/featured"
-            );
+            await fetch(`${API_BASE_URL}/products/featured`);
 
           const data =
             await res.json();

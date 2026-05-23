@@ -7,6 +7,8 @@ import {
   useEffect,
 } from "react";
 
+import { API_BASE_URL } from "../api/config";
+
 const LocationSection = () => {
 
   const [cities, setCities] =
@@ -30,9 +32,7 @@ const LocationSection = () => {
         try {
 
           const res =
-            await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/cities"
-            );
+            await fetch(`${API_BASE_URL}/cities`);
 
           const data =
             await res.json();

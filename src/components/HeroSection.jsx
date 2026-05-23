@@ -16,6 +16,8 @@ import {
   FaLinkedin,
 } from "react-icons/fa";
 
+import { API_BASE_URL } from "../api/config";
+
 // 🔥 IMAGES (ADD THESE)
 import img1 from "../assets/manufacturing.jpg";
 import img2 from "../assets/services.jpg";
@@ -74,7 +76,7 @@ const Hero = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories");
+        const res = await fetch(`${API_BASE_URL}/categories`);
         const data = await res.json();
         setCategories(data.categories || data);
       } catch (err) {

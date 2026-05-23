@@ -3,6 +3,8 @@ import {
   useState,
 } from "react";
 
+import { API_BASE_URL } from "../api/config";
+
 const LocationModal = ({
   onSelect,
   onClose,
@@ -34,9 +36,7 @@ const LocationModal = ({
         try {
 
           const res =
-            await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/location-cities"
-            );
+            await fetch(`${API_BASE_URL}/location-cities`);
 
           const data =
             await res.json();

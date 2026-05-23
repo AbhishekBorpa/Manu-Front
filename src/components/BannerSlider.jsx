@@ -8,18 +8,39 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 
-/* 🔥 LOCAL IMAGES */
-import slide1 from "../assets/slide-img1.jpg";
-import slide2 from "../assets/slide-img2.jpg";
-import slide3 from "../assets/slide-img3.jpg";
-import slide4 from "../assets/slide-img4.jpg";
+import { API_BASE_URL } from "../api/config";
 
-/* 🔥 IMAGE MAP */
-const imageMap = {
-  "slide-img1.jpg": slide1,
-  "slide-img2.jpg": slide2,
-  "slide-img3.jpg": slide3,
-  "slide-img4.jpg": slide4,
+const DEFAULT_SLIDES = [
+  {
+    _id: "slide-1",
+    title: "Source Industrial",
+    highlight: "Machinery",
+    desc: "Connect with verified manufacturers across India.",
+    image:
+      "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg",
+  },
+  {
+    _id: "slide-2",
+    title: "Packaging",
+    highlight: "Solutions",
+    desc: "Find cup, bag, and packaging machines from trusted sellers.",
+    image:
+      "https://res.cloudinary.com/djsxaigna/image/upload/v1779526091/manu_uploads/oju73iddjm2mbnw3oxte.jpg",
+  },
+  {
+    _id: "slide-3",
+    title: "Grow Your",
+    highlight: "Business",
+    desc: "List products and receive qualified B2B leads on Ultraclap.",
+    image:
+      "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg",
+  },
+];
+
+const resolveSlideImage = (src) => {
+  if (!src) return DEFAULT_SLIDES[0].image;
+  if (src.startsWith("http") || src.startsWith("/")) return src;
+  return DEFAULT_SLIDES[0].image;
 };
 
 const BannerSlider = () => {
@@ -44,22 +65,17 @@ const BannerSlider = () => {
         try {
 
           const res =
-            await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/sliders"
-            );
+            await fetch(`${API_BASE_URL}/sliders`);
 
-          const data =
-            await res.json();
+          const data = await res.json();
+          const list = Array.isArray(data)
+            ? data
+            : data.sliders || [];
 
-          setSlides(
-            data.sliders ||
-            data
-          );
-
+          setSlides(list.length > 0 ? list : DEFAULT_SLIDES);
         } catch (err) {
-
-          console.log(err);
-
+          console.error("Slider fetch error:", err);
+          setSlides(DEFAULT_SLIDES);
         } finally {
 
           setLoading(false);
@@ -70,34 +86,19 @@ const BannerSlider = () => {
 
   }, []);
 
-
-
+  const displaySlides =
+    slides.length > 0 ? slides : DEFAULT_SLIDES;
 
   /* 🔥 AUTO SLIDE */
   useEffect(() => {
+    if (displaySlides.length === 0) return;
 
-    if (
-      slides.length === 0
-    ) return;
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % displaySlides.length);
+    }, 4000);
 
-    const interval =
-      setInterval(() => {
-
-        setCurrent(
-          (prev) =>
-            (prev + 1) %
-            slides.length
-        );
-
-      }, 4000);
-
-    return () =>
-      clearInterval(interval);
-
-  }, [slides]);
-
-
-
+    return () => clearInterval(interval);
+  }, [displaySlides.length]);
 
   /* 🔄 LOADING */
   if (loading) {
@@ -121,39 +122,15 @@ const BannerSlider = () => {
     );
   }
 
-
-
-
-  /* ❌ NO DATA */
-  if (
-    !slides ||
-    slides.length === 0
-  ) {
-    return null;
-  }
-
-
-
-
   /* 🔥 PREV */
   const prevSlide = () => {
-
     setCurrent(
-      current === 0
-        ? slides.length - 1
-        : current - 1
+      current === 0 ? displaySlides.length - 1 : current - 1
     );
   };
 
-
-
-  /* 🔥 NEXT */
   const nextSlide = () => {
-
-    setCurrent(
-      (current + 1) %
-      slides.length
-    );
+    setCurrent((current + 1) % displaySlides.length);
   };
 
 
@@ -174,14 +151,9 @@ const BannerSlider = () => {
             }}
           >
 
-            {slides.map(
-              (
-                slide,
-                index
-              ) => (
-
+            {displaySlides.map((slide, index) => (
                 <div
-                  key={index}
+                  key={slide._id || index}
                   className="min-w-full flex flex-col md:grid md:grid-cols-2 items-center"
                 >
 
@@ -226,16 +198,18 @@ const BannerSlider = () => {
                   {/* 🔥 IMAGE */}
                   <div className="order-1 md:order-2 w-full">
                     <img
-                      src={imageMap[slide.image] || slide.image}
+                      src={resolveSlideImage(slide.image)}
                       className="w-full h-[200px] md:h-[350px] object-cover"
                       alt={slide.title}
+                      onError={(e) => {
+                        e.target.src = DEFAULT_SLIDES[0].image;
+                      }}
                     />
                   </div>
 
 
                 </div>
-              )
-            )}
+            ))}
 
           </div>
 

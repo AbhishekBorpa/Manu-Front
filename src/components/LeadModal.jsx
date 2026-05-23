@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaTimes, FaPaperPlane, FaCheckCircle } from 'react-icons/fa';
+import { API_BASE_URL } from "../api/config";
 
 const LeadModal = ({ isOpen, onClose, product, partnerId }) => {
   const [formData, setFormData] = useState({
@@ -39,6 +40,7 @@ const LeadModal = ({ isOpen, onClose, product, partnerId }) => {
   }, [isOpen, product]);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,18 +48,26 @@ const LeadModal = ({ isOpen, onClose, product, partnerId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
+    const resolvedPartnerId = partnerId || product?.partnerId;
+    if (!resolvedPartnerId) {
+      setError("This product is not linked to a supplier yet. Please contact support.");
+      return;
+    }
+
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/leads", {
+      const headers = { "Content-Type": "application/json" };
+      if (token) headers.Authorization = `Bearer ${token}`;
+
+      const res = await fetch(`${API_BASE_URL}/leads`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token ? `Bearer ${token}` : ""
-        },
+        headers,
         body: JSON.stringify({
           ...formData,
-          partnerId: partnerId || "69fdb00aebd7eba490690f9b" // Fallback to a default admin if partnerId is missing
+          partnerId: resolvedPartnerId
         })
       });
 
@@ -71,9 +81,12 @@ const LeadModal = ({ isOpen, onClose, product, partnerId }) => {
             name: '', email: '', phone: '', project: product?.title || '', location: '', budget: '', notes: ''
           });
         }, 2000);
+      } else {
+        setError(data.msg || "Could not send inquiry. Please try again.");
       }
     } catch (err) {
       console.error("Lead submission error:", err);
+      setError("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -140,6 +153,12 @@ const LeadModal = ({ isOpen, onClose, product, partnerId }) => {
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Requirements / Notes</label>
                 <textarea name="notes" value={formData.notes} onChange={handleChange} rows="3" className="w-full px-4 md:px-5 py-2.5 md:py-3 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold focus:ring-2 focus:ring-[#14532D]/20 outline-none transition-all resize-none" placeholder="Tell us more about your requirements..."></textarea>
               </div>
+
+              {error && (
+                <p className="text-red-600 text-xs font-bold text-center bg-red-50 border border-red-100 rounded-xl py-2 px-3">
+                  {error}
+                </p>
+              )}
 
               <button 
                 type="submit" 

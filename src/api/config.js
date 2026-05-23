@@ -1,8 +1,15 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+export const API_BASE_URL = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
+
+export const FALLBACK_IMAGE_URL =
+  "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg";
 
 export const getServerUrl = (path) => {
   if (!path) return "";
-  
+
+  if (path.includes("via.placeholder.com")) {
+    return FALLBACK_IMAGE_URL;
+  }
+
   // If it's already a full URL (Cloudinary, Unsplash, etc.)
   if (path.startsWith("http")) return path;
   

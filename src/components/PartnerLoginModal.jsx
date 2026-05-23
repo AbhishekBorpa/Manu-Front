@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaEnvelope, FaLock, FaArrowRight, FaHandshake, FaTimes, FaUser, FaPhone } from 'react-icons/fa';
+import { API_BASE_URL } from "../api/config";
 
 const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
   const [isLogin, setIsLogin] = useState(initialMode === 'login');
@@ -32,8 +33,8 @@ const PartnerLoginModal = ({ isOpen, onClose, initialMode = 'signup' }) => {
     
     try {
       const url = isLogin 
-        ?  (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + '/auth/login' 
-        :  (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + '/auth/register';
+        ? `${API_BASE_URL}/auth/login` 
+        : `${API_BASE_URL}/auth/register`;
 
       const response = await fetch(url, {
         method: 'POST',

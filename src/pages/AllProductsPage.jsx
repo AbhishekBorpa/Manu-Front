@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { filterProducts } from "../utils/productFilters";
 import { 
   FaSearch, 
   FaMapMarkerAlt, 
@@ -9,14 +10,16 @@ import {
   FaTimes
 } from "react-icons/fa";
 import LeadModal from "../components/LeadModal";
-import { getServerUrl, getLocalFallback } from "../api/config";
+import { API_BASE_URL, getServerUrl, getLocalFallback } from "../api/config";
 
 
 const AllProductsPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryFilter = searchParams.get("category");
+  const subcategoryFilter = searchParams.get("subcategory");
 
   const [search, setSearch] = useState("");
-  const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,24 +29,11 @@ const AllProductsPage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/products");
+        const res = await fetch(`${API_BASE_URL}/products`);
         const data = await res.json();
-        
+
         if (data.success) {
-          const raw = data.products;
-          setAllProducts(raw);
-
-          let filtered = raw;
-          
-          // Apply Search Filter
-          if (search) {
-            filtered = filtered.filter(p => 
-              p.title.toLowerCase().includes(search.toLowerCase()) ||
-              p.shortDescription?.toLowerCase().includes(search.toLowerCase())
-            );
-          }
-
-          setProducts(filtered);
+          setAllProducts(data.products || []);
         }
       } catch (err) {
         console.error("Fetch Error:", err);
@@ -53,7 +43,34 @@ const AllProductsPage = () => {
     };
 
     fetchProducts();
-  }, [search]);
+  }, []);
+
+  const products = useMemo(() => {
+    let filtered = filterProducts(allProducts, {
+      category: categoryFilter,
+      subcategory: subcategoryFilter,
+    });
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      filtered = filtered.filter(
+        (p) =>
+          p.title?.toLowerCase().includes(q) ||
+          p.shortDescription?.toLowerCase().includes(q) ||
+          p.category?.toLowerCase().includes(q) ||
+          p.subcategory?.toLowerCase().includes(q)
+      );
+    }
+
+    return filtered;
+  }, [allProducts, categoryFilter, subcategoryFilter, search]);
+
+  const activeFilterLabel = subcategoryFilter || categoryFilter;
+
+  const clearFilters = () => {
+    setSearch("");
+    setSearchParams({});
+  };
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
@@ -74,16 +91,31 @@ const AllProductsPage = () => {
       <div className="sticky top-[72px] md:top-[88px] z-[100] bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-4">
           
-          {/* Search */}
-          <div className="flex-1 relative group">
-            <FaSearch className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#14532D] transition-colors text-xs md:text-sm" />
-            <input 
-              type="text" 
-              placeholder="Search products..."
-              className="w-full pl-8 md:pl-12 pr-3 py-1.5 md:py-3 bg-slate-100 border-none rounded-lg md:rounded-2xl text-[11px] md:text-sm font-medium focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all outline-none"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 md:gap-3">
+            <div className="flex-1 relative group">
+              <FaSearch className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#14532D] transition-colors text-xs md:text-sm" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="w-full pl-8 md:pl-12 pr-3 py-1.5 md:py-3 bg-slate-100 border-none rounded-lg md:rounded-2xl text-[11px] md:text-sm font-medium focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all outline-none"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            {activeFilterLabel && (
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-[10px] md:text-xs font-bold text-[#14532D] bg-green-50 border border-green-100 px-3 py-1.5 rounded-full">
+                  {subcategoryFilter ? "Subcategory" : "Category"}: {activeFilterLabel}
+                </span>
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="text-[10px] md:text-xs font-bold text-slate-500 hover:text-red-600 px-2 py-1"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -101,9 +133,9 @@ const AllProductsPage = () => {
                 </h3>
               </div>
               <div className="p-3 max-h-[60vh] overflow-y-auto custom-scrollbar">
-                {allProducts.length > 0 ? (
+                {products.length > 0 ? (
                   <div className="space-y-1">
-                    {allProducts.map((item) => (
+                    {products.map((item) => (
                       <button
                         key={item._id}
                         onClick={() => navigate("/product-details", { state: item })}
@@ -211,13 +243,12 @@ const AllProductsPage = () => {
               </div>
               <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-2">No Matching Machines</h3>
               <p className="text-xs md:text-sm text-slate-500 font-medium max-w-sm mb-6 md:mb-8 px-4">We couldn't find any products matching your current filters. Try adjusting your search or category.</p>
-              <button 
-                onClick={() => {
-                  setSearch("");
-                }}
+              <button
+                type="button"
+                onClick={clearFilters}
                 className="px-6 md:px-8 py-2.5 md:py-3 bg-[#14532D] text-white rounded-xl md:rounded-2xl font-bold shadow-lg shadow-green-900/20 active:scale-95 text-xs md:text-sm"
               >
-                Clear Search
+                Clear filters
               </button>
             </div>
           )}

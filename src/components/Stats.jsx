@@ -9,6 +9,8 @@ import {
   FaTools,
 } from "react-icons/fa";
 
+import { API_BASE_URL } from "../api/config";
+
 
 
 /* 🔥 ICON MAP */
@@ -41,9 +43,7 @@ const Stats = () => {
         try {
 
           const res =
-            await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/stats"
-            );
+            await fetch(`${API_BASE_URL}/stats`);
 
           const data =
             await res.json();

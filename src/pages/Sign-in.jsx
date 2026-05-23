@@ -7,6 +7,7 @@ import {
 } from "react-icons/fa";
 
 import loginImg from "../assets/signin-img.jpg";
+import { API_BASE_URL } from "../api/config";
 
 const SignInModal = ({ onClose, initialMode = "login" }) => {
 
@@ -53,8 +54,8 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
 
         const url =
           isLogin
-            ?  (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/auth/login"
-            :  (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/auth/register";
+            ? `${API_BASE_URL}/auth/login`
+            : `${API_BASE_URL}/auth/register`;
 
 
 
@@ -254,6 +255,7 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
               <input
                 type="password"
                 name="password"
+                autoComplete="current-password"
                 required
                 placeholder="Password"
                 value={formData.password}

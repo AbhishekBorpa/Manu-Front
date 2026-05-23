@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   FaCogs, FaChevronRight, FaStoreAlt
 } from "react-icons/fa";
+import { API_BASE_URL } from "../api/config";
 
 const Categories = () => {
   const [productCategories, setProductCategories] = useState([]);
@@ -13,12 +14,12 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/products");
+        const res = await fetch(`${API_BASE_URL}/products`);
         const data = await res.json();
         if (data.success) {
           const seen = new Set();
           const cats = [];
-          data.products.forEach(p => {
+          (data.products || []).forEach(p => {
             const name = p.category || 'Uncategorized';
             if (!seen.has(name)) {
               seen.add(name);

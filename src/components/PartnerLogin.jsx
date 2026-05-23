@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaEnvelope, FaLock, FaArrowRight, FaHandshake } from 'react-icons/fa';
+import { API_BASE_URL } from "../api/config";
 
 const PartnerLogin = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ const PartnerLogin = () => {
     setLoading(true);
     
     try {
-      const response = await fetch( (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + '/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,6 +103,7 @@ const PartnerLogin = () => {
                   <input
                     type="email"
                     name="email"
+                    autoComplete="email"
                     required
                     placeholder="partner@company.com"
                     value={formData.email}
@@ -121,6 +123,7 @@ const PartnerLogin = () => {
                   <input
                     type="password"
                     name="password"
+                    autoComplete="current-password"
                     required
                     placeholder="••••••••"
                     value={formData.password}

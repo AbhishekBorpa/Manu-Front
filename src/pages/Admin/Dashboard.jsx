@@ -76,6 +76,7 @@ const Dashboard = () => {
     shortDescription: "",
     longDescription: "",
     mobileNumber: "",
+    partnerId: "",
     status: "Active",
     role: "user",
     project: "",
@@ -299,6 +300,7 @@ const Dashboard = () => {
       shortDescription: item.shortDescription || "",
       longDescription: item.longDescription || "",
       mobileNumber: item.mobileNumber || "",
+      partnerId: item.partnerId?._id || item.partnerId || "",
       status: item.status || item.verificationStatus || "Active",
       role: item.role || "user",
       project: item.project || "",
@@ -321,6 +323,19 @@ const Dashboard = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     if (!editingItem) return;
+
+    if (activeMenu === "Products") {
+      const shortLen = (formData.shortDescription || "").trim().length;
+      const longLen = (formData.longDescription || "").trim().length;
+      if (shortLen < 10) {
+        alert(`Short description must be at least 10 characters (you have ${shortLen}).`);
+        return;
+      }
+      if (longLen < 10) {
+        alert(`Long description must be at least 10 characters (you have ${longLen}).`);
+        return;
+      }
+    }
 
     try {
       const token = localStorage.getItem("token");
@@ -376,6 +391,28 @@ const Dashboard = () => {
 
   const handleAddSubmit = async (e) => {
     e.preventDefault();
+
+    if (activeMenu === "Products") {
+      const shortLen = (formData.shortDescription || "").trim().length;
+      const longLen = (formData.longDescription || "").trim().length;
+      if (shortLen < 10) {
+        alert(`Short description must be at least 10 characters (you have ${shortLen}).`);
+        return;
+      }
+      if (longLen < 10) {
+        alert(`Long description must be at least 10 characters (you have ${longLen}).`);
+        return;
+      }
+      if (!imageFile) {
+        alert("Please upload a product image.");
+        return;
+      }
+      if (!formData.partnerId) {
+        alert("Please select an assigned partner (supplier).");
+        return;
+      }
+    }
+
     try {
       const token = localStorage.getItem("token");
       const endpoint = activeMenu === "Products" ? "products" : 
@@ -428,6 +465,7 @@ const Dashboard = () => {
           shortDescription: "",
           longDescription: "",
           mobileNumber: "",
+          partnerId: "",
           status: "Active", 
           role: "user",
           project: "",
@@ -632,6 +670,7 @@ const Dashboard = () => {
         onSubmit={handleEditSubmit}
         categories={categories}
         mainCategories={services}
+        partnerProfiles={partnerProfiles}
       />
 
       {/* ADD MODAL */}
@@ -645,6 +684,7 @@ const Dashboard = () => {
         onSubmit={handleAddSubmit}
         categories={categories}
         mainCategories={services}
+        partnerProfiles={partnerProfiles}
       />
 
       {/* GLOBAL SEARCH DIALOG (COMMAND+K) */}

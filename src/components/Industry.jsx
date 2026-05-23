@@ -16,6 +16,8 @@ import {
   FaUtensils,
 } from "react-icons/fa";
 
+import { API_BASE_URL } from "../api/config";
+
 
 
 /* 🔥 ICON MAP */
@@ -71,9 +73,7 @@ const IndustriesCards = () => {
         try {
 
           const res =
-            await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/industries"
-            );
+            await fetch(`${API_BASE_URL}/industries`);
 
           const result =
             await res.json();

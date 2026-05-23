@@ -7,6 +7,8 @@ import {
   FaChevronDown,
 } from "react-icons/fa";
 
+import { API_BASE_URL } from "../api/config";
+
 const FAQ = () => {
 
   const [faqs, setFaqs] =
@@ -30,9 +32,7 @@ const FAQ = () => {
         try {
 
           const res =
-            await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/faqs"
-            );
+            await fetch(`${API_BASE_URL}/faqs`);
 
           const data =
             await res.json();

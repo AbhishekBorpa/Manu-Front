@@ -15,6 +15,8 @@ import {
   FaInfoCircle 
 } from 'react-icons/fa';
 
+import { API_BASE_URL } from "../api/config";
+
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [activeModal, setActiveModal] = useState(null); // 'edit', 'password', 'orders'
@@ -46,8 +48,7 @@ const Profile = () => {
     try {
       setSubmitLoading(true);
       const token = localStorage.getItem('token');
-      const baseUrl = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
-      const response = await fetch(`${baseUrl}/auth/profile`, {
+      const response = await fetch(`${API_BASE_URL}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -102,8 +103,7 @@ const Profile = () => {
     try {
       setSubmitLoading(true);
       const token = localStorage.getItem('token');
-      const baseUrl = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
-      const response = await fetch(`${baseUrl}/auth/password`, {
+      const response = await fetch(`${API_BASE_URL}/auth/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -137,8 +137,7 @@ const Profile = () => {
     try {
       setOrdersLoading(true);
       const token = localStorage.getItem('token');
-      const baseUrl = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
-      const response = await fetch(`${baseUrl}/auth/orders`, {
+      const response = await fetch(`${API_BASE_URL}/auth/orders`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaClock, FaCheckCircle, FaExclamationCircle, FaSearch, FaChevronRight } from 'react-icons/fa';
+import { API_BASE_URL } from "../api/config";
 
 const MyQueries = () => {
   const [queries, setQueries] = useState([]);
@@ -10,7 +11,7 @@ const MyQueries = () => {
     const fetchMyQueries = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/leads/my-queries", {
+        const res = await fetch(`${API_BASE_URL}/leads/my-queries`, {
           headers: {
             "Authorization": `Bearer ${token}`
           }

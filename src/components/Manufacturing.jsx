@@ -10,7 +10,7 @@ import {
 import {
   useNavigate,
 } from "react-router-dom";
-import { getServerUrl } from "../api/config";
+import { API_BASE_URL, getServerUrl } from "../api/config";
 
 const Manufacturing = () => {
 
@@ -37,9 +37,7 @@ const Manufacturing = () => {
         try {
 
           const res =
-            await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories"
-            );
+            await fetch(`${API_BASE_URL}/categories`);
 
           const data =
             await res.json();
@@ -132,7 +130,7 @@ const Manufacturing = () => {
                 key={item._id}
                 onClick={() =>
                   navigate(
-                    `/all-products?category=${item.name}`
+                    `/all-products?subcategory=${encodeURIComponent(item.name)}`
                   )
                 }
                 className="cursor-pointer bg-white rounded-xl md:rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-2xl transition-all duration-300 group hover:-translate-y-1 md:hover:-translate-y-2"
