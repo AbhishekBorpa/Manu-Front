@@ -119,15 +119,7 @@ const AllProductsPage = () => {
               </div>
             </div>
 
-            {/* Partner Badge */}
-            <div className="bg-gradient-to-br from-slate-900 to-black rounded-3xl p-6 text-white text-center border border-slate-700/50 shadow-xl">
-              <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
-                <FaStar className="text-yellow-400" size={16} />
-              </div>
-              <h5 className="font-bold mb-2 text-base">Partner with Experts</h5>
-              <p className="text-[11px] text-white/40 leading-relaxed mb-5 px-2">Connect with verified manufacturers for industrial solutions.</p>
-              <button className="w-full py-3 bg-green-500 text-[#14532D] rounded-xl text-[11px] font-black hover:bg-green-400 transition-all active:scale-95 shadow-lg shadow-green-500/20">Apply as Partner</button>
-            </div>
+
           </div>
         </aside>
 
