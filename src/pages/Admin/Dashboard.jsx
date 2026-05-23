@@ -318,7 +318,7 @@ const Dashboard = () => {
       const token = localStorage.getItem("token");
       const endpoint = activeMenu === "Products" ? "products" : 
                       activeMenu === "Categories" ? "categories" :
-                      activeMenu === "Services" ? "manufacturing" :
+                      activeMenu === "Main Category" ? "manufacturing" :
                       activeMenu === "Users" ? "admin/users" :
                       activeMenu === "Orders" ? "admin/orders" :
                       activeMenu === "Subscribers" ? "admin/subscribers" :
@@ -333,7 +333,7 @@ const Dashboard = () => {
         }
       };
 
-      if (["Products", "Categories", "Services"].includes(activeMenu)) {
+      if (["Products", "Categories", "Main Category"].includes(activeMenu)) {
         const formDataObj = new FormData();
         Object.keys(formData).forEach(key => {
           if (formData[key] !== "" && formData[key] !== null && formData[key] !== undefined) {
@@ -371,7 +371,7 @@ const Dashboard = () => {
       const token = localStorage.getItem("token");
       const endpoint = activeMenu === "Products" ? "products" : 
                       activeMenu === "Categories" ? "categories" :
-                      activeMenu === "Services" ? "manufacturing" :
+                      activeMenu === "Main Category" ? "manufacturing" :
                       activeMenu === "Users" ? "admin/users" : "";
       
       if (!endpoint) return;
@@ -383,7 +383,7 @@ const Dashboard = () => {
         }
       };
 
-      if (["Products", "Categories", "Services"].includes(activeMenu)) {
+      if (["Products", "Categories", "Main Category"].includes(activeMenu)) {
         const formDataObj = new FormData();
         Object.keys(formData).forEach(key => {
           if (formData[key] !== "" && formData[key] !== null && formData[key] !== undefined) {

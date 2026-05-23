@@ -78,7 +78,7 @@ const TableTab = ({
                activeMenu === "Leads" ? `${getFilteredItems(leads).length} of ${leads.length}` :
                activeMenu === "Products" ? `${getFilteredItems(products).length} of ${products.length}` :
                activeMenu === "Categories" ? `${filteredCategoryNames.length} of ${productCategoryNames.length}` :
-               activeMenu === "Services" ? `${getFilteredItems(services).length} of ${services.length}` :
+               activeMenu === "Main Category" ? `${getFilteredItems(services).length} of ${services.length}` :
                activeMenu === "Orders" ? `${getFilteredItems(orders).length} of ${orders.length}` :
                activeMenu === "Subscribers" ? `${getFilteredItems(subscribers).length + getFilteredItems(partnerProfiles).length} total` : 0}
             </span>

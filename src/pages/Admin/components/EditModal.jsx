@@ -45,7 +45,7 @@ const EditModal = ({
           )}
 
           {/* PRODUCT / SERVICE FIELDS */}
-          {(activeMenu === "Products" || activeMenu === "Services") && (
+          {(activeMenu === "Products" || activeMenu === "Main Category") && (
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Title</label>
@@ -84,7 +84,7 @@ const EditModal = ({
                     </select>
                   </div>
                 )}
-                {activeMenu === "Services" && (
+                {activeMenu === "Main Category" && (
                   <div className="space-y-2">
                     <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Rating</label>
                     <input type="text" value={formData.rating} onChange={(e) => setFormData({...formData, rating: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
@@ -247,4 +247,3 @@ const EditModal = ({
 };
 
 export default EditModal;
-dal;
