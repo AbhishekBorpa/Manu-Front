@@ -79,7 +79,10 @@ const PartnerDashboard = () => {
         const leadsData = await leadsRes.json();
 
         if (statsRes.ok) setStats(statsData);
-        if (leadsRes.ok) setLeads(leadsData.slice(0, 5)); // Only show recent 5
+        if (leadsRes.ok) {
+          const list = Array.isArray(leadsData) ? leadsData : leadsData.leads || [];
+          setLeads(list.slice(0, 5));
+        }
         
       } catch (err) {
         console.error('Error fetching dashboard data:', err);

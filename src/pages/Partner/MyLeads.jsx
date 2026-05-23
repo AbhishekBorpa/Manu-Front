@@ -34,7 +34,8 @@ const MyLeads = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        setLeads(data);
+        const list = Array.isArray(data) ? data : data.leads || [];
+        setLeads(list);
       }
     } catch (err) {
       console.error("Fetch leads error:", err);
