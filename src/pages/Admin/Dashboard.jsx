@@ -453,7 +453,7 @@ const Dashboard = () => {
       icon: <Briefcase size={16} />,
     },
     {
-      name: "Services",
+      name: "Main Category",
       icon: <Briefcase size={16} />,
     },
     {
@@ -657,4 +657,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard;oard;

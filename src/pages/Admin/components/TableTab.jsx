@@ -118,7 +118,7 @@ const TableTab = ({
               </div>
             )) : <p className="p-10 text-center text-slate-500 text-xs">No users found.</p>)}
 
-            {activeMenu === "Services" && (getFilteredItems(services).length > 0 ? getFilteredItems(services).map((service) => (
+            {activeMenu === "Main Category" && (getFilteredItems(services).length > 0 ? getFilteredItems(services).map((service) => (
               <div key={service._id} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
                 <span className="font-medium text-white">#{service._id.slice(-6).toUpperCase()}</span>
                 <span className="text-gray-300 col-span-2">{service.title}</span>
