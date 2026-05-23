@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { 
   FaSearch, 
   FaMapMarkerAlt, 
-  FaFilter, 
   FaThLarge, 
-  FaList, 
   FaStar,
   FaCheckCircle,
-  FaTimes,
-  FaRupeeSign,
-  FaChevronDown,
-  FaTimesCircle,
-  FaStoreAlt
+  FaTimes
 } from "react-icons/fa";
 import LeadModal from "../components/LeadModal";
 import { getServerUrl, getLocalFallback } from "../api/config";
@@ -20,38 +14,13 @@ import { getServerUrl, getLocalFallback } from "../api/config";
 
 const AllProductsPage = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const urlCategory = searchParams.get('category');
 
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(urlCategory || "All Categories");
-  const [priceRange, setPriceRange] = useState(6000000);
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
-  const [productCategoryList, setProductCategoryList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [expandedSections, setExpandedSections] = useState({ industry: true, machine: true, price: true });
-
-  // Sync state with URL
-  useEffect(() => {
-    if (urlCategory) {
-      setSelectedCategory(urlCategory);
-    } else {
-      setSelectedCategory("All Categories");
-    }
-  }, [urlCategory]);
-
-  const handleCategorySelect = (cat) => {
-    setSelectedCategory(cat);
-    if (cat === "All Categories") {
-      navigate("/all-products");
-    } else {
-      navigate(`/all-products?category=${cat}`);
-    }
-  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -64,30 +33,8 @@ const AllProductsPage = () => {
           const raw = data.products;
           setAllProducts(raw);
 
-          const counts = {};
-          raw.forEach(p => {
-            const cat = p.category || 'Uncategorized';
-            counts[cat] = (counts[cat] || 0) + 1;
-          });
-          setProductCategoryList(
-            Object.entries(counts)
-              .sort((a, b) => b[1] - a[1])
-              .map(([name, count]) => ({ name, count }))
-          );
-
           let filtered = raw;
           
-          // Apply Category Filter from State
-          const catToFilter = selectedCategory;
-          if (catToFilter && catToFilter !== "All Categories") {
-            const lowerCat = catToFilter.toLowerCase();
-            filtered = filtered.filter(p => 
-              p.category?.toLowerCase() === lowerCat || 
-              p.title.toLowerCase().includes(lowerCat) ||
-              p.shortDescription?.toLowerCase().includes(lowerCat)
-            );
-          }
-
           // Apply Search Filter
           if (search) {
             filtered = filtered.filter(p => 
@@ -106,7 +53,7 @@ const AllProductsPage = () => {
     };
 
     fetchProducts();
-  }, [search, selectedCategory, priceRange]);
+  }, [search]);
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
@@ -125,216 +72,61 @@ const AllProductsPage = () => {
 
       {/* 🔥 FILTER & SEARCH STRIP */}
       <div className="sticky top-[72px] md:top-[88px] z-[100] bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-4 flex items-center justify-between gap-2 md:gap-4">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-4">
           
           {/* Search */}
-          <div className="flex-1 min-w-0 relative group">
+          <div className="flex-1 relative group">
             <FaSearch className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#14532D] transition-colors text-xs md:text-sm" />
             <input 
               type="text" 
-              placeholder="Search..."
+              placeholder="Search products..."
               className="w-full pl-8 md:pl-12 pr-3 py-1.5 md:py-3 bg-slate-100 border-none rounded-lg md:rounded-2xl text-[11px] md:text-sm font-medium focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all outline-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-1.5 md:gap-3">
-            <button 
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-1.5 px-3 md:px-5 py-1.5 md:py-3 bg-white border border-slate-200 rounded-lg md:rounded-2xl text-[11px] md:text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all active:scale-95"
-            >
-              <FaFilter className="text-[#14532D] text-[10px] md:text-sm" />
-              <span>Filters</span>
-            </button>
-            <div className="h-6 md:h-10 w-[1px] bg-slate-200 mx-1 hidden sm:block"></div>
-            <div className="hidden sm:flex bg-slate-100 p-1 rounded-lg md:rounded-xl">
-              <button className="p-1.5 md:p-2 bg-white shadow-sm text-[#14532D] rounded-md md:rounded-lg"><FaThLarge className="text-xs md:text-base" /></button>
-              <button className="p-1.5 md:p-2 text-slate-400"><FaList className="text-xs md:text-base" /></button>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* 🔥 MOBILE FILTER DRAWER */}
-      {showFilters && (
-        <div className="fixed inset-0 z-[2000]">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowFilters(false)}></div>
-          <div className="absolute right-0 top-0 bottom-0 w-[80%] max-w-[320px] bg-white shadow-2xl overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-slate-200 px-5 py-4 flex items-center justify-between z-10">
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-lg font-black text-slate-900">Filters</h3>
-                {selectedCategory !== "All Categories" && (
-                  <span className="px-2 py-0.5 bg-[#14532D]/10 text-[#14532D] text-[9px] font-black rounded-full">1 active</span>
-                )}
-              </div>
-              <button onClick={() => setShowFilters(false)} className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors">
-                <FaTimes size={14} />
-              </button>
-            </div>
-            
-            <div className="p-5 space-y-5">
-              {/* All Categories Reset */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    handleCategorySelect("All Categories");
-                    setShowFilters(false);
-                  }}
-                  className={`flex-1 text-left px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                    selectedCategory === "All Categories" 
-                      ? 'bg-[#14532D] text-white shadow-lg' 
-                      : 'bg-white border border-slate-200 text-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <FaStoreAlt size={13} />
-                    <span>All Categories</span>
-                  </div>
-                </button>
-                {selectedCategory !== "All Categories" && (
-                  <button
-                    onClick={() => handleCategorySelect("All Categories")}
-                    className="p-3 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-red-500 transition-all"
-                  >
-                    <FaTimesCircle size={14} />
-                  </button>
-                )}
-              </div>
-
-              {/* Categories */}
-              <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                <button
-                  onClick={() => setExpandedSections(s => ({ ...s, industry: !s.industry }))}
-                  className="w-full flex items-center justify-between px-4 py-3.5 text-xs font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <FaStoreAlt className="text-slate-400" size={12} />
-                    <span>Categories</span>
-                  </div>
-                  <FaChevronDown size={10} className={`text-slate-400 transition-transform ${expandedSections.industry ? 'rotate-180' : ''}`} />
-                </button>
-                {expandedSections.industry && (
-                  <div className="px-3 pb-3 space-y-0.5">
-                    {productCategoryList.map(({ name, count }) => {
-                      const isActive = selectedCategory.toLowerCase() === name.toLowerCase();
-                      return (
-                        <button
-                          key={name}
-                          onClick={() => {
-                            handleCategorySelect(name);
-                            setShowFilters(false);
-                          }}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                            isActive
-                              ? 'bg-[#14532D] text-white shadow-sm' 
-                              : 'text-slate-600 hover:bg-slate-100'
-                          }`}
-                        >
-                          <span className="truncate">{name}</span>
-                          <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
-                            isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
-                          }`}>
-                            {count}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12 flex flex-col lg:flex-row gap-6 md:gap-10">
         
-        {/* 🔥 SIDEBAR FILTERS (Desktop Only) */}
+        {/* 🔥 SIDEBAR (Desktop Only) */}
         <aside className="hidden lg:block w-72 flex-shrink-0">
           <div className="sticky top-[140px] space-y-6">
-
-            {/* All Categories & Clear */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => handleCategorySelect("All Categories")}
-                className={`flex-1 text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                  selectedCategory === "All Categories" 
-                    ? 'bg-[#14532D] text-white shadow-lg shadow-green-900/20' 
-                    : 'bg-white border border-slate-200 text-slate-700 hover:border-slate-300 hover:shadow-sm'
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <FaStoreAlt className={selectedCategory === "All Categories" ? 'text-green-300' : 'text-slate-400'} size={13} />
-                  <span>All Categories</span>
-                </div>
-              </button>
-              {selectedCategory !== "All Categories" && (
-                <button
-                  onClick={() => handleCategorySelect("All Categories")}
-                  className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all"
-                  title="Clear filters"
-                >
-                  <FaTimesCircle size={14} />
-                </button>
-              )}
-            </div>
-
-            {/* Category Filter */}
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <button
-                onClick={() => setExpandedSections(s => ({ ...s, industry: !s.industry }))}
-                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <FaStoreAlt className="text-slate-400" size={13} />
-                  <span>Categories</span>
-                </div>
-                <FaChevronDown size={11} className={`text-slate-400 transition-transform ${expandedSections.industry ? 'rotate-180' : ''}`} />
-              </button>
-              {expandedSections.industry && (
-                <div className="px-3 pb-3 space-y-0.5">
-                  {productCategoryList.map(({ name, count }) => {
-                    const isActive = selectedCategory.toLowerCase() === name.toLowerCase();
-                    return (
-                      <button
-                        key={name}
-                        onClick={() => handleCategorySelect(name)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-bold transition-all ${
-                          isActive
-                            ? 'bg-[#14532D] text-white shadow-sm' 
-                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                        }`}
-                      >
-                        <span className="truncate">{name}</span>
-                        <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${
-                          isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
-                        }`}>
-                          {count}
-                        </span>
-                      </button>
-                    );
-                  })}
-                  {productCategoryList.length === 0 && (
-                    <p className="px-3 py-2 text-xs text-slate-400 italic">No products yet</p>
-                  )}
-                </div>
-              )}
-            </div>
-
-
-
-            {/* Badge */}
-            <div className="bg-gradient-to-br from-slate-900 to-black rounded-2xl p-5 text-white text-center border border-slate-700/50">
-              <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FaStar className="text-yellow-400" size={14} />
+            <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+              <div className="bg-slate-50 px-5 py-4 border-b border-slate-200">
+                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                  <FaThLarge size={12} className="text-[#14532D]" />
+                  <span>Product List</span>
+                </h3>
               </div>
-              <h5 className="font-bold mb-1 text-sm">Partner with Experts</h5>
-              <p className="text-[10px] text-white/40 leading-relaxed mb-4">Connect with verified manufacturers for custom solutions.</p>
-              <button className="w-full py-2.5 bg-green-500 text-[#14532D] rounded-xl text-xs font-black hover:bg-green-400 transition-colors active:scale-95">Apply as Partner</button>
+              <div className="p-3 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                {allProducts.length > 0 ? (
+                  <div className="space-y-1">
+                    {allProducts.map((item) => (
+                      <button
+                        key={item._id}
+                        onClick={() => navigate("/product-details", { state: item })}
+                        className="w-full text-left px-4 py-2.5 rounded-xl text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:text-[#14532D] transition-all border border-transparent hover:border-slate-100 line-clamp-1"
+                      >
+                        {item.title}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="p-4 text-center text-xs text-slate-400 font-medium italic">No products available</p>
+                )}
+              </div>
+            </div>
+
+            {/* Partner Badge */}
+            <div className="bg-gradient-to-br from-slate-900 to-black rounded-3xl p-6 text-white text-center border border-slate-700/50 shadow-xl">
+              <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
+                <FaStar className="text-yellow-400" size={16} />
+              </div>
+              <h5 className="font-bold mb-2 text-base">Partner with Experts</h5>
+              <p className="text-[11px] text-white/40 leading-relaxed mb-5 px-2">Connect with verified manufacturers for industrial solutions.</p>
+              <button className="w-full py-3 bg-green-500 text-[#14532D] rounded-xl text-[11px] font-black hover:bg-green-400 transition-all active:scale-95 shadow-lg shadow-green-500/20">Apply as Partner</button>
             </div>
           </div>
         </aside>
@@ -430,12 +222,10 @@ const AllProductsPage = () => {
               <button 
                 onClick={() => {
                   setSearch("");
-                  setSelectedCategory("All Categories");
-                  navigate("/all-products");
                 }}
                 className="px-6 md:px-8 py-2.5 md:py-3 bg-[#14532D] text-white rounded-xl md:rounded-2xl font-bold shadow-lg shadow-green-900/20 active:scale-95 text-xs md:text-sm"
               >
-                Reset All Filters
+                Clear Search
               </button>
             </div>
           )}
