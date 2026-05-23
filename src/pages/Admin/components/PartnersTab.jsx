@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Eye, Trash2, Handshake, Building2, ChevronDown } from "lucide-react";
+import { Search, Eye, Trash2, Handshake, Building2, ChevronDown, Edit2 } from "lucide-react";
 
 const PLAN_COLORS = {
   Free: "bg-gray-500/10 text-gray-400",
@@ -17,6 +17,7 @@ const PartnersTab = ({
   filter,
   setFilter,
   onRefresh,
+  handleEditClick
 }) => {
   const [changingPlan, setChangingPlan] = useState(null);
 
@@ -177,6 +178,13 @@ const PartnersTab = ({
                 </div>
 
                 <div className="col-span-2 flex items-center justify-end gap-2 text-gray-400">
+                  <button
+                    onClick={() => handleEditClick(profile)}
+                    className="p-2 rounded-lg hover:bg-white/5 hover:text-blue-400 transition-colors"
+                    title="Edit Partner"
+                  >
+                    <Edit2 size={14} />
+                  </button>
                   <button
                     onClick={() => navigate(`/admin/partner/${profile._id}`)}
                     className="p-2 rounded-lg hover:bg-white/5 hover:text-white transition-colors"

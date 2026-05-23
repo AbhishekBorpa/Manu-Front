@@ -299,14 +299,18 @@ const Dashboard = () => {
       shortDescription: item.shortDescription || "",
       longDescription: item.longDescription || "",
       mobileNumber: item.mobileNumber || "",
-      status: item.status || "Active",
+      status: item.status || item.verificationStatus || "Active",
       role: item.role || "user",
       project: item.project || "",
       budget: item.budget || "",
       notes: item.notes || "",
       rating: item.rating || "0",
       tag: item.tag || "",
-      paymentStatus: item.paymentStatus || "Unpaid"
+      paymentStatus: item.paymentStatus || "Unpaid",
+      companyName: item.companyName || "",
+      address: item.address || "",
+      website: item.website || "",
+      plan: item.plan || "Free"
     });
     setImageFile(null);
     setIsEditModalOpen(true);
@@ -324,6 +328,7 @@ const Dashboard = () => {
                       activeMenu === "Users" ? "admin/users" :
                       activeMenu === "Orders" ? "admin/orders" :
                       activeMenu === "Subscribers" ? "admin/subscribers" :
+                      activeMenu === "Partners" ? "admin/partner-profiles" :
                       activeMenu === "Leads" ? "leads" : "";
       
       if (!endpoint) return;
@@ -588,6 +593,7 @@ const Dashboard = () => {
               filter={filter}
               setFilter={setFilter}
               onRefresh={fetchData}
+              handleEditClick={handleEditClick}
             />
           )}
           {/* VERIFICATIONS PAGE */}
