@@ -216,7 +216,7 @@ const Dashboard = () => {
 
       if (statsData.success) setRealStats(statsData.stats);
       if (usersData.success) setUsers(usersData.users);
-      if (servicesData.success) setServices(servicesData.services);
+      if (servicesData.success) setServices(servicesData.manufacturing);
       if (ordersData.success) setOrders(ordersData.orders);
       if (subsData.success) setSubscribers(subsData.subscribers);
       if (leadsData.success) setLeads(leadsData.leads);

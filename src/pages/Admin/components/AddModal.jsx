@@ -16,7 +16,10 @@ const AddModal = ({
   if (!isOpen) return null;
 
   // Find subcategories (machinery) for the selected Main Category (manufacturing)
-  const filteredSubCategories = categories.filter(cat => cat.parentCategory?._id === formData.category || cat.parentCategory === formData.category);
+  const filteredSubCategories = categories.filter(cat => 
+    cat.parentCategory?.title === formData.category || 
+    cat.parentCategory === formData.category
+  );
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
