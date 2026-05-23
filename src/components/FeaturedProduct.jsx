@@ -12,18 +12,91 @@ import {
   FaBox,
   FaIndustry,
   FaTools,
+  FaWrench,
+  FaCube,
+  FaBolt,
+  FaHammer,
 } from "react-icons/fa";
 import LeadModal from "./LeadModal";
 import { getServerUrl, getLocalFallback, API_BASE_URL } from "../api/config";
 
 
-/* 🔥 ICON MAP */
 const iconMap = {
-  cogs: <FaCogs />,
-  box: <FaBox />,
-  industry: <FaIndustry />,
-  tools: <FaTools />,
+  cogs: FaCogs,
+  box: FaBox,
+  industry: FaIndustry,
+  tools: FaTools,
+  wrench: FaWrench,
+  cube: FaCube,
+  bolt: FaBolt,
+  hammer: FaHammer,
 };
+
+const FALLBACK_ICON_KEYS = ["cogs", "industry", "tools", "box", "wrench", "bolt"];
+
+const KEYWORD_ICON_RULES = [
+  { test: /weld|torch|arc|fabricat/i, key: "tools" },
+  { test: /cup|pack|carton|bag|bottle/i, key: "box" },
+  { test: /cnc|lathe|mill|press|machine/i, key: "cogs" },
+  { test: /inject|mold|plastic|extru/i, key: "industry" },
+  { test: /3d|print/i, key: "cube" },
+  { test: /forg|stamp|die/i, key: "hammer" },
+  { test: /assembl|robot|automation/i, key: "bolt" },
+];
+
+function isIconUrl(value) {
+  if (!value || typeof value !== "string") return false;
+  const v = value.trim().toLowerCase();
+  return v.startsWith("http") || v.startsWith("/") || v.includes("cloudinary");
+}
+
+function inferIconKey(item) {
+  const text = [
+    item.icon,
+    item.category,
+    item.subcategory,
+    item.title,
+    item.query,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  const named = (item.icon || "").trim().toLowerCase();
+  if (iconMap[named]) return named;
+
+  for (const rule of KEYWORD_ICON_RULES) {
+    if (rule.test.test(text)) return rule.key;
+  }
+
+  const seed = String(item._id || item.title || "product");
+  let hash = 0;
+  for (let i = 0; i < seed.length; i += 1) {
+    hash = (hash + seed.charCodeAt(i)) % FALLBACK_ICON_KEYS.length;
+  }
+  return FALLBACK_ICON_KEYS[hash];
+}
+
+function ProductCircleIcon({ item, className = "text-xl md:text-3xl" }) {
+  const rawIcon = (item.icon || "").trim();
+
+  if (isIconUrl(rawIcon)) {
+    return (
+      <img
+        src={getServerUrl(rawIcon)}
+        alt=""
+        className="w-[55%] h-[55%] object-contain"
+        onError={(e) => {
+          e.target.style.display = "none";
+        }}
+      />
+    );
+  }
+
+  const key = inferIconKey(item);
+  const Icon = iconMap[key] || FaCogs;
+  return <Icon className={className} aria-hidden />;
+}
 
 
 
@@ -133,7 +206,7 @@ const FeaturedProducts = () => {
 
             <div
               key={item._id}
-              onClick={() => navigate("/product-details", { state: item })}
+              onClick={() => navigate(`/product-details/${item._id}`, { state: item })}
               className="group bg-white rounded-2xl md:rounded-[22px] border border-gray-200 shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer"
             >
 
@@ -158,9 +231,9 @@ const FeaturedProducts = () => {
 
 
                 {/* 🔥 ICON */}
-                <div className="absolute bottom-3 left-3 md:bottom-5 md:left-5 w-[50px] md:w-[74px] h-[50px] md:h-[74px] rounded-full bg-[#2E9635] border-[3px] md:border-[5px] border-white flex items-center justify-center text-white text-xl md:text-3xl shadow-lg">
+                <div className="absolute bottom-3 left-3 md:bottom-5 md:left-5 w-[50px] md:w-[74px] h-[50px] md:h-[74px] rounded-full bg-[#2E9635] border-[3px] md:border-[5px] border-white flex items-center justify-center text-white shadow-lg">
 
-                  {iconMap[item.icon]}
+                  <ProductCircleIcon item={item} />
 
                 </div>
 

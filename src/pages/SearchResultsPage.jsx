@@ -127,7 +127,7 @@ const SearchResultsPage = ({ city, setCity }) => {
           products.map((item, i) => (
             <div
               key={i}
-              onClick={() => navigate("/product-details", { state: item })}
+              onClick={() => navigate(`/product-details/${item._id}`, { state: item })}
               className="bg-white rounded-xl md:rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-3 md:p-4 border border-gray-100 group cursor-pointer"
             >
               <div className="relative overflow-hidden rounded-lg md:rounded-2xl h-36 md:h-48 mb-3 md:mb-4">

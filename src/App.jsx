@@ -91,10 +91,8 @@ const App = () => {
             <Route path="/all-products" element={<AllProductsPage />} />
 
 
-            <Route
-              path="/product-details"
-              element={<ProductDetails />}
-            />
+            <Route path="/product-details/:id" element={<ProductDetails />} />
+            <Route path="/product-details" element={<ProductDetails />} />
 
             <Route path="/profile" element={<Profile />} />
             <Route path="/my-queries" element={<MyQueries />} />
