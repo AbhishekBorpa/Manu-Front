@@ -28,8 +28,7 @@ const Navbar = ({
   onOpenLocation,
 }) => {
 
-  const [showLogin, setShowLogin] =
-    useState(false);
+  const [authModal, setAuthModal] = useState({ show: false, mode: "login" });
 
   const [navbar, setNavbar] =
     useState(null);
@@ -336,12 +335,20 @@ const Navbar = ({
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() => setShowLogin(true)}
-                className="bg-[#14532D] hover:bg-[#166534] text-white px-6 h-[46px] rounded-full font-medium shadow-sm transition-all active:scale-95"
-              >
-                {navbar.signInButton}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setAuthModal({ show: true, mode: "login" })}
+                  className="text-gray-700 hover:text-[#14532D] px-4 h-[46px] rounded-full font-bold text-sm transition-all"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => setAuthModal({ show: true, mode: "signup" })}
+                  className="bg-[#14532D] hover:bg-[#166534] text-white px-6 h-[46px] rounded-full font-bold text-sm shadow-sm transition-all active:scale-95"
+                >
+                  Sign Up
+                </button>
+              </div>
             )}
           </div>
 
@@ -454,12 +461,20 @@ const Navbar = ({
                   </div>
                 </>
               ) : (
-                <button
-                  onClick={() => { setShowLogin(true); setIsMenuOpen(false); }}
-                  className="w-full bg-[#14532D] text-white p-4 rounded-xl font-bold shadow-lg shadow-green-900/20"
-                >
-                  {navbar.signInButton}
-                </button>
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => { setAuthModal({ show: true, mode: "login" }); setIsMenuOpen(false); }}
+                    className="w-full bg-gray-100 text-[#14532D] p-4 rounded-xl font-bold shadow-sm"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => { setAuthModal({ show: true, mode: "signup" }); setIsMenuOpen(false); }}
+                    className="w-full bg-[#14532D] text-white p-4 rounded-xl font-bold shadow-lg shadow-green-900/20"
+                  >
+                    Sign Up
+                  </button>
+                </div>
               )}
             </div>
 
@@ -471,7 +486,12 @@ const Navbar = ({
       )}
 
       {/* 🔥 LOGIN MODAL */}
-      {showLogin && <SignInModal onClose={() => setShowLogin(false)} />}
+      {authModal.show && (
+        <SignInModal 
+          onClose={() => setAuthModal({ ...authModal, show: false })} 
+          initialMode={authModal.mode}
+        />
+      )}
     </>
   );
 };

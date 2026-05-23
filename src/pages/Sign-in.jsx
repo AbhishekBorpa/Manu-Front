@@ -8,10 +8,10 @@ import {
 
 import loginImg from "../assets/signin-img.jpg";
 
-const SignInModal = ({ onClose }) => {
+const SignInModal = ({ onClose, initialMode = "login" }) => {
 
   const [isLogin, setIsLogin] =
-    useState(true);
+    useState(initialMode === "login");
 
   /* FORM STATE */
   const [formData, setFormData] =
