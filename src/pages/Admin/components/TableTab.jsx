@@ -254,7 +254,7 @@ const TableTab = ({
                   {product.subcategory && <span className="text-white/40"> &gt; {product.subcategory}</span>}
                 </span>
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-white font-medium">₹{product.price || 0}</span>
+                  <span className="text-white font-medium">{product.mobileNumber || 'No Phone'}</span>
                   <span className="text-[8px] text-gray-400">{product.location || 'N/A'}</span>
                 </div>
                 <div className="flex items-center justify-end gap-3 text-gray-400">

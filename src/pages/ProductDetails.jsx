@@ -11,6 +11,7 @@ const ProductDetails = () => {
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(true);
+  const [activeTab, setActiveTab] = useState("short");
   const product = state;
 
   useEffect(() => {
@@ -104,17 +105,32 @@ const ProductDetails = () => {
               <div className="text-green-600 font-bold text-xs md:text-sm">In Stock</div>
             </div>
 
-            <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-xs md:text-base">
-              {product.desc || "Experience top-tier industrial performance with this advanced machinery. Engineered for precision, high output, and long-term durability in demanding manufacturing environments."}
+            <div className="flex gap-4 border-b border-gray-100 mb-6">
+              <button 
+                onClick={() => setActiveTab("short")}
+                className={`pb-2 text-xs md:text-sm font-bold transition-all ${activeTab === 'short' ? 'text-[#14532D] border-b-2 border-[#14532D]' : 'text-gray-400'}`}
+              >
+                Short Description
+              </button>
+              <button 
+                onClick={() => setActiveTab("long")}
+                className={`pb-2 text-xs md:text-sm font-bold transition-all ${activeTab === 'long' ? 'text-[#14532D] border-b-2 border-[#14532D]' : 'text-gray-400'}`}
+              >
+                Long Description
+              </button>
+            </div>
+
+            <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-xs md:text-base animate-in fade-in duration-300">
+              {activeTab === "short" ? (product.shortDescription || "Experience top-tier industrial performance with this advanced machinery.") : (product.longDescription || "Engineered for precision, high output, and long-term durability in demanding manufacturing environments.")}
             </p>
 
             <div className="bg-slate-50 rounded-xl md:rounded-2xl p-4 md:p-6 mb-6 md:mb-8 border border-slate-100">
-              <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Wholesale Price</p>
+              <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Direct Contact</p>
               <div className="flex items-end gap-2">
-                <span className="text-2xl md:text-4xl font-black text-slate-900 leading-none">
-                  ₹{product.price >= 100000 ? `${(product.price/100000).toFixed(1)}L` : product.price?.toLocaleString() || '8,40,000'}
+                <span className="text-xl md:text-3xl font-black text-slate-900 leading-none">
+                  {product.mobileNumber || '+91 98765 43210'}
                 </span>
-                <span className="text-[10px] md:text-sm font-bold text-slate-400 pb-0.5 md:pb-1">* Excl. GST</span>
+                <span className="text-[10px] md:text-sm font-bold text-slate-400 pb-0.5 md:pb-1">Verified Seller</span>
               </div>
             </div>
 
@@ -166,8 +182,8 @@ const ProductDetails = () => {
                 </div>
                 <div>
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none mb-1">Direct Line</p>
-                  <a href="tel:+919876543210" className="text-lg font-black text-slate-800 hover:text-green-600 transition-colors flex items-center gap-1">
-                    +91 98765 43210 <FaExternalLinkAlt className="text-xs text-slate-400" />
+                  <a href={`tel:${product.mobileNumber || '+919876543210'}`} className="text-lg font-black text-slate-800 hover:text-green-600 transition-colors flex items-center gap-1">
+                    {product.mobileNumber || '+91 98765 43210'} <FaExternalLinkAlt className="text-xs text-slate-400" />
                   </a>
                 </div>
               </div>
@@ -184,7 +200,7 @@ const ProductDetails = () => {
 
               <div className="flex flex-col gap-2 pt-2">
                 <a
-                  href="tel:+919876543210"
+                  href={`tel:${product.mobileNumber || '+919876543210'}`}
                   className="w-full py-3 bg-[#14532D] text-white rounded-xl font-bold text-center hover:bg-[#166534] transition-all flex items-center justify-center gap-2 text-sm"
                 >
                   <FaPhoneAlt size={12} /> Call Now
@@ -249,11 +265,11 @@ const ProductDetails = () => {
                   </h4>
 
                   <div className="flex flex-col md:flex-row md:items-center justify-between mt-1 md:mt-3 gap-1">
-                    <p className="text-[14px] md:text-lg font-black text-slate-900 leading-none">
-                      ₹ {item.price >= 100000 ? `${(item.price/100000).toFixed(1)}L` : item.price?.toLocaleString() || "8,40,000"}
-                    </p>
-                    <p className="text-[9px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
+                    <p className="text-[12px] md:text-sm font-bold text-slate-500 flex items-center gap-1">
                       <FaMapMarkerAlt className="text-red-500 text-[8px] md:text-[10px]" /> {item.location || "New Delhi"}
+                    </p>
+                    <p className="text-[10px] md:text-xs text-green-600 font-bold">
+                      Verified
                     </p>
                   </div>
                 </div>

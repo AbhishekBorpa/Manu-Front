@@ -84,7 +84,7 @@ const AllProductsPage = () => {
             filtered = filtered.filter(p => 
               p.category?.toLowerCase() === lowerCat || 
               p.title.toLowerCase().includes(lowerCat) ||
-              p.desc?.toLowerCase().includes(lowerCat)
+              p.shortDescription?.toLowerCase().includes(lowerCat)
             );
           }
 
@@ -92,12 +92,9 @@ const AllProductsPage = () => {
           if (search) {
             filtered = filtered.filter(p => 
               p.title.toLowerCase().includes(search.toLowerCase()) ||
-              p.desc?.toLowerCase().includes(search.toLowerCase())
+              p.shortDescription?.toLowerCase().includes(search.toLowerCase())
             );
           }
-
-          // Apply Price Filter
-          filtered = filtered.filter(p => (p.price || 0) <= priceRange);
 
           setProducts(filtered);
         }
@@ -248,37 +245,7 @@ const AllProductsPage = () => {
                 )}
               </div>
 
-              {/* Price Range */}
-              <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                <button
-                  onClick={() => setExpandedSections(s => ({ ...s, price: !s.price }))}
-                  className="w-full flex items-center justify-between px-4 py-3.5 text-xs font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <FaRupeeSign className="text-slate-400" size={12} />
-                    <span>Price Range</span>
-                  </div>
-                  <FaChevronDown size={10} className={`text-slate-400 transition-transform ${expandedSections.price ? 'rotate-180' : ''}`} />
-                </button>
-                {expandedSections.price && (
-                  <div className="px-5 pb-5 pt-2">
-                    <input 
-                      type="range" 
-                      min="0" 
-                      max="6000000" 
-                      step="50000"
-                      value={priceRange}
-                      onChange={(e) => setPriceRange(parseInt(e.target.value))}
-                      className="w-full accent-[#14532D] cursor-pointer" 
-                    />
-                    <div className="flex items-center justify-between mt-3">
-                      <span className="text-xs font-bold text-slate-400">₹0</span>
-                      <span className="text-sm font-black text-slate-900">₹{(priceRange/100000).toFixed(1)}L</span>
-                      <span className="text-xs font-bold text-slate-400">₹60L</span>
-                    </div>
-                  </div>
-                )}
-              </div>
+
             </div>
           </div>
         </div>
@@ -358,37 +325,7 @@ const AllProductsPage = () => {
               )}
             </div>
 
-            {/* Price Range */}
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <button
-                onClick={() => setExpandedSections(s => ({ ...s, price: !s.price }))}
-                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-black text-slate-900 uppercase tracking-widest hover:bg-slate-50 transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <FaRupeeSign className="text-slate-400" size={13} />
-                  <span>Price Range</span>
-                </div>
-                <FaChevronDown size={11} className={`text-slate-400 transition-transform ${expandedSections.price ? 'rotate-180' : ''}`} />
-              </button>
-              {expandedSections.price && (
-                <div className="px-5 pb-5 pt-2">
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="6000000" 
-                    step="50000"
-                    value={priceRange}
-                    onChange={(e) => setPriceRange(parseInt(e.target.value))}
-                    className="w-full accent-[#14532D] cursor-pointer" 
-                  />
-                  <div className="flex items-center justify-between mt-3">
-                    <span className="text-xs font-bold text-slate-400">₹0</span>
-                    <span className="text-sm font-black text-slate-900">₹{(priceRange/100000).toFixed(1)}L</span>
-                    <span className="text-xs font-bold text-slate-400">₹60L</span>
-                  </div>
-                </div>
-              )}
-            </div>
+
 
             {/* Badge */}
             <div className="bg-gradient-to-br from-slate-900 to-black rounded-2xl p-5 text-white text-center border border-slate-700/50">
@@ -452,7 +389,7 @@ const AllProductsPage = () => {
                       {item.title}
                     </h3>
                     <p className="text-[11px] md:text-xs text-slate-500 line-clamp-2 mb-4 md:mb-6 font-medium leading-relaxed">
-                      {item.desc || 'High-performance industrial machinery designed for precision and durability.'}
+                      {item.shortDescription || 'High-performance industrial machinery designed for precision and durability.'}
                     </p>
 
                     <div className="flex items-center justify-between">
@@ -461,10 +398,9 @@ const AllProductsPage = () => {
                         <span className="text-[10px] md:text-xs font-bold text-slate-600">{item.location || 'New Delhi'}</span>
                       </div>
                       <div className="text-right">
-                        <p className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-0.5 md:mb-1">Wholesale Price</p>
-                        <p className="text-lg md:text-xl font-black text-slate-900 leading-none">
-                          ₹{item.price >= 100000 ? `${(item.price/100000).toFixed(1)}L` : item.price?.toLocaleString()} 
-                          <span className="text-xs text-slate-400 font-bold ml-1">*</span>
+                        <p className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none mb-0.5 md:mb-1">Contact</p>
+                        <p className="text-sm md:text-base font-black text-slate-900 leading-none">
+                          {item.mobileNumber || 'Verified Seller'}
                         </p>
                       </div>
                     </div>
@@ -495,7 +431,6 @@ const AllProductsPage = () => {
                 onClick={() => {
                   setSearch("");
                   setSelectedCategory("All Categories");
-                  setPriceRange(6000000);
                   navigate("/all-products");
                 }}
                 className="px-6 md:px-8 py-2.5 md:py-3 bg-[#14532D] text-white rounded-xl md:rounded-2xl font-bold shadow-lg shadow-green-900/20 active:scale-95 text-xs md:text-sm"

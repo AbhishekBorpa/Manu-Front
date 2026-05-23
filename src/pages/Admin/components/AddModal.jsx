@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { useState } from "react";
 
 const AddModal = ({
   isOpen,
@@ -11,6 +12,7 @@ const AddModal = ({
   categories = [],
   mainCategories = []
 }) => {
+  const [descTab, setDescTab] = useState("short");
   if (!isOpen) return null;
 
   // Find subcategories for the selected category
@@ -101,8 +103,8 @@ const AddModal = ({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Price (₹)</label>
-                      <input type="text" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Mobile Number</label>
+                      <input type="text" value={formData.mobileNumber} onChange={(e) => setFormData({...formData, mobileNumber: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Location</label>
@@ -110,9 +112,35 @@ const AddModal = ({
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Description</label>
-                    <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-green-500 outline-none transition-all min-h-[100px]" required />
+                  <div className="space-y-3">
+                    <div className="flex gap-2 p-1 bg-white/5 rounded-lg w-fit">
+                      <button 
+                        type="button"
+                        onClick={() => setDescTab("short")}
+                        className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${descTab === 'short' ? 'bg-green-600 text-white' : 'text-gray-400 hover:text-white'}`}
+                      >
+                        Short Desc
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setDescTab("long")}
+                        className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${descTab === 'long' ? 'bg-green-600 text-white' : 'text-gray-400 hover:text-white'}`}
+                      >
+                        Long Desc
+                      </button>
+                    </div>
+
+                    {descTab === "short" ? (
+                      <div className="space-y-2 animate-in fade-in duration-300">
+                        <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Short Description</label>
+                        <textarea value={formData.shortDescription} onChange={(e) => setFormData({...formData, shortDescription: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-green-500 outline-none transition-all min-h-[100px]" required />
+                      </div>
+                    ) : (
+                      <div className="space-y-2 animate-in fade-in duration-300">
+                        <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Long Description</label>
+                        <textarea value={formData.longDescription} onChange={(e) => setFormData({...formData, longDescription: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-green-500 outline-none transition-all min-h-[150px]" required />
+                      </div>
+                    )}
                   </div>
                 </>
               )}

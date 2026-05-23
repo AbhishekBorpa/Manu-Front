@@ -150,8 +150,8 @@ const SearchResultsPage = ({ city, setCity }) => {
                 </h3>
 
                 <div className="flex items-center justify-between mb-3 md:mb-4 mt-2">
-                  <p className="text-base md:text-xl font-black text-gray-900 leading-none">
-                    ₹{item.price >= 100000 ? `${(item.price/100000).toFixed(1)}L` : item.price?.toLocaleString() || "8.4L"}
+                  <p className="text-sm md:text-base font-black text-gray-900 leading-none">
+                    {item.mobileNumber || "Verified Seller"}
                   </p>
                   <p className="text-[9px] md:text-xs text-gray-500 flex items-center gap-1 font-bold">
                     <FaMapMarkerAlt className="text-[#065f46] text-[10px]" /> {item.location || "New Delhi"}

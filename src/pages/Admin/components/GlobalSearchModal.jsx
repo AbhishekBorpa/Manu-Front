@@ -113,7 +113,7 @@ const GlobalSearchModal = ({
                             )}
                             <div>
                               <span className="font-semibold block">{p.title}</span>
-                              <span className="text-[10px] text-gray-500 block">₹{p.price} • {p.category}</span>
+                              <span className="text-[10px] text-gray-500 block">{p.category} • {p.mobileNumber || "Verified"}</span>
                             </div>
                           </div>
                           <span className="text-[10px] text-gray-500 group-hover:text-green-500 opacity-0 group-hover:opacity-100 transition-all font-bold">Edit Details →</span>
