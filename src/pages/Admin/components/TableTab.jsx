@@ -55,15 +55,13 @@ const TableTab = ({
             <option>Category</option>
             <option>Status</option>
           </select>
-          {activeMenu !== "Categories" && (
-            <button 
-              onClick={() => setIsAddModalOpen(true)}
-              className="h-[38px] px-4 rounded-lg bg-green-600 hover:bg-green-500 transition-all duration-300 flex items-center gap-2 text-[11px] font-medium"
-            >
-              <Plus size={14} />
-              Add
-            </button>
-          )}
+          <button 
+            onClick={() => setIsAddModalOpen(true)}
+            className="h-[38px] px-4 rounded-lg bg-green-600 hover:bg-green-500 transition-all duration-300 flex items-center gap-2 text-[11px] font-medium"
+          >
+            <Plus size={14} />
+            Add
+          </button>
         </div>
       </div>
 
@@ -77,7 +75,7 @@ const TableTab = ({
               {activeMenu === "Users" ? `${getFilteredItems(users).length} of ${users.length}` :
                activeMenu === "Leads" ? `${getFilteredItems(leads).length} of ${leads.length}` :
                activeMenu === "Products" ? `${getFilteredItems(products).length} of ${products.length}` :
-               activeMenu === "Categories" ? `${filteredCategoryNames.length} of ${productCategoryNames.length}` :
+               activeMenu === "Sub Categories" ? `${getFilteredItems(categories).length} of ${categories.length}` :
                activeMenu === "Main Category" ? `${getFilteredItems(services).length} of ${services.length}` :
                activeMenu === "Orders" ? `${getFilteredItems(orders).length} of ${orders.length}` :
                activeMenu === "Subscribers" ? `${getFilteredItems(subscribers).length + getFilteredItems(partnerProfiles).length} total` : 0}
@@ -88,8 +86,8 @@ const TableTab = ({
         <div className="overflow-hidden rounded-lg border border-white/10 flex-1 overflow-y-auto custom-scrollbar">
           <div className="grid grid-cols-7 bg-white/5 h-[40px] items-center px-4 text-[11px] font-semibold text-gray-300 sticky top-0 z-10">
             <span>ID</span>
-            <span className="col-span-2">{activeMenu === "Categories" ? "Name" : activeMenu === "Users" ? "Full Name" : activeMenu === "Orders" ? "Order ID" : activeMenu === "Subscribers" ? "Email / Company" : "Title/Name"}</span>
-            <span className="col-span-2">{activeMenu === "Leads" ? "Project & Contact" : activeMenu === "Users" ? "Email & Phone" : activeMenu === "Orders" ? "Amount & Payment" : activeMenu === "Categories" ? "Products" : activeMenu === "Subscribers" ? "Plan / Date" : "Category & Detail"}</span>
+            <span className="col-span-2">{activeMenu === "Sub Categories" ? "Subcategory Name" : activeMenu === "Users" ? "Full Name" : activeMenu === "Orders" ? "Order ID" : activeMenu === "Subscribers" ? "Email / Company" : "Title/Name"}</span>
+            <span className="col-span-2">{activeMenu === "Leads" ? "Project & Contact" : activeMenu === "Users" ? "Email & Phone" : activeMenu === "Orders" ? "Amount & Payment" : activeMenu === "Sub Categories" ? "Main Category" : activeMenu === "Subscribers" ? "Plan / Date" : "Category & Detail"}</span>
             <span>Status / Info</span>
             <span className="text-right">Actions</span>
           </div>
@@ -271,18 +269,18 @@ const TableTab = ({
               </div>
             )) : <p className="p-10 text-center text-slate-500 text-xs">No products found.</p>)}
 
-            {activeMenu === "Categories" && (filteredCategoryNames.length > 0 ? filteredCategoryNames.map((name) => {
-              const count = products.filter(p => (p.category || 'Uncategorized') === name).length;
-              return (
-                <div key={name} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
-                  <span className="font-medium text-white">#{name.slice(0, 6).toUpperCase()}</span>
-                  <span className="text-gray-300 col-span-2">{name}</span>
-                  <span className="text-gray-400 col-span-2 truncate pr-4">{count} product{count !== 1 ? 's' : ''}</span>
-                  <span className="px-3 py-1 rounded-md bg-green-500/10 text-green-400 text-[9px] w-fit">Active</span>
-                  <div className="flex items-center justify-end gap-3 text-gray-400" />
+            {activeMenu === "Sub Categories" && (getFilteredItems(categories).length > 0 ? getFilteredItems(categories).map((cat) => (
+              <div key={cat._id} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
+                <span className="font-medium text-white">#{cat._id.slice(-6).toUpperCase()}</span>
+                <span className="text-gray-300 col-span-2">{cat.name}</span>
+                <span className="text-gray-400 col-span-2 truncate pr-4">{cat.parentCategory?.title || 'No Parent'}</span>
+                <span className="px-3 py-1 rounded-md bg-green-500/10 text-green-400 text-[9px] w-fit">Active</span>
+                <div className="flex items-center justify-end gap-3 text-gray-400">
+                  <button onClick={() => handleEditClick(cat)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
+                  <button onClick={() => handleDelete(cat._id, "categories")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                 </div>
-              );
-            }) : <p className="p-10 text-center text-slate-500 text-xs">No categories found.</p>)}
+              </div>
+            )) : <p className="p-10 text-center text-slate-500 text-xs">No subcategories found.</p>)}
           </div>
         </div>
       </div>

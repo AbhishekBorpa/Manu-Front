@@ -38,14 +38,14 @@ const Manufacturing = () => {
 
           const res =
             await fetch(
-               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/manufacturing"
+               (import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/categories"
             );
 
           const data =
             await res.json();
 
           setManufacturingData(
-            data.manufacturing ||
+            data.categories ||
             data
           );
 
@@ -132,7 +132,7 @@ const Manufacturing = () => {
                 key={item._id}
                 onClick={() =>
                   navigate(
-                    `/all-products?category=${item.category}`
+                    `/all-products?category=${item.name}`
                   )
                 }
                 className="cursor-pointer bg-white rounded-xl md:rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-2xl transition-all duration-300 group hover:-translate-y-1 md:hover:-translate-y-2"
@@ -142,8 +142,8 @@ const Manufacturing = () => {
                 <div className="relative overflow-hidden">
 
                   <img
-                    src={getServerUrl(item.img || item.image) || "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg"}
-                    alt={item.title}
+                    src={getServerUrl(item.icon) || "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg"}
+                    alt={item.name}
                     className="w-full h-32 md:h-40 object-cover transition duration-500 group-hover:scale-110"
                     onError={(e) => {
                       e.target.src = "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg";
@@ -153,22 +153,11 @@ const Manufacturing = () => {
 
 
                   {/* 🔥 TAG */}
-                  <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-[#14532D] text-white text-[9px] md:text-[11px] px-2 md:px-3 py-0.5 md:py-1 rounded-full shadow">
-
-                    {item.tag}
-
-                  </span>
-
-
-
-                  {/* 🔥 RATING */}
-                  <span className="absolute bottom-2 right-2 md:bottom-3 md:right-3 bg-white text-black text-[9px] md:text-xs px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full flex items-center gap-1 shadow">
-
-                    <FaStar className="text-yellow-500 text-[9px] md:text-[11px]" />
-
-                    {item.rating}
-
-                  </span>
+                  {item.parentCategory && (
+                    <span className="absolute top-2 left-2 md:top-3 md:left-3 bg-[#14532D] text-white text-[9px] md:text-[11px] px-2 md:px-3 py-0.5 md:py-1 rounded-full shadow">
+                      {item.parentCategory.title}
+                    </span>
+                  )}
 
                 </div>
 
@@ -179,17 +168,9 @@ const Manufacturing = () => {
 
                   <h3 className="text-[12px] md:text-[14px] font-semibold text-gray-800 leading-tight md:leading-6 min-h-[40px] md:min-h-[55px] group-hover:text-[#14532D] transition">
 
-                    {item.title}
+                    {item.name}
 
                   </h3>
-
-
-
-                  <p className="text-[12px] md:text-sm font-bold text-[#14532D] mt-1 md:mt-2">
-
-                    {item.price}
-
-                  </p>
 
 
 

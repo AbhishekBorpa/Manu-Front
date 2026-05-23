@@ -70,6 +70,7 @@ const Dashboard = () => {
     category: "",
     subcategory: "",
     subcategories: "",
+    parentCategory: "",
     price: "",
     location: "Delhi",
     description: "",
@@ -294,6 +295,7 @@ const Dashboard = () => {
       category: item.category || "",
       subcategory: item.subcategory || "",
       subcategories: item.subcategories ? item.subcategories.join(", ") : "",
+      parentCategory: item.parentCategory?._id || item.parentCategory || "",
       price: item.price || "",
       location: item.location || "Delhi",
       description: item.description || item.desc || item.message || item.review || item.notes || "",
@@ -317,7 +319,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const endpoint = activeMenu === "Products" ? "products" : 
-                      activeMenu === "Categories" ? "categories" :
+                      activeMenu === "Sub Categories" ? "categories" :
                       activeMenu === "Main Category" ? "manufacturing" :
                       activeMenu === "Users" ? "admin/users" :
                       activeMenu === "Orders" ? "admin/orders" :
@@ -333,7 +335,7 @@ const Dashboard = () => {
         }
       };
 
-      if (["Products", "Categories", "Main Category"].includes(activeMenu)) {
+      if (["Products", "Sub Categories", "Main Category"].includes(activeMenu)) {
         const formDataObj = new FormData();
         Object.keys(formData).forEach(key => {
           if (formData[key] !== "" && formData[key] !== null && formData[key] !== undefined) {
@@ -370,7 +372,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const endpoint = activeMenu === "Products" ? "products" : 
-                      activeMenu === "Categories" ? "categories" :
+                      activeMenu === "Sub Categories" ? "categories" :
                       activeMenu === "Main Category" ? "manufacturing" :
                       activeMenu === "Users" ? "admin/users" : "";
       
@@ -383,7 +385,7 @@ const Dashboard = () => {
         }
       };
 
-      if (["Products", "Categories", "Main Category"].includes(activeMenu)) {
+      if (["Products", "Sub Categories", "Main Category"].includes(activeMenu)) {
         const formDataObj = new FormData();
         Object.keys(formData).forEach(key => {
           if (formData[key] !== "" && formData[key] !== null && formData[key] !== undefined) {
@@ -461,7 +463,7 @@ const Dashboard = () => {
       icon: <Package size={16} />,
     },
     {
-      name: "Categories",
+      name: "Sub Categories",
       icon: <Folder size={16} />,
     },
     {
@@ -624,6 +626,7 @@ const Dashboard = () => {
         setImageFile={setImageFile}
         onSubmit={handleEditSubmit}
         categories={categories}
+        mainCategories={services}
       />
 
       {/* ADD MODAL */}
@@ -636,6 +639,7 @@ const Dashboard = () => {
         setImageFile={setImageFile}
         onSubmit={handleAddSubmit}
         categories={categories}
+        mainCategories={services}
       />
 
       {/* GLOBAL SEARCH DIALOG (COMMAND+K) */}

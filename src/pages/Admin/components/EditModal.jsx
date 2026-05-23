@@ -8,7 +8,8 @@ const EditModal = ({
   setFormData,
   setImageFile,
   onSubmit,
-  categories = []
+  categories = [],
+  mainCategories = []
 }) => {
   if (!isOpen) return null;
 
@@ -30,16 +31,26 @@ const EditModal = ({
         </div>
 
         <form onSubmit={onSubmit} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
-          {/* CATEGORY FIELDS */}
-          {activeMenu === "Categories" && (
+          {/* SUB CATEGORY FIELDS */}
+          {activeMenu === "Sub Categories" && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Category Name</label>
+                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Subcategory Name</label>
                 <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
               </div>
               <div className="space-y-2">
-                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Subcategories (comma separated)</label>
-                <input type="text" placeholder="e.g. Sub1, Sub2, Sub3" value={formData.subcategories} onChange={(e) => setFormData({...formData, subcategories: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Main Category</label>
+                <select 
+                  value={formData.parentCategory} 
+                  onChange={(e) => setFormData({...formData, parentCategory: e.target.value})} 
+                  className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                  required
+                >
+                  <option value="">Select Main Category</option>
+                  {mainCategories.map((mc) => (
+                    <option key={mc._id} value={mc._id}>{mc.title}</option>
+                  ))}
+                </select>
               </div>
             </div>
           )}
@@ -228,9 +239,10 @@ const EditModal = ({
             </div>
           )}
 
-          {["Products", "Categories"].includes(activeMenu) && (
+          {/* Image Upload */}
+          {["Products", "Sub Categories"].includes(activeMenu) && (
             <div className="space-y-2 pb-4">
-              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Categories" ? "Category Icon" : "Image"}</label>
+              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Sub Categories" ? "Subcategory Icon" : "Image"}</label>
               <input type="file" onChange={(e) => setImageFile(e.target.files[0])} className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" />
             </div>
           )}
