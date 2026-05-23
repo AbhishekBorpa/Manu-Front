@@ -310,7 +310,9 @@ const Dashboard = () => {
       companyName: item.companyName || "",
       address: item.address || "",
       website: item.website || "",
-      plan: item.plan || "Free"
+      plan: item.plan || "Free",
+      subscriptionExpiry: item.subscriptionExpiry || "",
+      isBlocked: item.isBlocked || false
     });
     setImageFile(null);
     setIsEditModalOpen(true);

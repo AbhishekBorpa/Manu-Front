@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Eye, Trash2, Handshake, Building2, ChevronDown, Edit2 } from "lucide-react";
+import { Search, Eye, Trash2, Handshake, Building2, ChevronDown, Edit2, Ban, ShieldCheck } from "lucide-react";
 
 const PLAN_COLORS = {
   Free: "bg-gray-500/10 text-gray-400",
@@ -20,6 +20,31 @@ const PartnersTab = ({
   handleEditClick
 }) => {
   const [changingPlan, setChangingPlan] = useState(null);
+  const [togglingBlock, setTogglingBlock] = useState(null);
+
+  const handleToggleBlock = async (profileId) => {
+    setTogglingBlock(profileId);
+    try {
+      const token = localStorage.getItem("token");
+      const API_URL = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
+      const res = await fetch(`${API_URL}/admin/partner-profiles/${profileId}/block`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        onRefresh();
+      } else {
+        alert(data.msg || "Failed to toggle block status.");
+      }
+    } catch (err) {
+      console.error("Block toggle error:", err);
+    } finally {
+      setTogglingBlock(null);
+    }
+  };
 
   const handlePlanChange = async (profileId, newPlan) => {
     setChangingPlan(profileId);
@@ -110,18 +135,19 @@ const PartnersTab = ({
 
         <div className="overflow-hidden rounded-lg border border-white/10 flex-1 overflow-y-auto custom-scrollbar">
           <div className="grid grid-cols-12 bg-white/5 h-[40px] items-center px-4 text-[11px] font-semibold text-gray-300 sticky top-0 z-10">
-            <span className="col-span-3">Company</span>
+            <span className="col-span-2">Company</span>
             <span className="col-span-2">Owner</span>
             <span className="col-span-2">Plan</span>
             <span className="col-span-2">Status</span>
             <span className="col-span-1">Joined</span>
+            <span className="col-span-1">Expiry</span>
             <span className="col-span-2 text-right">Actions</span>
           </div>
 
           <div>
             {filtered.length > 0 ? filtered.map((profile) => (
-              <div key={profile._id} className="grid grid-cols-12 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
-                <div className="col-span-3 flex items-center gap-3">
+              <div key={profile._id} className={`grid grid-cols-12 items-center px-4 h-[62px] border-t border-white/5 text-[10px] ${profile.isBlocked ? 'opacity-60 bg-red-500/5' : ''}`}>
+                <div className="col-span-2 flex items-center gap-3">
                   {profile.logo ? (
                     <img
                       src={profile.logo}
@@ -136,6 +162,7 @@ const PartnersTab = ({
                   <div className="flex flex-col min-w-0">
                     <span className="font-bold text-white truncate">{profile.companyName}</span>
                     <span className="text-gray-500 font-mono text-[9px]">#{profile._id.slice(-6).toUpperCase()}</span>
+                    {profile.isBlocked && <span className="text-red-500 text-[8px] font-black uppercase">Blocked</span>}
                   </div>
                 </div>
 
@@ -177,24 +204,40 @@ const PartnersTab = ({
                   {profile.createdAt ? new Date(profile.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) : 'N/A'}
                 </div>
 
-                <div className="col-span-2 flex items-center justify-end gap-2 text-gray-400">
+                <div className="col-span-1 text-gray-400">
+                  {profile.subscriptionExpiry ? (
+                    <span className={new Date(profile.subscriptionExpiry) < new Date() ? 'text-red-400' : 'text-green-400'}>
+                      {new Date(profile.subscriptionExpiry).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' })}
+                    </span>
+                  ) : 'N/A'}
+                </div>
+
+                <div className="col-span-2 flex items-center justify-end gap-1 text-gray-400">
+                  <button
+                    onClick={() => handleToggleBlock(profile._id)}
+                    disabled={togglingBlock === profile._id}
+                    className={`p-1.5 rounded-lg transition-colors ${profile.isBlocked ? 'hover:bg-green-500/10 hover:text-green-400' : 'hover:bg-red-500/10 hover:text-red-400'}`}
+                    title={profile.isBlocked ? "Unblock Partner" : "Temporary Block"}
+                  >
+                    {profile.isBlocked ? <ShieldCheck size={14} /> : <Ban size={14} />}
+                  </button>
                   <button
                     onClick={() => handleEditClick(profile)}
-                    className="p-2 rounded-lg hover:bg-white/5 hover:text-blue-400 transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-white/5 hover:text-blue-400 transition-colors"
                     title="Edit Partner"
                   >
                     <Edit2 size={14} />
                   </button>
                   <button
                     onClick={() => navigate(`/admin/partner/${profile._id}`)}
-                    className="p-2 rounded-lg hover:bg-white/5 hover:text-white transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-white/5 hover:text-white transition-colors"
                     title="View Details"
                   >
                     <Eye size={14} />
                   </button>
                   <button
                     onClick={() => handleDelete(profile._id, profile.companyName)}
-                    className="p-2 rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-colors"
                     title="Delete Partner"
                   >
                     <Trash2 size={14} />
