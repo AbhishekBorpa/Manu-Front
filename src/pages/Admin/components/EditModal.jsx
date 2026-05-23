@@ -15,9 +15,8 @@ const EditModal = ({
   const [descTab, setDescTab] = useState("short");
   if (!isOpen) return null;
 
-  // Find subcategories for the selected category
-  const selectedCategoryData = categories.find(cat => cat.name === formData.category);
-  const subcategoryOptions = selectedCategoryData?.subcategories || [];
+  // Find subcategories (machinery) for the selected Main Category (manufacturing)
+  const filteredSubCategories = categories.filter(cat => cat.parentCategory?._id === formData.category || cat.parentCategory === formData.category);
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
@@ -81,8 +80,8 @@ const EditModal = ({
                         required
                       >
                         <option value="">Select Main Category</option>
-                        {categories.map((cat) => (
-                          <option key={cat._id} value={cat.name}>{cat.name}</option>
+                        {mainCategories.map((mc) => (
+                          <option key={mc._id} value={mc.title}>{mc.title}</option>
                         ))}
                       </select>
                     </div>
@@ -94,8 +93,8 @@ const EditModal = ({
                         className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
                       >
                         <option value="">Select Sub Category</option>
-                        {subcategoryOptions.map((sub, idx) => (
-                          <option key={idx} value={sub}>{sub}</option>
+                        {filteredSubCategories.map((sub) => (
+                          <option key={sub._id} value={sub.name}>{sub.name}</option>
                         ))}
                       </select>
                     </div>

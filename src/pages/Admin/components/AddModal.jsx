@@ -15,9 +15,8 @@ const AddModal = ({
   const [descTab, setDescTab] = useState("short");
   if (!isOpen) return null;
 
-  // Find subcategories for the selected category
-  const selectedCategoryData = categories.find(cat => cat.name === formData.category);
-  const subcategoryOptions = selectedCategoryData?.subcategories || [];
+  // Find subcategories (machinery) for the selected Main Category (manufacturing)
+  const filteredSubCategories = categories.filter(cat => cat.parentCategory?._id === formData.category || cat.parentCategory === formData.category);
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
@@ -81,8 +80,8 @@ const AddModal = ({
                         required
                       >
                         <option value="">Select Main Category</option>
-                        {categories.map((cat) => (
-                          <option key={cat._id} value={cat.name}>{cat.name}</option>
+                        {mainCategories.map((mc) => (
+                          <option key={mc._id} value={mc.title}>{mc.title}</option>
                         ))}
                       </select>
                     </div>
@@ -94,8 +93,8 @@ const AddModal = ({
                         className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
                       >
                         <option value="">Select Sub Category</option>
-                        {subcategoryOptions.map((sub, idx) => (
-                          <option key={idx} value={sub}>{sub}</option>
+                        {filteredSubCategories.map((sub) => (
+                          <option key={sub._id} value={sub.name}>{sub.name}</option>
                         ))}
                       </select>
                     </div>
@@ -254,9 +253,9 @@ const AddModal = ({
           )}
 
           {/* Image Upload */}
-          {["Products", "Sub Categories"].includes(activeMenu) && (
+          {["Products", "Machinery"].includes(activeMenu) && (
             <div className="space-y-2 pb-4">
-              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Sub Categories" ? "Subcategory Icon" : "Image"}</label>
+              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Machinery" ? "Machinery Icon" : "Image"}</label>
               <input type="file" onChange={(e) => setImageFile(e.target.files[0])} className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" />
             </div>
           )}
