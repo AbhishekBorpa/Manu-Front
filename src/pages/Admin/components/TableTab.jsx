@@ -11,16 +11,15 @@ const TableTab = ({
   getFilteredItems,
   handleEditClick,
   handleDelete,
-  users,
-  services,
-  orders,
-  subscribers,
-  leads,
-  products,
-  categories,
+  users = [],
+  services = [],
+  subscribers = [],
+  leads = [],
+  products = [],
+  categories = [],
   productCategoryNames = [],
   partnerProfiles = [],
-  navigate,
+  navigate
 }) => {
   const filteredCategoryNames = productCategoryNames.filter(name =>
     name.toLowerCase().includes(search.toLowerCase())
@@ -138,31 +137,6 @@ const TableTab = ({
                 </div>
               </div>
             )) : <p className="p-10 text-center text-slate-500 text-xs">No services found.</p>)}
-
-            {activeMenu === "Orders" && (getFilteredItems(orders).length > 0 ? getFilteredItems(orders).map((order) => (
-              <div key={order._id} className="grid grid-cols-7 items-center px-4 h-[62px] border-t border-white/5 text-[10px]">
-                <span className="font-medium text-white">#{order.orderId}</span>
-                <span className="text-gray-300 col-span-2">{order.customer?.name || "Customer"}</span>
-                <div className="col-span-2 flex flex-col gap-0.5">
-                  <span className="text-white font-bold">₹{order.totalAmount}</span>
-                  <span className={`text-[9px] ${order.paymentStatus === 'Paid' ? 'text-green-400' : 'text-red-400'}`}>
-                    {order.paymentStatus || 'Unpaid'}
-                  </span>
-                </div>
-                <span>
-                  <span className={`px-3 py-1 rounded-md text-[9px] ${
-                    order.status === "Delivered" ? "bg-green-500/10 text-green-400" : 
-                    order.status === "Cancelled" ? "bg-red-500/10 text-red-400" : "bg-orange-500/10 text-orange-400"
-                  }`}>
-                    {order.status}
-                  </span>
-                </span>
-                <div className="flex items-center justify-end gap-3 text-gray-400">
-                  <button onClick={() => handleEditClick(order)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
-                  <button onClick={() => handleDelete(order._id, "admin/orders")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
-                </div>
-              </div>
-            )) : <p className="p-10 text-center text-slate-500 text-xs">No orders found.</p>)}
 
             {activeMenu === "Subscribers" && (
               <>

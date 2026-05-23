@@ -48,9 +48,9 @@ const OverviewTab = ({
       </div>
 
       {/* RECENT TABLES */}
-      <div className="grid grid-cols-2 gap-3 mt-3 flex-1 overflow-hidden">
+      <div className="mt-3 flex-1 overflow-hidden">
         {/* RECENT LEADS */}
-        <div className="bg-[#081120] border border-white/10 rounded-xl p-4 overflow-hidden flex flex-col">
+        <div className="bg-[#081120] border border-white/10 rounded-xl p-4 overflow-hidden flex flex-col h-full">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-[16px] font-semibold">
               Recent Leads
@@ -88,50 +88,6 @@ const OverviewTab = ({
                 </div>
               )) : (
                 <div className="p-4 text-center text-gray-500 text-[10px]">No recent leads.</div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* RECENT ORDERS */}
-        <div className="bg-[#081120] border border-white/10 rounded-xl p-4 overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[16px] font-semibold">
-              Recent Orders
-            </h2>
-            <button 
-              onClick={() => setActiveMenu("Orders")}
-              className="text-green-400 text-[10px] hover:text-green-300 transition-colors"
-            >
-              View All
-            </button>
-          </div>
-
-          <div className="overflow-hidden rounded-lg border border-white/10 flex-1">
-            <div className="grid grid-cols-3 bg-white/5 h-[38px] items-center px-3 text-[10px] font-semibold text-gray-300">
-              <span>Order ID</span>
-              <span>Customer</span>
-              <span>Amount</span>
-            </div>
-
-            <div>
-              {orders && orders.length > 0 ? orders.slice(0, 6).map((order, i) => (
-                <div
-                  key={i}
-                  className="grid grid-cols-3 items-center px-3 h-[58px] border-t border-white/5 text-[10px]"
-                >
-                  <span className="font-medium text-white">
-                    #{order.orderId}
-                  </span>
-                  <span className="text-gray-300">
-                    {order.customer?.name || "Customer"}
-                  </span>
-                  <span className="text-green-400">
-                    ₹{order.totalAmount}
-                  </span>
-                </div>
-              )) : (
-                <div className="p-4 text-center text-gray-500 text-[10px]">No recent orders.</div>
               )}
             </div>
           </div>

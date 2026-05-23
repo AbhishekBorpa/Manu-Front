@@ -175,15 +175,18 @@ const GlobalSearchModal = ({
                       ))}
                     </div>
                   )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
-                  {/* Order Matches */}
-                  {orderMatches.length > 0 && (
-                    <div className="space-y-1">
-                      <h4 className="text-[10px] text-gray-500 font-bold uppercase tracking-wider px-2">Orders</h4>
-                      {orderMatches.map(o => (
-                        <div
-                          key={o._id}
-                          onClick={() => {
+export default GlobalSearchModal;
+                 onClick={() => {
                             setActiveMenu("Orders");
                             handleEditClick(o);
                             onClose();

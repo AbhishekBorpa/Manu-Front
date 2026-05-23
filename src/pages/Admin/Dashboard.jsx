@@ -54,7 +54,6 @@ const Dashboard = () => {
   const [productCategoryNames, setProductCategoryNames] = useState([]);
   const [users, setUsers] = useState([]);
   const [services, setServices] = useState([]);
-  const [orders, setOrders] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
   const [partnerProfiles, setPartnerProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -174,7 +173,6 @@ const Dashboard = () => {
         statsRes,
         usersRes,
         servicesRes,
-        ordersRes,
         subsRes,
         leadsRes,
         productsRes,
@@ -184,7 +182,6 @@ const Dashboard = () => {
         fetch(`${API_URL}/admin/stats`, { headers }),
         fetch(`${API_URL}/admin/users`, { headers }),
         fetch(`${API_URL}/admin/services`, { headers }),
-        fetch(`${API_URL}/admin/orders`, { headers }),
         fetch(`${API_URL}/admin/subscribers`, { headers }),
         fetch(`${API_URL}/leads`, { headers }),
         fetch(`${API_URL}/products`),
@@ -196,7 +193,6 @@ const Dashboard = () => {
         statsData,
         usersData,
         servicesData,
-        ordersData,
         subsData,
         leadsData,
         productsData,
@@ -206,7 +202,6 @@ const Dashboard = () => {
         statsRes.json(),
         usersRes.json(),
         servicesRes.json(),
-        ordersRes.json(),
         subsRes.json(),
         leadsRes.json(),
         productsRes.json(),
@@ -217,7 +212,6 @@ const Dashboard = () => {
       if (statsData.success) setRealStats(statsData.stats);
       if (usersData.success) setUsers(usersData.users || []);
       if (servicesData.success) setServices(servicesData.services || []);
-      if (ordersData.success) setOrders(ordersData.orders || []);
       if (subsData.success) setSubscribers(subsData.subscribers || []);
       if (leadsData.success) setLeads(leadsData.leads || []);
       if (productsData.success) {
@@ -476,10 +470,6 @@ const Dashboard = () => {
       icon: <Folder size={16} />,
     },
     {
-      name: "Orders",
-      icon: <ShoppingCart size={16} />,
-    },
-    {
       name: "Subscribers",
       icon: <Mail size={16} />,
     },
@@ -561,7 +551,6 @@ const Dashboard = () => {
               stats={stats}
               setActiveMenu={setActiveMenu}
               leads={leads}
-              orders={orders}
             />
           )}
 
@@ -579,7 +568,6 @@ const Dashboard = () => {
               handleDelete={handleDelete}
               users={users}
               services={services}
-              orders={orders}
               subscribers={subscribers}
               leads={leads}
               products={products}
@@ -661,7 +649,6 @@ const Dashboard = () => {
         users={users}
         leads={leads}
         products={products}
-        orders={orders}
         setActiveMenu={setActiveMenu}
         handleEditClick={handleEditClick}
       />
