@@ -72,12 +72,12 @@ const TableTab = ({
           <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
             <span>Total:</span>
             <span className="text-green-500">
-              {activeMenu === "Users" ? `${getFilteredItems(users).length} of ${users.length}` :
-               activeMenu === "Leads" ? `${getFilteredItems(leads).length} of ${leads.length}` :
-               activeMenu === "Products" ? `${getFilteredItems(products).length} of ${products.length}` :
-               activeMenu === "Sub Categories" ? `${getFilteredItems(categories).length} of ${categories.length}` :
-               activeMenu === "Main Category" ? `${getFilteredItems(services).length} of ${services.length}` :
-               activeMenu === "Orders" ? `${getFilteredItems(orders).length} of ${orders.length}` :
+              {activeMenu === "Users" ? `${getFilteredItems(users).length} of ${users?.length || 0}` :
+               activeMenu === "Leads" ? `${getFilteredItems(leads).length} of ${leads?.length || 0}` :
+               activeMenu === "Products" ? `${getFilteredItems(products).length} of ${products?.length || 0}` :
+               activeMenu === "Sub Categories" ? `${getFilteredItems(categories).length} of ${categories?.length || 0}` :
+               activeMenu === "Main Category" ? `${getFilteredItems(services).length} of ${services?.length || 0}` :
+               activeMenu === "Orders" ? `${getFilteredItems(orders).length} of ${orders?.length || 0}` :
                activeMenu === "Subscribers" ? `${getFilteredItems(subscribers).length + getFilteredItems(partnerProfiles).length} total` : 0}
             </span>
           </div>

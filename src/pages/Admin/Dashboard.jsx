@@ -215,23 +215,23 @@ const Dashboard = () => {
       ]);
 
       if (statsData.success) setRealStats(statsData.stats);
-      if (usersData.success) setUsers(usersData.users);
-      if (servicesData.success) setServices(servicesData.manufacturing);
-      if (ordersData.success) setOrders(ordersData.orders);
-      if (subsData.success) setSubscribers(subsData.subscribers);
-      if (leadsData.success) setLeads(leadsData.leads);
+      if (usersData.success) setUsers(usersData.users || []);
+      if (servicesData.success) setServices(servicesData.services || []);
+      if (ordersData.success) setOrders(ordersData.orders || []);
+      if (subsData.success) setSubscribers(subsData.subscribers || []);
+      if (leadsData.success) setLeads(leadsData.leads || []);
       if (productsData.success) {
-        setProducts(productsData.products);
+        setProducts(productsData.products || []);
         const seen = new Set();
         const names = [];
-        productsData.products.forEach(p => {
+        (productsData.products || []).forEach(p => {
           const name = p.category || 'Uncategorized';
           if (!seen.has(name)) { seen.add(name); names.push(name); }
         });
         setProductCategoryNames(names);
       }
-      if (catData.success) setCategories(catData.categories);
-      if (partnersData.success) setPartnerProfiles(partnersData.profiles);
+      if (catData.success) setCategories(catData.categories || []);
+      if (partnersData.success) setPartnerProfiles(partnersData.profiles || []);
 
     } catch (err) {
       console.error("Dashboard Fetch Error:", err);

@@ -15,11 +15,11 @@ const GlobalSearchModal = ({
 }) => {
   if (!isOpen) return null;
 
-  const menuMatches = menuItems.filter(m => m.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  const userMatches = users.filter(u => (u.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || (u.email || "").toLowerCase().includes(searchQuery.toLowerCase()));
-  const leadMatches = leads.filter(l => (l.project || "").toLowerCase().includes(searchQuery.toLowerCase()) || (l.name || "").toLowerCase().includes(searchQuery.toLowerCase()));
-  const productMatches = products.filter(p => (p.title || "").toLowerCase().includes(searchQuery.toLowerCase()));
-  const orderMatches = orders.filter(o => (o.orderId || "").toLowerCase().includes(searchQuery.toLowerCase()) || (o.customer?.name || "").toLowerCase().includes(searchQuery.toLowerCase()));
+  const menuMatches = (menuItems || []).filter(m => m.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const userMatches = (users || []).filter(u => (u.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || (u.email || "").toLowerCase().includes(searchQuery.toLowerCase()));
+  const leadMatches = (leads || []).filter(l => (l.project || "").toLowerCase().includes(searchQuery.toLowerCase()) || (l.name || "").toLowerCase().includes(searchQuery.toLowerCase()));
+  const productMatches = (products || []).filter(p => (p.title || "").toLowerCase().includes(searchQuery.toLowerCase()));
+  const orderMatches = (orders || []).filter(o => (o.orderId || "").toLowerCase().includes(searchQuery.toLowerCase()) || (o.customer?.name || "").toLowerCase().includes(searchQuery.toLowerCase()));
 
   const hasResults = menuMatches.length > 0 || userMatches.length > 0 || leadMatches.length > 0 || productMatches.length > 0 || orderMatches.length > 0;
 

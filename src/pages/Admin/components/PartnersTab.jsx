@@ -103,7 +103,7 @@ const PartnersTab = ({
           <h2 className="text-[18px] font-bold">Manage Partners</h2>
           <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
             <span>Total:</span>
-            <span className="text-green-500">{filtered.length} of {partnerProfiles.length}</span>
+            <span className="text-green-500">{filtered.length} of {partnerProfiles?.length || 0}</span>
           </div>
         </div>
 
