@@ -1,4 +1,4 @@
-import { Search, X, Package, Briefcase, Users, ShoppingCart } from "lucide-react";
+import { Search, X, Package, Briefcase, Users } from "lucide-react";
 
 const GlobalSearchModal = ({
   isOpen,
@@ -9,7 +9,6 @@ const GlobalSearchModal = ({
   users = [],
   leads = [],
   products = [],
-  orders = [],
   setActiveMenu,
   handleEditClick
 }) => {
@@ -19,9 +18,8 @@ const GlobalSearchModal = ({
   const userMatches = (users || []).filter(u => (u.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || (u.email || "").toLowerCase().includes(searchQuery.toLowerCase()));
   const leadMatches = (leads || []).filter(l => (l.project || "").toLowerCase().includes(searchQuery.toLowerCase()) || (l.name || "").toLowerCase().includes(searchQuery.toLowerCase()));
   const productMatches = (products || []).filter(p => (p.title || "").toLowerCase().includes(searchQuery.toLowerCase()));
-  const orderMatches = (orders || []).filter(o => (o.orderId || "").toLowerCase().includes(searchQuery.toLowerCase()) || (o.customer?.name || "").toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const hasResults = menuMatches.length > 0 || userMatches.length > 0 || leadMatches.length > 0 || productMatches.length > 0 || orderMatches.length > 0;
+  const hasResults = menuMatches.length > 0 || userMatches.length > 0 || leadMatches.length > 0 || productMatches.length > 0;
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-start justify-center pt-24 px-4 z-[999] text-left">
@@ -35,7 +33,7 @@ const GlobalSearchModal = ({
           <input
             type="text"
             autoFocus
-            placeholder="Search anything (users, leads, products, orders, menus)..."
+            placeholder="Search anything (users, leads, products, menus)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-transparent border-none text-white text-sm outline-none placeholder-gray-500"
@@ -57,7 +55,6 @@ const GlobalSearchModal = ({
                 <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Users</span>
                 <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Leads</span>
                 <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Products</span>
-                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Orders</span>
               </div>
             </div>
           ) : (
@@ -171,36 +168,6 @@ const GlobalSearchModal = ({
                             </div>
                           </div>
                           <span className="text-[10px] text-gray-500 group-hover:text-green-500 opacity-0 group-hover:opacity-100 transition-all font-bold">Edit User →</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default GlobalSearchModal;
-                 onClick={() => {
-                            setActiveMenu("Orders");
-                            handleEditClick(o);
-                            onClose();
-                          }}
-                          className="px-3 py-2 rounded-xl hover:bg-white/5 cursor-pointer flex items-center justify-between text-xs text-white transition-all group"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center"><ShoppingCart size={14} /></div>
-                            <div>
-                              <span className="font-semibold block">Order #{o.orderId}</span>
-                              <span className="text-[10px] text-gray-500 block">Customer: {o.customer?.name} • ₹{o.totalAmount} • {o.status}</span>
-                            </div>
-                          </div>
-                          <span className="text-[10px] text-gray-500 group-hover:text-green-500 opacity-0 group-hover:opacity-100 transition-all font-bold">Manage Order →</span>
                         </div>
                       ))}
                     </div>
