@@ -48,65 +48,63 @@ const EditModal = ({
           {(activeMenu === "Products" || activeMenu === "Main Category") && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Title</label>
+                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+                  {activeMenu === "Main Category" ? "Name" : "Title"}
+                </label>
                 <input type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" required />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Category</label>
-                  <select 
-                    value={formData.category} 
-                    onChange={(e) => {
-                      setFormData({...formData, category: e.target.value, subcategory: ""});
-                    }} 
-                    className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
-                    required={activeMenu === "Products"}
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((cat) => (
-                      <option key={cat._id} value={cat.name}>{cat.name}</option>
-                    ))}
-                  </select>
-                </div>
-                {activeMenu === "Products" && (
-                  <div className="space-y-2">
-                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Subcategory</label>
-                    <select 
-                      value={formData.subcategory} 
-                      onChange={(e) => setFormData({...formData, subcategory: e.target.value})} 
-                      className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
-                    >
-                      <option value="">Select Subcategory</option>
-                      {subcategoryOptions.map((sub, idx) => (
-                        <option key={idx} value={sub}>{sub}</option>
-                      ))}
-                    </select>
+              {activeMenu === "Products" && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Category</label>
+                      <select 
+                        value={formData.category} 
+                        onChange={(e) => {
+                          setFormData({...formData, category: e.target.value, subcategory: ""});
+                        }} 
+                        className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                        required
+                      >
+                        <option value="">Select Category</option>
+                        {categories.map((cat) => (
+                          <option key={cat._id} value={cat.name}>{cat.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Subcategory</label>
+                      <select 
+                        value={formData.subcategory} 
+                        onChange={(e) => setFormData({...formData, subcategory: e.target.value})} 
+                        className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                      >
+                        <option value="">Select Subcategory</option>
+                        {subcategoryOptions.map((sub, idx) => (
+                          <option key={idx} value={sub}>{sub}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                )}
-                {activeMenu === "Main Category" && (
-                  <div className="space-y-2">
-                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Rating</label>
-                    <input type="text" value={formData.rating} onChange={(e) => setFormData({...formData, rating: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Price (₹)</label>
+                      <input type="text" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Location</label>
+                      <input type="text" value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
+                    </div>
                   </div>
-                )}
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Price (₹)</label>
-                  <input type="text" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Products" ? "Location" : "Tag"}</label>
-                  <input type="text" value={activeMenu === "Products" ? formData.location : formData.tag} onChange={(e) => setFormData({...formData, [activeMenu === "Products" ? 'location' : 'tag']: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Description</label>
-                <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-green-500 outline-none transition-all min-h-[100px]" required />
-              </div>
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Description</label>
+                    <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-green-500 outline-none transition-all min-h-[100px]" required />
+                  </div>
+                </>
+              )}
             </div>
           )}
 
@@ -230,7 +228,7 @@ const EditModal = ({
             </div>
           )}
 
-          {["Products", "Categories", "Main Category"].includes(activeMenu) && (
+          {["Products", "Categories"].includes(activeMenu) && (
             <div className="space-y-2 pb-4">
               <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Categories" ? "Category Icon" : "Image"}</label>
               <input type="file" onChange={(e) => setImageFile(e.target.files[0])} className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" />

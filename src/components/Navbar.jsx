@@ -74,20 +74,23 @@ const Navbar = ({
 
         try {
 
-          const [navbarRes, productsRes] = await Promise.all([
+          const [navbarRes, productsRes, manufacturingRes] = await Promise.all([
             fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/navbar"),
-            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/products")
+            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/products"),
+            fetch((import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api") + "/manufacturing")
           ]);
 
           const navbarData = await navbarRes.json();
           const productsData = await productsRes.json();
+          const manufacturingData = await manufacturingRes.json();
 
           const nav = navbarData.navbar || navbarData;
           setNavbar(nav);
 
+          const seen = new Set();
+          const cats = [];
+
           if (productsData.success) {
-            const seen = new Set();
-            const cats = [];
             productsData.products.forEach(p => {
               const name = p.category || 'Uncategorized';
               if (!seen.has(name)) {
@@ -95,8 +98,19 @@ const Navbar = ({
                 cats.push(name);
               }
             });
-            setProductCategories(cats);
           }
+
+          if (manufacturingData.success) {
+            manufacturingData.manufacturing.forEach(m => {
+              const name = m.title || 'Uncategorized';
+              if (!seen.has(name)) {
+                seen.add(name);
+                cats.push(name);
+              }
+            });
+          }
+
+          setProductCategories(cats);
 
         } catch (err) {
 
