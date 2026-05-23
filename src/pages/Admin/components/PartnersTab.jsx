@@ -181,9 +181,9 @@ const PartnersTab = ({
                       style={{ paddingRight: '20px' }}
                     >
                       <option value="Free" className="bg-[#0b1220] text-gray-300">Free</option>
-                      <option value="Basic" className="bg-[#0b1220] text-gray-300">Basic</option>
-                      <option value="Premium" className="bg-[#0b1220] text-gray-300">Premium</option>
-                      <option value="Elite" className="bg-[#0b1220] text-gray-300">Elite</option>
+                      <option value="Basic" className="bg-[#0b1220] text-gray-300">Basic (3m)</option>
+                      <option value="Premium" className="bg-[#0b1220] text-gray-300">Premium (6m)</option>
+                      <option value="Elite" className="bg-[#0b1220] text-gray-300">Elite (12m)</option>
                     </select>
                     <ChevronDown size={10} className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-current opacity-60" />
                   </div>

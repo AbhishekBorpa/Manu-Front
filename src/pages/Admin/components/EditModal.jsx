@@ -276,11 +276,29 @@ const EditModal = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Plan</label>
-                  <select value={formData.plan} onChange={(e) => setFormData({...formData, plan: e.target.value})} className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all">
+                  <select 
+                    value={formData.plan} 
+                    onChange={(e) => {
+                      const newPlan = e.target.value;
+                      let newExpiry = formData.subscriptionExpiry;
+                      
+                      const durations = { 'Basic': 3, 'Premium': 6, 'Elite': 12 };
+                      if (durations[newPlan]) {
+                        const date = new Date();
+                        date.setMonth(date.getMonth() + durations[newPlan]);
+                        newExpiry = date.toISOString().split('T')[0];
+                      } else if (newPlan === 'Free') {
+                        newExpiry = "";
+                      }
+                      
+                      setFormData({...formData, plan: newPlan, subscriptionExpiry: newExpiry});
+                    }} 
+                    className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
+                  >
                     <option value="Free">Free</option>
-                    <option value="Basic">Basic</option>
-                    <option value="Premium">Premium</option>
-                    <option value="Elite">Elite</option>
+                    <option value="Basic">Basic (3 Months)</option>
+                    <option value="Premium">Premium (6 Months)</option>
+                    <option value="Elite">Elite (12 Months)</option>
                   </select>
                 </div>
                 <div className="space-y-2">
