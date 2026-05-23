@@ -132,6 +132,11 @@ const PartnerDetails = () => {
               <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10 bg-white/5 text-blue-400`}>
                 {partner.plan} Plan
               </div>
+              {partner.subscriptionExpiry && (
+                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10 ${new Date(partner.subscriptionExpiry) < new Date() ? 'bg-red-500/10 text-red-400' : 'bg-green-500/10 text-green-400'}`}>
+                  Expires: {new Date(partner.subscriptionExpiry).toLocaleDateString()}
+                </div>
+              )}
             </div>
           </div>
 
@@ -310,6 +315,16 @@ const PartnerDetails = () => {
                         <p className="text-[10px] text-gray-500 font-black uppercase tracking-wider mb-1">Final Approval</p>
                         <p className="text-xs font-bold text-white">{partner.verificationStatus}</p>
                     </div>
+
+                    {partner.subscriptionExpiry && (
+                      <div className="relative pl-12">
+                          <div className={`absolute left-0 top-1 w-8 h-8 rounded-full border flex items-center justify-center z-10 ${new Date(partner.subscriptionExpiry) < new Date() ? 'bg-red-500/20 border-red-500/30' : 'bg-green-500/20 border-green-500/30'}`}>
+                              <div className={`w-2 h-2 rounded-full ${new Date(partner.subscriptionExpiry) < new Date() ? 'bg-red-500' : 'bg-green-500'}`}></div>
+                          </div>
+                          <p className="text-[10px] text-gray-500 font-black uppercase tracking-wider mb-1">Subscription Expiry</p>
+                          <p className="text-xs font-bold text-white">{new Date(partner.subscriptionExpiry).toLocaleDateString()}</p>
+                      </div>
+                    )}
                 </div>
             </div>
 
