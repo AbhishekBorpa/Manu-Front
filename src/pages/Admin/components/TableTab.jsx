@@ -87,7 +87,7 @@ const TableTab = ({
           <div className="grid grid-cols-7 bg-white/5 h-[40px] items-center px-4 text-[11px] font-semibold text-gray-300 sticky top-0 z-10">
             <span>ID</span>
             <span className="col-span-2">{activeMenu === "Sub Categories" ? "Subcategory Name" : activeMenu === "Users" ? "Full Name" : activeMenu === "Orders" ? "Order ID" : activeMenu === "Subscribers" ? "Email / Company" : "Title/Name"}</span>
-            <span className="col-span-2">{activeMenu === "Leads" ? "Project & Contact" : activeMenu === "Users" ? "Email & Phone" : activeMenu === "Orders" ? "Amount & Payment" : activeMenu === "Sub Categories" ? "Main Category" : activeMenu === "Subscribers" ? "Plan / Date" : "Category & Detail"}</span>
+            <span className="col-span-2">{activeMenu === "Leads" ? "Project & Contact" : activeMenu === "Users" ? "Email & Phone" : activeMenu === "Orders" ? "Amount & Payment" : activeMenu === "Sub Categories" ? "Main Category" : activeMenu === "Subscribers" ? "Plan / Date" : activeMenu === "Products" ? "Main Category & Sub Category" : "Category & Detail"}</span>
             <span>Status / Info</span>
             <span className="text-right">Actions</span>
           </div>

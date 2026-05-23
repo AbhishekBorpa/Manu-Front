@@ -71,7 +71,7 @@ const EditModal = ({
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Category</label>
+                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Main Category</label>
                       <select 
                         value={formData.category} 
                         onChange={(e) => {
@@ -80,20 +80,20 @@ const EditModal = ({
                         className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
                         required
                       >
-                        <option value="">Select Category</option>
+                        <option value="">Select Main Category</option>
                         {categories.map((cat) => (
                           <option key={cat._id} value={cat.name}>{cat.name}</option>
                         ))}
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Subcategory</label>
+                      <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">Sub Category</label>
                       <select 
                         value={formData.subcategory} 
                         onChange={(e) => setFormData({...formData, subcategory: e.target.value})} 
                         className="w-full bg-[#0b1220] border border-white/10 rounded-xl h-[45px] px-4 text-sm text-white focus:border-green-500 outline-none transition-all"
                       >
-                        <option value="">Select Subcategory</option>
+                        <option value="">Select Sub Category</option>
                         {subcategoryOptions.map((sub, idx) => (
                           <option key={idx} value={sub}>{sub}</option>
                         ))}
