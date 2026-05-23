@@ -49,31 +49,27 @@ const FeaturedProducts = () => {
   /* 🔥 FETCH PRODUCTS */
   useEffect(() => {
 
-    const fetchProducts =
-      async () => {
+    const fetchProducts = async () => {
+      try {
+        const featuredRes = await fetch(`${API_BASE_URL}/products/featured`);
+        const featuredData = await featuredRes.json();
+        let list = featuredData.products || [];
 
-        try {
-
-          const res =
-            await fetch(`${API_BASE_URL}/products/featured`);
-
-          const data =
-            await res.json();
-
-          setProducts(
-            data.products ||
-            data
-          );
-
-        } catch (err) {
-
-          console.log(err);
-
-        } finally {
-
-          setLoading(false);
+        if (!list.length) {
+          const allRes = await fetch(`${API_BASE_URL}/products`);
+          const allData = await allRes.json();
+          if (allData.success) {
+            list = (allData.products || []).slice(0, 8);
+          }
         }
-      };
+
+        setProducts(list);
+      } catch (err) {
+        console.error("Products fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchProducts();
 
@@ -118,10 +114,11 @@ const FeaturedProducts = () => {
       {/* 🔥 TOP */}
       <div className="text-center mb-8 md:mb-12 px-4">
 
+        <p className="text-green-700 tracking-[2px] text-[10px] md:text-xs font-semibold mb-2 uppercase">
+          Marketplace
+        </p>
         <h2 className="text-2xl md:text-4xl font-bold text-[#14532D]">
-
-          Featured Machines & Products
-
+          Our Products
         </h2>
 
       </div>
@@ -136,9 +133,7 @@ const FeaturedProducts = () => {
 
             <div
               key={item._id}
-              onClick={() =>
-                navigate(`/all-products?category=${item.category}`)
-              }
+              onClick={() => navigate("/product-details", { state: item })}
               className="group bg-white rounded-2xl md:rounded-[22px] border border-gray-200 shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer"
             >
 
@@ -186,10 +181,8 @@ const FeaturedProducts = () => {
 
 
                 {/* 🔥 DESC */}
-                <p className="text-gray-700 mt-2 md:mt-3 text-[13px] md:text-[15px] leading-relaxed md:leading-7 min-h-[70px] md:min-h-[95px]">
-
-                  {item.desc}
-
+                <p className="text-gray-700 mt-2 md:mt-3 text-[13px] md:text-[15px] leading-relaxed md:leading-7 line-clamp-4 min-h-[70px] md:min-h-[95px]">
+                  {item.shortDescription || item.desc || "Industrial machinery from verified suppliers."}
                 </p>
 
 

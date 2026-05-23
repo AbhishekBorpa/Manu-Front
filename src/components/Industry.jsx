@@ -18,7 +18,43 @@ import {
 
 import { API_BASE_URL } from "../api/config";
 
-
+const DEFAULT_INDUSTRIES = [
+  {
+    _id: "industry-1",
+    title: "Automotive",
+    desc: "Precision parts, assembly lines, and OEM supplier networks across India.",
+    icon: "car",
+    color: "bg-red-500",
+  },
+  {
+    _id: "industry-2",
+    title: "Chemical",
+    desc: "Processing plants, reactors, and safety-compliant industrial equipment.",
+    icon: "flask",
+    color: "bg-blue-500",
+  },
+  {
+    _id: "industry-3",
+    title: "Construction",
+    desc: "Heavy machinery, fabrication tools, and infrastructure project sourcing.",
+    icon: "building",
+    color: "bg-yellow-500",
+  },
+  {
+    _id: "industry-4",
+    title: "Manufacturing",
+    desc: "End-to-end production machinery for modern factories and MSMEs.",
+    icon: "industry",
+    color: "bg-green-600",
+  },
+  {
+    _id: "industry-5",
+    title: "Packaging",
+    desc: "Cup, bag, and carton machines for food-grade and industrial packaging.",
+    icon: "boxes",
+    color: "bg-purple-500",
+  },
+];
 
 /* 🔥 ICON MAP */
 const iconMap = {
@@ -75,18 +111,13 @@ const IndustriesCards = () => {
           const res =
             await fetch(`${API_BASE_URL}/industries`);
 
-          const result =
-            await res.json();
+          const result = await res.json();
+          const list = result.industries || [];
 
-          setData(
-            result.industries ||
-            result
-          );
-
+          setData(list.length > 0 ? list : DEFAULT_INDUSTRIES);
         } catch (err) {
-
-          console.log(err);
-
+          console.error("Industries fetch error:", err);
+          setData(DEFAULT_INDUSTRIES);
         } finally {
 
           setLoading(false);
@@ -119,16 +150,7 @@ const IndustriesCards = () => {
 
 
 
-  /* ❌ NO DATA */
-  if (
-    !data ||
-    data.length === 0
-  ) {
-    return null;
-  }
-
-
-
+  const industries = data.length > 0 ? data : DEFAULT_INDUSTRIES;
 
   return (
     <section className="py-12 md:py-16 bg-[#f7f7f7]">
@@ -159,7 +181,7 @@ const IndustriesCards = () => {
         {/* 🔥 GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 md:gap-7 pt-6 md:pt-0">
 
-          {data.map(
+          {industries.map(
             (
               item,
               index
@@ -175,7 +197,7 @@ const IndustriesCards = () => {
                   className={`absolute -top-8 md:-top-10 left-1/2 -translate-x-1/2 w-16 h-16 md:w-20 md:h-20 rounded-full ${item.color} flex items-center justify-center text-white text-2xl md:text-3xl border-[4px] md:border-[5px] border-white shadow-md`}
                 >
 
-                  {iconMap[item.icon]}
+                  {iconMap[item.icon] || <FaIndustry />}
 
                 </div>
 

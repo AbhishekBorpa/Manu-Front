@@ -3,7 +3,6 @@ import Categories from "../components/Categories";
 import BannerSlider from "../components/BannerSlider";
 import Stats from "../components/Stats";
 import Manufacturing from "../components/Manufacturing";
-import ManufacturingBanners from "../components/ManufacturingBanners";
 import AppBanner from "../components/Banner";
 import LocationSection from "../components/LocationSection";
 import Faqs from "../components/Faqs"; // ✅ सही नाम
@@ -25,23 +24,21 @@ const Home = () => {
 
       <Manufacturing />
 
-      <ManufacturingBanners />
-
       <AppBanner />
+
+      <FeaturedProducts />
 
       <Stats />
 
-      <FeaturedProducts/>
-
       <TopMarqueeBar />
-
-      <Industry />
 
       <PartnerLogin />
 
       <Faqs />
 
       <LocationSection />
+
+      <Industry />
 
       <Testimonials/>
 
