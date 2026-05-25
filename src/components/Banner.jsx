@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { FaGooglePlay, FaApple } from "react-icons/fa";
 import { API_BASE_URL, getServerUrl } from "../api/config";
+import appImage from "../../Image.jpeg";
 
 const DEFAULT_APP_BANNER = {
   title: "Get the Ultraclap Mobile App",
   description:
     "Source industrial machinery, contact verified suppliers, and manage B2B leads — all from your phone.",
-  image:
-    "https://res.cloudinary.com/djsxaigna/image/upload/v1778687629/manufacturing_b2b/tiwud4hv6wtvt4cbgozz.jpg",
+  image: appImage,
   playStoreLink: "https://play.google.com/store",
   appStoreLink: "https://www.apple.com/app-store/",
 };
@@ -56,13 +56,13 @@ const AppBanner = () => {
   }
 
   return (
-    <section className="bg-white py-10 md:py-14">
+    <section className="bg-white py-8 md:py-10">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="relative overflow-hidden bg-[#14532D] rounded-3xl shadow-xl">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
 
-          <div className="relative flex flex-col lg:flex-row items-center gap-8 lg:gap-12 p-6 md:p-10 lg:p-12">
+          <div className="relative flex flex-col lg:flex-row items-center gap-6 lg:gap-10 p-5 md:p-8 lg:p-10">
             {/* App preview image */}
             <div className="w-full lg:w-[42%] flex justify-center shrink-0">
               <div className="relative">
@@ -71,7 +71,7 @@ const AppBanner = () => {
                   <img
                     src={imageSrc}
                     alt="Ultraclap mobile app"
-                    className="w-[200px] sm:w-[240px] md:w-[280px] h-[320px] sm:h-[380px] md:h-[420px] object-cover rounded-[1.5rem] border-4 border-white/30"
+                    className="w-[180px] sm:w-[220px] md:w-[260px] h-[280px] sm:h-[320px] md:h-[360px] object-cover rounded-[1.5rem] border-4 border-white/30"
                     onError={(e) => {
                       e.target.src = DEFAULT_APP_BANNER.image;
                     }}
