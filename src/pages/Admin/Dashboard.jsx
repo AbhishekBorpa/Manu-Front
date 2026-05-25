@@ -507,12 +507,12 @@ const Dashboard = () => {
       icon: <Briefcase size={16} />,
     },
     {
-      name: "Products",
-      icon: <Package size={16} />,
-    },
-    {
       name: "Sub Categories",
       icon: <Folder size={16} />,
+    },
+    {
+      name: "Products",
+      icon: <Package size={16} />,
     },
     {
       name: "Subscribers",
