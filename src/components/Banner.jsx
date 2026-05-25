@@ -41,37 +41,34 @@ const AppBanner = () => {
   }, []);
 
   const banner = data || DEFAULT_APP_BANNER;
-  const imageSrc = banner.image?.startsWith("http")
-    ? banner.image
-    : getServerUrl(banner.image) || DEFAULT_APP_BANNER.image;
 
   if (loading) {
     return (
-      <section className="bg-white py-10 md:py-14">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="h-56 md:h-72 bg-gray-100 rounded-3xl animate-pulse" />
+      <section className="bg-white py-6 md:py-8">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
+          <div className="h-48 md:h-60 bg-gray-100 rounded-2xl animate-pulse" />
         </div>
       </section>
     );
   }
 
   return (
-    <section className="bg-white py-8 md:py-10">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <div className="relative overflow-hidden bg-[#14532D] rounded-3xl shadow-xl">
+    <section className="bg-white py-6 md:py-8">
+      <div className="max-w-6xl mx-auto px-4 md:px-6">
+        <div className="relative overflow-hidden bg-[#14532D] rounded-2xl shadow-lg">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
 
-          <div className="relative flex flex-col lg:flex-row items-center gap-6 lg:gap-10 p-5 md:p-8 lg:p-10">
+          <div className="relative flex flex-col lg:flex-row items-center gap-4 lg:gap-8 p-4 md:p-6 lg:p-8">
             {/* App preview image */}
-            <div className="w-full lg:w-[42%] flex justify-center shrink-0">
+            <div className="w-full lg:w-[40%] flex justify-center shrink-0">
               <div className="relative">
                 <div className="absolute inset-0 bg-green-400/20 blur-3xl rounded-full scale-110" />
-                <div className="relative bg-white/10 backdrop-blur-sm p-3 md:p-4 rounded-[2rem] border border-white/20 shadow-2xl">
+                <div className="relative bg-white/10 backdrop-blur-sm p-2 md:p-3 rounded-[1.5rem] border border-white/20 shadow-xl">
                   <img
-                    src={imageSrc}
+                    src={appImage}
                     alt="Ultraclap mobile app"
-                    className="w-[180px] sm:w-[220px] md:w-[260px] h-[280px] sm:h-[320px] md:h-[360px] object-cover rounded-[1.5rem] border-4 border-white/30"
+                    className="w-[140px] sm:w-[170px] md:w-[200px] h-[220px] sm:h-[260px] md:h-[300px] object-cover rounded-[1.2rem] border-4 border-white/30"
                     onError={(e) => {
                       e.target.src = DEFAULT_APP_BANNER.image;
                     }}
@@ -82,33 +79,33 @@ const AppBanner = () => {
 
             {/* Text + store buttons */}
             <div className="flex-1 text-center lg:text-left text-white">
-              <p className="text-green-200 text-xs font-bold uppercase tracking-[0.2em] mb-2">
+              <p className="text-green-200 text-[10px] font-bold uppercase tracking-[0.2em] mb-1.5">
                 Download Now
               </p>
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-extrabold leading-tight">
                 {banner.title}
               </h2>
-              <p className="text-green-100/90 text-sm md:text-base mt-3 md:mt-4 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-green-100/90 text-xs md:text-sm mt-2 md:mt-3 max-w-md mx-auto lg:mx-0 leading-relaxed">
                 {banner.description}
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 md:gap-4 mt-6 md:mt-8">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2.5 md:gap-3 mt-4 md:mt-6">
                 <a
                   href={banner.playStoreLink || "#"}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-center gap-2.5 bg-white text-[#14532D] w-full sm:w-auto min-w-[180px] px-5 py-3 rounded-xl text-sm font-bold hover:scale-105 transition shadow-lg"
+                  className="flex items-center justify-center gap-2 bg-white text-[#14532D] w-full sm:w-auto min-w-[150px] px-4 py-2.5 rounded-lg text-xs font-bold hover:scale-105 transition shadow-md"
                 >
-                  <FaGooglePlay className="text-lg" />
+                  <FaGooglePlay className="text-base" />
                   Google Play
                 </a>
                 <a
                   href={banner.appStoreLink || "#"}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-center gap-2.5 bg-white/10 border border-white/30 text-white w-full sm:w-auto min-w-[180px] px-5 py-3 rounded-xl text-sm font-bold hover:bg-white/20 transition"
+                  className="flex items-center justify-center gap-2 bg-white/10 border border-white/30 text-white w-full sm:w-auto min-w-[150px] px-4 py-2.5 rounded-lg text-xs font-bold hover:bg-white/20 transition"
                 >
-                  <FaApple className="text-lg" />
+                  <FaApple className="text-base" />
                   App Store
                 </a>
               </div>
