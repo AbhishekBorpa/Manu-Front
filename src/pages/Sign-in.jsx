@@ -22,6 +22,13 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
       phone: "",
       password: "",
     });
+    
+  /* FORGOT PASSWORD STATE */
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  
+  /* RESET PASSWORD STATE */
+  const [isResetPassword, setIsResetPassword] = useState(false);
+  const [resetToken, setResetToken] = useState("");
 
   const [loading, setLoading] =
     useState(false);
@@ -31,7 +38,6 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
 
   /* 🔥 HANDLE INPUT */
   const handleChange = (e) => {
-
     setFormData({
       ...formData,
       [e.target.name]:
@@ -39,113 +45,161 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
     });
   };
 
+  /* 🔥 HANDLE FORGOT PASSWORD */
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.msg || "Failed to send reset link ❌");
+        return;
+      }
+
+      alert(data.msg || "Password reset link sent to your email ✅");
+      setIsForgotPassword(false);
+      setIsLogin(true); // Switch back to login form
+      setFormData({ name: "", email: "", phone: "", password: "" }); // Clear form
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong ❌");
+    }
+  };
 
 
 
-  /* 🔥 SUBMIT */
-  const handleSubmit =
-    async (e) => {
 
-      e.preventDefault();
+    /* 🔥 SUBMIT */
+    const handleSubmit =
+      async (e) => {
 
-      try {
+        e.preventDefault();
 
-        setLoading(true);
+        try {
 
-        const url =
-          isLogin
-            ? `${API_BASE_URL}/auth/login`
-            : `${API_BASE_URL}/auth/register`;
+          setLoading(true);
+
+          let url = `${API_BASE_URL}/auth/login`;
+          let payload = formData;
+
+          // Handle forgot password submission
+          if (isForgotPassword) {
+            url = `${API_BASE_URL}/auth/forgot-password`;
+            payload = { email: formData.email };
+          } 
+          // Handle reset password submission
+          else if (isResetPassword) {
+            url = `${API_BASE_URL}/auth/reset-password/${resetToken}`;
+            payload = { password: formData.password };
+          } 
+          else if (!isLogin) {
+            url = `${API_BASE_URL}/auth/register`;
+          }
+
+          const response =
+            await fetch(url, {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+
+              body: JSON.stringify(
+                payload
+              ),
+            });
 
 
-
-        const response =
-          await fetch(url, {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-
-            body: JSON.stringify(
-              formData
-            ),
-          });
+          const data =
+            await response.json();
 
 
+          /* ❌ ERROR */
+          if (!response.ok) {
 
-        const data =
-          await response.json();
+            alert(data.msg || "An error occurred ❌");
+
+            setLoading(false);
+
+            return;
+          }
 
 
+          /* ✅ SUCCESS */
+          if (!isForgotPassword && !isResetPassword) {
+            alert(data.msg);
 
-        /* ❌ ERROR */
-        if (!response.ok) {
+            console.log(
+              "USER:",
+              data.user
+            );
 
-          alert(data.msg);
+
+            /* 🔥 SAVE TOKEN */
+            if (data.token) {
+
+              localStorage.setItem(
+                "token",
+                data.token
+              );
+            }
+
+
+            /* 🔥 SAVE USER */
+            if (data.user) {
+
+              localStorage.setItem(
+                "user",
+                JSON.stringify(
+                  data.user
+                )
+              );
+            }
+          } else if (isForgotPassword) {
+            alert(data.msg || "Password reset link sent to your email ✅");
+            setIsForgotPassword(false);
+            setIsLogin(true); // Switch back to login form
+            setFormData({ name: "", email: "", phone: "", password: "" }); // Clear form
+          } else if (isResetPassword) {
+            alert(data.msg || "Password has been reset successfully ✅");
+            setIsResetPassword(false);
+            setIsLogin(true); // Switch back to login form
+            setFormData({ name: "", email: "", phone: "", password: "" }); // Clear form
+            setResetToken(""); // Clear token
+          }
+
 
           setLoading(false);
 
-          return;
-        }
+          if (!isForgotPassword && !isResetPassword) {
+            onClose();
 
 
-
-        /* ✅ SUCCESS */
-        alert(data.msg);
-
-        console.log(
-          "USER:",
-          data.user
-        );
+            /* 🔥 REFRESH */
+            window.location.reload();
+          }
 
 
+        } catch (err) {
 
-        /* 🔥 SAVE TOKEN */
-        if (data.token) {
+          console.error(err);
 
-          localStorage.setItem(
-            "token",
-            data.token
+          alert(
+            "Something went wrong ❌"
           );
+
+          setLoading(false);
         }
-
-
-
-        /* 🔥 SAVE USER */
-        if (data.user) {
-
-          localStorage.setItem(
-            "user",
-            JSON.stringify(
-              data.user
-            )
-          );
-        }
-
-
-
-        setLoading(false);
-
-        onClose();
-
-
-
-        /* 🔥 REFRESH */
-        window.location.reload();
-
-      } catch (err) {
-
-        console.error(err);
-
-        alert(
-          "Something went wrong ❌"
-        );
-
-        setLoading(false);
-      }
-    };
+      };
 
 
 
@@ -192,111 +246,193 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
 
 
 
-          {/* 🔥 FORM */}
-          <form
-            onSubmit={
-              handleSubmit
-            }
-            className="space-y-4"
-          >
+           {/* 🔥 FORM */}
+           <form
+             onSubmit={
+               handleSubmit
+             }
+             className="space-y-4"
+           >
 
-            {/* 🔥 NAME & PHONE (Registration Only) */}
-            {!isLogin && (
-              <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
-                <div className="relative">
-                  <FaUser className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    placeholder="Full Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
-                  />
-                </div>
+             {/* 🔥 FORGOT PASSWORD STEP - EMAIL INPUT */}
+             {isForgotPassword && (
+               <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
+                 <div className="relative">
+                   <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
+                   <input
+                     type="email"
+                     name="email"
+                     required
+                     placeholder="Enter your email"
+                     value={formData.email}
+                     onChange={handleChange}
+                     className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
+                   />
+                 </div>
+               </div>
+             )}
 
-                <div className="relative">
-                  <FaPhone className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
-                  <input
-                    type="tel"
-                    name="phone"
-                    required
-                    placeholder="Phone Number"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
-                  />
-                </div>
-              </div>
-            )}
+             {/* 🔥 RESET PASSWORD STEP - TOKEN & NEW PASSWORD */}
+             {isResetPassword && (
+               <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
+                 <div className="relative">
+                   <FaLock className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
+                   <input
+                     type="password"
+                     name="password"
+                     required
+                     placeholder="Enter new password"
+                     value={formData.password}
+                     onChange={handleChange}
+                     className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
+                   />
+                 </div>
+                 <div className="text-xs text-gray-500 mt-2">
+                   Password must be at least 6 characters and contain letters & numbers
+                 </div>
+               </div>
+             )}
+
+             {/* 🔥 NAME & PHONE (Registration Only) */}
+             {!isLogin && !isForgotPassword && !isResetPassword && (
+               <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
+                 <div className="relative">
+                   <FaUser className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
+                   <input
+                     type="text"
+                     name="name"
+                     required
+                     placeholder="Full Name"
+                     value={formData.name}
+                     onChange={handleChange}
+                     className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
+                   />
+                 </div>
+
+                 <div className="relative">
+                   <FaPhone className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
+                   <input
+                     type="tel"
+                     name="phone"
+                     required
+                     placeholder="Phone Number"
+                     value={formData.phone}
+                     onChange={handleChange}
+                     className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
+                   />
+                 </div>
+               </div>
+             )}
+
+
+             {/* 🔥 EMAIL (Login/Forgot Password Steps) */}
+             {(isLogin || isForgotPassword) && !isResetPassword && (
+               <div className="relative">
+                 <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
+                 <input
+                   type="email"
+                   name="email"
+                   required
+                   placeholder="Email Address"
+                   value={formData.email}
+                   onChange={handleChange}
+                   className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
+                 />
+               </div>
+             )}
+
+
+             {/* 🔥 PASSWORD (Login Step Only) */}
+             {isLogin && !isForgotPassword && !isResetPassword && (
+               <div className="relative">
+                 <FaLock className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
+                 <input
+                   type="password"
+                   name="password"
+                   autoComplete="current-password"
+                   required
+                   placeholder="Password"
+                   value={formData.password}
+                   onChange={handleChange}
+                   className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
+                 />
+               </div>
+             )}
+
+
+             {/* 🔥 SUBMIT BUTTON */}
+             <button
+               type="submit"
+               disabled={loading}
+               className="w-full bg-[#14532D] hover:bg-[#166534] text-white py-3.5 rounded-xl text-sm font-bold shadow-lg shadow-green-900/10 transition-all active:scale-95 disabled:opacity-50 mt-4"
+             >
+               {loading
+                 ? "Processing..."
+                 : isForgotPassword
+                 ? "Send Reset Link"
+                 : isResetPassword
+                 ? "Reset Password"
+                 : isLogin
+                 ? "Sign In"
+                 : "Create Account"}
+             </button>
+
+           </form>
 
 
 
-            {/* 🔥 EMAIL */}
-            <div className="relative">
-              <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
-              <input
-                type="email"
-                name="email"
-                required
-                placeholder="Email Address"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
-              />
+          {/* 🔥 TOGGLE & FORGOT PASSWORD */}
+            <div className="text-center mt-8">
+              {isForgotPassword ? (
+                <>
+                  <p className="text-xs text-gray-500 font-medium">
+                    Remember your password?{' '}
+                    <button
+                      onClick={() => {
+                        setIsForgotPassword(false);
+                        setIsLogin(true);
+                      }}
+                      className="text-[#14532D] hover:underline ml-1 font-bold"
+                    >
+                      Sign In
+                    </button>
+                  </p>
+                </>
+              ) : isLogin ? (
+                <>
+                  <p className="text-xs text-gray-500 font-medium">
+                    Don't have an account?{' '}
+                    <button
+                      onClick={() => setIsLogin(!isLogin)}
+                      className="text-[#14532D] hover:underline ml-1.5 font-bold"
+                    >
+                      Sign Up
+                    </button>
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs text-gray-500 font-medium">
+                    Already have an account?{' '}
+                    <button
+                      onClick={() => setIsLogin(!isLogin)}
+                      className="text-[#14532D] hover:underline ml-1.5 font-bold"
+                    >
+                      Login
+                    </button>
+                  </p>
+                  <p className="text-xs text-gray-500 font-medium mt-2">
+                    Forgot your password?{' '}
+                    <button
+                      onClick={() => setIsForgotPassword(true)}
+                      className="text-[#14532D] hover:underline ml-1 font-bold"
+                    >
+                      Reset Password
+                    </button>
+                  </p>
+                </>
+              )}
             </div>
-
-
-
-            {/* 🔥 PASSWORD */}
-            <div className="relative">
-              <FaLock className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
-              <input
-                type="password"
-                name="password"
-                autoComplete="current-password"
-                required
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
-              />
-            </div>
-
-
-
-            {/* 🔥 SUBMIT BUTTON */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#14532D] hover:bg-[#166534] text-white py-3.5 rounded-xl text-sm font-bold shadow-lg shadow-green-900/10 transition-all active:scale-95 disabled:opacity-50 mt-4"
-            >
-              {loading
-                ? "Authenticating..."
-                : isLogin
-                ? "Sign In"
-                : "Create Account"}
-            </button>
-
-          </form>
-
-
-
-          {/* 🔥 TOGGLE */}
-          <div className="text-center mt-8">
-            <p className="text-xs text-gray-500 font-medium">
-              {isLogin
-                ? "Don't have an account?"
-                : "Already have an account?"}
-              <button
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-[#14532D] hover:underline ml-1.5 font-bold"
-              >
-                {isLogin ? "Sign Up" : "Login"}
-              </button>
-            </p>
-          </div>
 
         </div>
 

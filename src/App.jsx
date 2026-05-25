@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import AllProductsPage from "./pages/AllProductsPage";
 import ProductDetails from "./pages/ProductDetails";
+import ResetPassword from "./pages/ResetPassword";
 
 import Navbar from "./components/Navbar";
 import TopBar from "./components/Topbar";
@@ -75,27 +76,26 @@ const App = () => {
         }
       >
         <div className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
+           <Routes>
+             <Route path="/" element={<Home />} />
 
-            <Route
-              path="/search"
-              element={
-                <SearchResultsPage
-                  city={city}
-                  setCity={setCity}
-                />
-              }
-            />
+             <Route
+               path="/search"
+               element={
+                 <SearchResultsPage
+                   city={city}
+                   setCity={setCity}
+                 />
+               }
+             />
+             <Route path="/all-products" element={<AllProductsPage />} />
 
-            <Route path="/all-products" element={<AllProductsPage />} />
+             <Route path="/product-details/:id" element={<ProductDetails />} />
+             <Route path="/product-details" element={<ProductDetails />} />
 
-
-            <Route path="/product-details/:id" element={<ProductDetails />} />
-            <Route path="/product-details" element={<ProductDetails />} />
-
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/my-queries" element={<MyQueries />} />
+             <Route path="/profile" element={<Profile />} />
+             <Route path="/my-queries" element={<MyQueries />} />
+             <Route path="/reset-password/:token" element={<ResetPassword />} />
 
 
             {/* ADMIN */}
