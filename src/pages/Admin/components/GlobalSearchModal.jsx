@@ -128,7 +128,6 @@ const GlobalSearchModal = ({
                           key={l._id}
                           onClick={() => {
                             setActiveMenu("Leads");
-                            handleEditClick(l);
                             onClose();
                           }}
                           className="px-3 py-2 rounded-xl hover:bg-white/5 cursor-pointer flex items-center justify-between text-xs text-white transition-all group"
@@ -140,7 +139,7 @@ const GlobalSearchModal = ({
                               <span className="text-[10px] text-gray-500 block">{l.name} • {l.location} • Budget: {l.budget}</span>
                             </div>
                           </div>
-                          <span className="text-[10px] text-gray-500 group-hover:text-green-500 opacity-0 group-hover:opacity-100 transition-all font-bold">Manage Lead →</span>
+                          <span className="text-[10px] text-gray-500 group-hover:text-green-500 opacity-0 group-hover:opacity-100 transition-all font-bold">View in Tab →</span>
                         </div>
                       ))}
                     </div>

@@ -102,8 +102,12 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
           } 
           else if (!isLogin) {
             url = `${API_BASE_URL}/auth/register`;
-          }
-
+            if (formData.password !== formData.confirmPassword) {
+              alert("Passwords do not match ❌");
+              setLoading(false);
+              return;
+            }
+            }
           const response =
             await fetch(url, {
               method: "POST",
@@ -254,24 +258,6 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
              className="space-y-4"
            >
 
-             {/* 🔥 FORGOT PASSWORD STEP - EMAIL INPUT */}
-             {isForgotPassword && (
-               <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
-                 <div className="relative">
-                   <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
-                   <input
-                     type="email"
-                     name="email"
-                     required
-                     placeholder="Enter your email"
-                     value={formData.email}
-                     onChange={handleChange}
-                     className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
-                   />
-                 </div>
-               </div>
-             )}
-
              {/* 🔥 RESET PASSWORD STEP - TOKEN & NEW PASSWORD */}
              {isResetPassword && (
                <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
@@ -325,8 +311,8 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
              )}
 
 
-             {/* 🔥 EMAIL (Login/Forgot Password Steps) */}
-             {(isLogin || isForgotPassword) && !isResetPassword && (
+             {/* 🔥 EMAIL (Visible for Login, Signup, and Forgot Password) */}
+             {!isResetPassword && (
                <div className="relative">
                  <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
                  <input
@@ -342,20 +328,50 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
              )}
 
 
-             {/* 🔥 PASSWORD (Login Step Only) */}
-             {isLogin && !isForgotPassword && !isResetPassword && (
+             {/* 🔥 PASSWORD (Login and Signup Step) */}
+             {(isLogin || (!isLogin && !isForgotPassword && !isResetPassword)) && (
                <div className="relative">
                  <FaLock className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
                  <input
                    type="password"
                    name="password"
-                   autoComplete="current-password"
+                   autoComplete={isLogin ? "current-password" : "new-password"}
                    required
-                   placeholder="Password"
+                   placeholder={isLogin ? "Password" : "Create Password"}
                    value={formData.password}
                    onChange={handleChange}
                    className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
                  />
+               </div>
+             )}
+
+             {/* 🔥 CONFIRM PASSWORD (Signup Step Only) */}
+             {!isLogin && !isForgotPassword && !isResetPassword && (
+               <div className="relative">
+                 <FaLock className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400 text-sm" />
+                 <input
+                   type="password"
+                   name="confirmPassword"
+                   autoComplete="new-password"
+                   required
+                   placeholder="Confirm Password"
+                   value={formData.confirmPassword || ""}
+                   onChange={handleChange}
+                   className="w-full pl-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#14532D]/20 focus:bg-white transition-all"
+                 />
+               </div>
+             )}
+
+             {/* 🔥 FORGOT PASSWORD LINK (Login Step) */}
+             {isLogin && !isForgotPassword && (
+               <div className="text-right">
+                 <button
+                   type="button"
+                   onClick={() => setIsForgotPassword(true)}
+                   className="text-[10px] text-gray-400 hover:text-[#14532D] font-bold uppercase tracking-wider transition-colors"
+                 >
+                   Forgot Password?
+                 </button>
                </div>
              )}
 
@@ -419,15 +435,6 @@ const SignInModal = ({ onClose, initialMode = "login" }) => {
                       className="text-[#14532D] hover:underline ml-1.5 font-bold"
                     >
                       Login
-                    </button>
-                  </p>
-                  <p className="text-xs text-gray-500 font-medium mt-2">
-                    Forgot your password?{' '}
-                    <button
-                      onClick={() => setIsForgotPassword(true)}
-                      className="text-[#14532D] hover:underline ml-1 font-bold"
-                    >
-                      Reset Password
                     </button>
                   </p>
                 </>

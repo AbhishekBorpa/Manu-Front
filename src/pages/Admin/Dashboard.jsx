@@ -27,7 +27,9 @@ import {
   ExternalLink,
   FileText,
   Eye,
-  Handshake
+  Handshake,
+  User,
+  Clock
 } from "lucide-react";
 import GlobalSearchModal from "./components/GlobalSearchModal";
 import NotificationsDropdown from "./components/NotificationsDropdown";
@@ -37,7 +39,9 @@ import Sidebar from "./components/Sidebar";
 import AdminHeader from "./components/AdminHeader";
 import OverviewTab from "./components/OverviewTab";
 import VerificationsTab from "./components/VerificationsTab";
+import ExpirationsTab from "./components/ExpirationsTab";
 import ProfileTab from "./components/ProfileTab";
+import SettingsTab from "./components/SettingsTab";
 import TableTab from "./components/TableTab";
 import PartnersTab from "./components/PartnersTab";
 
@@ -365,8 +369,11 @@ const Dashboard = () => {
           }
         });
         if (imageFile) {
-          // Both Products and Services expect 'image' in multer.single or multer.fields
-          formDataObj.append("image", imageFile);
+          if (Array.isArray(imageFile)) {
+            imageFile.forEach(file => formDataObj.append("image", file));
+          } else {
+            formDataObj.append("image", imageFile);
+          }
         }
         fetchOptions.body = formDataObj;
       } else {
@@ -403,8 +410,8 @@ const Dashboard = () => {
         alert(`Long description must be at least 10 characters (you have ${longLen}).`);
         return;
       }
-      if (!imageFile) {
-        alert("Please upload a product image.");
+      if (!imageFile || (Array.isArray(imageFile) && imageFile.length === 0)) {
+        alert("Please upload at least one product image.");
         return;
       }
       if (!formData.partnerId) {
@@ -437,8 +444,11 @@ const Dashboard = () => {
           }
         });
         if (imageFile) {
-          // Both Products and Services expect 'image' in multer.single or multer.fields
-          formDataObj.append("image", imageFile);
+          if (Array.isArray(imageFile)) {
+            imageFile.forEach(file => formDataObj.append("image", file));
+          } else {
+            formDataObj.append("image", imageFile);
+          }
         }
         fetchOptions.body = formDataObj;
       } else {
@@ -520,11 +530,19 @@ const Dashboard = () => {
     },
     {
       name: "Profile",
+      icon: <User size={16} />,
+    },
+    {
+      name: "Site Settings",
       icon: <Settings size={16} />,
     },
     {
       name: "Verifications",
       icon: <ShieldCheck size={16} />,
+    },
+    {
+      name: "Expirations",
+      icon: <Clock size={16} />,
     },
   ];
 
@@ -600,7 +618,7 @@ const Dashboard = () => {
           )}
 
           {/* OTHER PAGES */}
-          {activeMenu !== "Dashboard" && activeMenu !== "Profile" && activeMenu !== "Verifications" && activeMenu !== "Partners" && (
+          {activeMenu !== "Dashboard" && activeMenu !== "Profile" && activeMenu !== "Verifications" && activeMenu !== "Partners" && activeMenu !== "Site Settings" && activeMenu !== "Expirations" && (
             <TableTab
               activeMenu={activeMenu}
               search={search}
@@ -649,12 +667,23 @@ const Dashboard = () => {
               setFilter={setFilter}
             />
           )}
+          {/* EXPIRATIONS PAGE */}
+          {activeMenu === "Expirations" && (
+            <ExpirationsTab
+              partnerProfiles={partnerProfiles}
+              navigate={navigate}
+            />
+          )}
           {/* PROFILE PAGE */}
           {activeMenu === "Profile" && (
             <ProfileTab
               adminProfile={adminProfile}
               setAdminProfile={setAdminProfile}
             />
+          )}
+          {/* SITE SETTINGS PAGE */}
+          {activeMenu === "Site Settings" && (
+            <SettingsTab />
           )}
         </div>
       </main>

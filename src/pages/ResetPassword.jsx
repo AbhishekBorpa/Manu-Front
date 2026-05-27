@@ -1,8 +1,15 @@
 import { useState } from "react";
-import { FaLock, FaEnvelope, FaArrowLeft, FaSpinner } from "react-icons/fa";
+import { useParams, useNavigate } from "react-router-dom";
+import { FaLock, FaEnvelope, FaArrowLeft, FaSpinner, FaTimes, FaCheckCircle } from "react-icons/fa";
 import { API_BASE_URL } from "../api/config";
 
-const ResetPassword = ({ token, onClose }) => {
+const ResetPassword = ({ token: propToken, onClose: propOnClose }) => {
+  const { token: urlToken } = useParams();
+  const navigate = useNavigate();
+  const token = propToken || urlToken;
+  
+  const onClose = propOnClose || (() => navigate("/"));
+
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -20,6 +27,11 @@ const ResetPassword = ({ token, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match ❌");
+      return;
+    }
 
     try {
       setLoading(true);

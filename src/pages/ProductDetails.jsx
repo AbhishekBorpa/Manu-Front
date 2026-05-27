@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaMapMarkerAlt, FaArrowLeft, FaPhoneAlt, FaEnvelope, FaTimes, FaExternalLinkAlt, FaClock } from "react-icons/fa";
+import { FaMapMarkerAlt, FaArrowLeft, FaPhoneAlt, FaEnvelope, FaTimes, FaExternalLinkAlt, FaClock, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import LeadModal from "../components/LeadModal";
 import { API_BASE_URL, getServerUrl, getLocalFallback } from "../api/config";
 
@@ -15,6 +15,7 @@ const ProductDetails = () => {
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     if (state?._id) {
@@ -119,6 +120,18 @@ const ProductDetails = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const productImages = product.images && product.images.length > 0 
+    ? product.images 
+    : [product.image || product.img];
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
+  };
+
   return (
     <section className="bg-[#f5f7f6] min-h-screen py-4 md:py-10 px-4 md:px-6">
       <div className="max-w-6xl mx-auto mb-4 md:mb-6">
@@ -133,15 +146,43 @@ const ProductDetails = () => {
 
       <div className="max-w-6xl mx-auto bg-white rounded-xl md:rounded-[32px] shadow-sm overflow-hidden border border-gray-100">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className="relative h-[250px] sm:h-[350px] md:h-[500px]">
+          <div className="relative h-[250px] sm:h-[350px] md:h-[500px] group">
             <img
-              src={getServerUrl(product.image || product.img) || getLocalFallback(product.title, product.category)}
-              alt={product.title}
-              className="w-full h-full object-cover"
+              src={getServerUrl(productImages[currentImageIndex]) || getLocalFallback(product.title, product.category)}
+              alt={`${product.title} - ${currentImageIndex + 1}`}
+              className="w-full h-full object-cover transition-all duration-500"
               onError={(e) => {
                 e.target.src = getLocalFallback(product.title, product.category);
               }}
             />
+            
+            {productImages.length > 1 && (
+              <>
+                <button 
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+                >
+                  <FaChevronLeft />
+                </button>
+                <button 
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+                >
+                  <FaChevronRight />
+                </button>
+                
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  {productImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentImageIndex(idx)}
+                      className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentImageIndex ? 'bg-white w-4' : 'bg-white/50'}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+
             <div className="absolute top-3 left-3 md:top-4 md:left-4 flex flex-wrap gap-2">
               <span className="bg-white/90 backdrop-blur-md px-2 md:px-3 py-0.5 md:py-1 rounded-full text-[9px] md:text-[10px] font-black text-[#14532D] uppercase tracking-widest shadow-lg">
                 {product.category || "Industrial"}

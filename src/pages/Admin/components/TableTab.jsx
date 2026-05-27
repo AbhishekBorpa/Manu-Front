@@ -54,13 +54,15 @@ const TableTab = ({
             <option>Category</option>
             <option>Status</option>
           </select>
-          <button 
-            onClick={() => setIsAddModalOpen(true)}
-            className="h-[38px] px-4 rounded-lg bg-green-600 hover:bg-green-500 transition-all duration-300 flex items-center gap-2 text-[11px] font-medium"
-          >
-            <Plus size={14} />
-            Add
-          </button>
+          {activeMenu !== "Users" && (
+            <button 
+              onClick={() => setIsAddModalOpen(true)}
+              className="h-[38px] px-4 rounded-lg bg-green-600 hover:bg-green-500 transition-all duration-300 flex items-center gap-2 text-[11px] font-medium"
+            >
+              <Plus size={14} />
+              Add
+            </button>
+          )}
         </div>
       </div>
 
@@ -184,7 +186,6 @@ const TableTab = ({
                           <Eye size={14} />
                         </button>
                       )}
-                      <button onClick={() => handleDelete(profile._id, "admin/partner-profiles")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                     </div>
                   </div>
                 ))}
@@ -212,8 +213,7 @@ const TableTab = ({
                   </span>
                 </span>
                 <div className="flex items-center justify-end gap-3 text-gray-400">
-                  <button onClick={() => handleEditClick(lead)} className="hover:text-blue-400 transition-colors"><Edit2 size={14} /></button>
-                  <button onClick={() => handleDelete(lead._id, "leads")} className="hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                  <span className="text-gray-600 italic">No actions</span>
                 </div>
               </div>
             )) : <p className="p-10 text-center text-slate-500 text-xs">No leads found.</p>)}

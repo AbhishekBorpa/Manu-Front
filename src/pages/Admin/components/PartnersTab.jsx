@@ -72,26 +72,6 @@ const PartnersTab = ({
     }
   };
 
-  const handleDelete = async (profileId, companyName) => {
-    if (!window.confirm(`Are you sure you want to delete the partner profile for "${companyName}"?`)) return;
-    try {
-      const token = localStorage.getItem("token");
-      const API_URL = import.meta.env.VITE_API_URL || "https://manu-back-bpob.onrender.com/api";
-      const res = await fetch(`${API_URL}/admin/partner-profiles/${profileId}`, {
-        method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (data.success) {
-        onRefresh();
-      } else {
-        alert(data.msg || "Failed to delete partner profile.");
-      }
-    } catch (err) {
-      console.error("Delete partner error:", err);
-    }
-  };
-
   const filtered = getFilteredItems(partnerProfiles);
 
   return (
@@ -234,13 +214,6 @@ const PartnersTab = ({
                     title="View Details"
                   >
                     <Eye size={14} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(profile._id, profile.companyName)}
-                    className="p-1.5 rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-colors"
-                    title="Delete Partner"
-                  >
-                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>

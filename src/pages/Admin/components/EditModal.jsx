@@ -362,10 +362,23 @@ const EditModal = ({
           )}
 
           {/* Image Upload */}
-          {["Products", "Sub Categories"].includes(activeMenu) && (
+          {["Products", "Sub Categories", "Main Category"].includes(activeMenu) && (
             <div className="space-y-2 pb-4">
-              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">{activeMenu === "Sub Categories" ? "Subcategory Icon" : "Image"}</label>
-              <input type="file" onChange={(e) => setImageFile(e.target.files[0])} className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" />
+              <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+                {activeMenu === "Sub Categories" ? "Subcategory Icon" : activeMenu === "Products" ? "Product Images (Multiple)" : "Image"}
+              </label>
+              <input 
+                type="file" 
+                multiple={activeMenu === "Products"}
+                onChange={(e) => {
+                  if (activeMenu === "Products") {
+                    setImageFile(Array.from(e.target.files));
+                  } else {
+                    setImageFile(e.target.files[0]);
+                  }
+                }}
+                className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" 
+              />
             </div>
           )}
           
