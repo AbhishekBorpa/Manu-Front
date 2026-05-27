@@ -11,6 +11,8 @@ const TableTab = ({
   getFilteredItems,
   handleEditClick,
   handleDelete,
+  showMainCategory,
+  onToggleMainCategoryVisibility,
   users = [],
   services = [],
   subscribers = [],
@@ -54,6 +56,21 @@ const TableTab = ({
             <option>Category</option>
             <option>Status</option>
           </select>
+          
+          {activeMenu === "Main Category" && (
+            <button
+              onClick={onToggleMainCategoryVisibility}
+              className={`h-[38px] px-4 rounded-lg flex items-center gap-2 text-[11px] font-medium border transition-all duration-300 ${
+                showMainCategory 
+                ? "bg-green-600/10 border-green-500/50 text-green-400 hover:bg-green-600/20" 
+                : "bg-red-500/10 border-red-500/50 text-red-400 hover:bg-red-500/20"
+              }`}
+            >
+              <div className={`w-2 h-2 rounded-full ${showMainCategory ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" : "bg-red-500"}`}></div>
+              {showMainCategory ? "Section: Visible" : "Section: Hidden"}
+            </button>
+          )}
+
           {activeMenu !== "Users" && (
             <button 
               onClick={() => setIsAddModalOpen(true)}

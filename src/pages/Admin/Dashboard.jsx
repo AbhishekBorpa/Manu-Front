@@ -41,7 +41,6 @@ import OverviewTab from "./components/OverviewTab";
 import VerificationsTab from "./components/VerificationsTab";
 import ExpirationsTab from "./components/ExpirationsTab";
 import ProfileTab from "./components/ProfileTab";
-import SettingsTab from "./components/SettingsTab";
 import TableTab from "./components/TableTab";
 import PartnersTab from "./components/PartnersTab";
 
@@ -61,6 +60,8 @@ const Dashboard = () => {
   const [subscribers, setSubscribers] = useState([]);
   const [partnerProfiles, setPartnerProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showMainCategory, setShowMainCategory] = useState(true);
+  const [navbarId, setNavbarId] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -191,7 +192,8 @@ const Dashboard = () => {
         fetch(`${API_URL}/leads`, { headers }),
         fetch(`${API_URL}/products`),
         fetch(`${API_URL}/categories`),
-        fetch(`${API_URL}/admin/partner-profiles`, { headers })
+        fetch(`${API_URL}/admin/partner-profiles`, { headers }),
+        fetch(`${API_URL}/navbar`)
       ]);
 
       const [
@@ -202,7 +204,8 @@ const Dashboard = () => {
         leadsData,
         productsData,
         catData,
-        partnersData
+        partnersData,
+        navbarData
       ] = await Promise.all([
         statsRes.json(),
         usersRes.json(),
@@ -211,7 +214,8 @@ const Dashboard = () => {
         leadsRes.json(),
         productsRes.json(),
         catRes.json(),
-        partnersRes.json()
+        partnersRes.json(),
+        navbarRes.json()
       ]);
 
       if (statsData.success) setRealStats(statsData.stats);
@@ -231,6 +235,10 @@ const Dashboard = () => {
       }
       if (catData.success) setCategories(catData.categories || []);
       if (partnersData.success) setPartnerProfiles(partnersData.profiles || []);
+      if (navbarData.success && navbarData.navbar) {
+        setShowMainCategory(navbarData.navbar.showMainCategory !== false);
+        setNavbarId(navbarData.navbar._id);
+      }
 
     } catch (err) {
       console.error("Dashboard Fetch Error:", err);
@@ -284,6 +292,29 @@ const Dashboard = () => {
       } catch (err) {
         console.error("Delete error:", err);
       }
+    }
+  };
+
+  const handleToggleMainCategoryVisibility = async () => {
+    try {
+      if (!navbarId) return;
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/navbar/${navbarId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ showMainCategory: !showMainCategory })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowMainCategory(!showMainCategory);
+      } else {
+        alert(data.msg || "Failed to update visibility.");
+      }
+    } catch (err) {
+      console.error("Toggle visibility error:", err);
     }
   };
 
@@ -629,6 +660,8 @@ const Dashboard = () => {
               getFilteredItems={getFilteredItems}
               handleEditClick={handleEditClick}
               handleDelete={handleDelete}
+              showMainCategory={showMainCategory}
+              onToggleMainCategoryVisibility={handleToggleMainCategoryVisibility}
               users={users}
               services={services}
               subscribers={subscribers}
@@ -680,10 +713,6 @@ const Dashboard = () => {
               adminProfile={adminProfile}
               setAdminProfile={setAdminProfile}
             />
-          )}
-          {/* SITE SETTINGS PAGE */}
-          {activeMenu === "Site Settings" && (
-            <SettingsTab />
           )}
         </div>
       </main>
