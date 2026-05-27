@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X, Package } from "lucide-react";
 import { useState } from "react";
 
 const EditModal = ({
@@ -7,6 +7,7 @@ const EditModal = ({
   activeMenu,
   formData,
   setFormData,
+  imageFile,
   setImageFile,
   onSubmit,
   categories = [],
@@ -15,6 +16,15 @@ const EditModal = ({
 }) => {
   const [descTab, setDescTab] = useState("short");
   if (!isOpen) return null;
+
+  const removeFile = (index) => {
+    if (Array.isArray(imageFile)) {
+      const newFiles = imageFile.filter((_, i) => i !== index);
+      setImageFile(newFiles);
+    } else {
+      setImageFile(null);
+    }
+  };
 
   // Find subcategories (machinery) for the selected Main Category (manufacturing)
   const filteredSubCategories = categories.filter(cat => 
@@ -367,18 +377,60 @@ const EditModal = ({
               <label className="text-xs text-gray-400 font-bold uppercase tracking-wider">
                 {activeMenu === "Sub Categories" ? "Subcategory Icon" : activeMenu === "Products" ? "Product Images (Multiple)" : "Image"}
               </label>
-              <input 
-                type="file" 
-                multiple={activeMenu === "Products"}
-                onChange={(e) => {
-                  if (activeMenu === "Products") {
-                    setImageFile(Array.from(e.target.files));
-                  } else {
-                    setImageFile(e.target.files[0]);
-                  }
-                }}
-                className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" 
-              />
+              <div className="space-y-3">
+                <input 
+                  type="file" 
+                  multiple={activeMenu === "Products"}
+                  onChange={(e) => {
+                    if (activeMenu === "Products") {
+                      const files = Array.from(e.target.files);
+                      setImageFile(prev => Array.isArray(prev) ? [...prev, ...files] : files);
+                    } else {
+                      setImageFile(e.target.files[0]);
+                    }
+                  }}
+                  className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-400 transition-all cursor-pointer" 
+                />
+
+                {/* Selected Files Preview */}
+                {imageFile && (
+                  <div className="space-y-2">
+                    {Array.isArray(imageFile) ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        {imageFile.map((file, idx) => (
+                          <div key={idx} className="relative group bg-white/5 rounded-lg p-2 flex items-center gap-2 border border-white/5">
+                            <div className="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center shrink-0">
+                              <Package size={14} className="text-green-500" />
+                            </div>
+                            <span className="text-[10px] text-gray-300 truncate flex-1">{file.name}</span>
+                            <button 
+                              type="button"
+                              onClick={() => removeFile(idx)}
+                              className="text-gray-500 hover:text-red-500 transition-colors"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="relative group bg-white/5 rounded-lg p-2 flex items-center gap-2 border border-white/5">
+                        <div className="w-8 h-8 rounded bg-green-500/20 flex items-center justify-center shrink-0">
+                          <Package size={14} className="text-green-500" />
+                        </div>
+                        <span className="text-[10px] text-gray-300 truncate flex-1">{imageFile.name}</span>
+                        <button 
+                          type="button"
+                          onClick={() => setImageFile(null)}
+                          className="text-gray-500 hover:text-red-500 transition-colors"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
           

@@ -691,10 +691,11 @@ const Dashboard = () => {
       {/* EDIT MODAL */}
       <EditModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={() => { setIsEditModalOpen(false); setImageFile(null); }}
         activeMenu={activeMenu}
         formData={formData}
         setFormData={setFormData}
+        imageFile={imageFile}
         setImageFile={setImageFile}
         onSubmit={handleEditSubmit}
         categories={categories}
@@ -705,10 +706,11 @@ const Dashboard = () => {
       {/* ADD MODAL */}
       <AddModal
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        onClose={() => { setIsAddModalOpen(false); setImageFile(null); }}
         activeMenu={activeMenu}
         formData={formData}
         setFormData={setFormData}
+        imageFile={imageFile}
         setImageFile={setImageFile}
         onSubmit={handleAddSubmit}
         categories={categories}
